@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -20,7 +19,7 @@ public class Map {
 	}
 
 	public Map(int height, int width) {
-		
+
 		createMap(height, width);
 		tileWidth = width;
 		tileHeight = height;
@@ -28,11 +27,10 @@ public class Map {
 
 	public void paint(Graphics g) {
 		g.setColor(new Color(155, 112, 105, 255));
-//		g.fillRect(0, 0, getWidth(), getHeight());
-		
-		
+		// g.fillRect(0, 0, getWidth(), getHeight());
+
 		for (int i = 0; i < wallList.size(); i++) {
-			
+
 			g.setColor(new Color(127, 127, 127, 255));
 			g.fillRect(wallList.get(i).getX(), wallList.get(i).getY(), wallList.get(i).getSize(), wallList.get(i).getSize());
 			g.setColor(new Color(180, 180, 180, 255));
@@ -59,7 +57,7 @@ public class Map {
 		map = new MapTile[height][width];
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
+				if (x <= 1 || x >= width - 2 || y <= 1 || y >= height - 2)
 					wallList.add(new MapTile(new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), true));
 				// map[y][x] = new MapTile(new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), true);
 				// else
