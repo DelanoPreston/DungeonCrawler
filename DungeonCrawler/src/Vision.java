@@ -54,7 +54,7 @@ public class Vision {
 		// Bottom line
 		p[1] = ustIntersection(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
 		// Left side...
-		p[2] = ustIntersection(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMinX(), rec.getMinY()));
+		p[2] = ustIntersection(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
 		// Right side
 		p[3] = ustIntersection(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
 		// // Top line
@@ -105,6 +105,10 @@ public class Vision {
 		if (xi < Math.min(x1, x2) || xi > Math.max(x1, x2))
 			return null;
 		if (xi < Math.min(x3, x4) || xi > Math.max(x3, x4))
+			return null;
+		if (yi < Math.min(y1, y2) || yi > Math.max(y1, y2))
+			return null;
+		if (yi < Math.min(y3, y4) || yi > Math.max(y3, y4))
 			return null;
 		return p;
 	}
