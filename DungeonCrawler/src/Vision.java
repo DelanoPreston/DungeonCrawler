@@ -1,7 +1,5 @@
-import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -10,17 +8,23 @@ public class Vision {
 	Point2D source;
 	float radius;
 	Line2D[] rays;
+	Point2D[] allIntersects;
 
 	Vision(int x, int y) {
+		allIntersects = new Point2D[0];
 		source = new Point2D.Float(x, y);
 		radius = 100;
-		rays = new Line2D[90];
+		rays = new Line2D[36];
 		update();
 	}
 
 	public void paint(Graphics2D g2D) {
 		for (Line2D l : rays) {
 			g2D.draw(l);
+		}
+		g2D.setColor(new Color(255, 0, 0, 255));
+		for (Point2D p : allIntersects) {
+			g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
 		}
 	}
 
@@ -30,46 +34,102 @@ public class Vision {
 			rays[i] = new Line2D.Float(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
 			Point2D[] intersects = new Point2D[0];
 			for (int j = 0; j < Map.wallList.size(); j++) {
-				intersects = concatenateArrays(intersects, getIntersectionPoint(rays[i], Map.wallList.get(j).positionSize));
+				if (rays[i].intersects(Map.wallList.get(j).positionSize)){
+					Point2D[] temp = getIntersectionPoint(rays[i], Map.wallList.get(j).positionSize);
+					intersects = concatenateArrays(intersects, temp);
+				}
 			}
+			allIntersects = concatenateArrays(intersects, allIntersects);
 			if (intersects.length > 0)
 				rays[i] = new Line2D.Float(source, findClosestPoint(source, intersects));
 		}
 	}
 
-	public Point2D[] getIntersectionPoint(Line2D line, Rectangle2D rectangle) {
+	public Point2D[] getIntersectionPoint(Line2D l, Rectangle2D rec) {
 		int count = 0;
 		Point2D[] p = new Point2D[4];
 
 		// Top line
-		p[0] = getIntersectionPoint(line, new Line2D.Double(rectangle.getX(), rectangle.getY(), rectangle.getX() + rectangle.getWidth(), rectangle.getY()));
+		p[0] = ustIntersection(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
 		// Bottom line
-		p[1] = getIntersectionPoint(line, new Line2D.Double(rectangle.getX(), rectangle.getY() + rectangle.getHeight(),
-				rectangle.getX() + rectangle.getWidth(), rectangle.getY() + rectangle.getHeight()));
+		p[1] = ustIntersection(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
 		// Left side...
-		p[2] = getIntersectionPoint(line, new Line2D.Double(rectangle.getX(), rectangle.getY(), rectangle.getX(), rectangle.getY() + rectangle.getHeight()));
+		p[2] = ustIntersection(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMinX(), rec.getMinY()));
 		// Right side
-		p[3] = getIntersectionPoint(line, new Line2D.Double(rectangle.getX() + rectangle.getWidth(), rectangle.getY(), rectangle.getX() + rectangle.getWidth(),
-				rectangle.getY() + rectangle.getHeight()));
+		p[3] = ustIntersection(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		// // Top line
+		// p[0] = getIntersectionPoint(l, new Line2D.Double(rec.getX(), rec.getY(), rec.getX() + rec.getWidth(), rec.getY()));
+		// // Bottom line
+		// p[1] = getIntersectionPoint(l, new Line2D.Double(rec.getX(), rec.getY() + rec.getHeight(), rec.getX() + rec.getWidth(), rec.getY() +
+		// rec.getHeight()));
+		// // Left side...
+		// p[2] = getIntersectionPoint(l, new Line2D.Double(rec.getX(), rec.getY(), rec.getX(), rec.getY() + rec.getHeight()));
+		// // Right side
+		// p[3] = getIntersectionPoint(l, new Line2D.Double(rec.getX() + rec.getWidth(), rec.getY(), rec.getX() + rec.getWidth(), rec.getY() +
+		// rec.getHeight()));
 
 		for (Point2D po : p) {
 			if (po != null) {
 				count++;
 			}
 		}
-		
+
 		Point2D[] temp = new Point2D[count];
 		int tempIndex = 0;
-		
+
 		for (Point2D po : p) {
 			if (po != null) {
 				temp[tempIndex] = po;
 				tempIndex++;
+				System.out.println(po);
 			}
 		}
 
 		return temp;
 
+	}
+
+	public Point2D ustIntersection(Line2D l1, Line2D l2) {
+		return intersection(l1.getX1(), l1.getY1(), l1.getX2(), l1.getY2(), l2.getX1(), l2.getY1(), l2.getX2(), l2.getY2());
+	}
+
+	public Point2D intersection(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+		double d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+		if (d == 0)
+			return null;
+
+		double xi = ((x3 - x4) * (x1 * y2 - y1 * x2) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
+		double yi = ((y3 - y4) * (x1 * y2 - y1 * x2) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
+
+		Point2D p = new Point2D.Double(xi, yi);
+		if (xi < Math.min(x1, x2) || xi > Math.max(x1, x2))
+			return null;
+		if (xi < Math.min(x3, x4) || xi > Math.max(x3, x4))
+			return null;
+		return p;
+	}
+
+	public static Point2D getLineInter(Line2D l1, Line2D l2) {
+		// double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+		double det1And2 = det(l1.getX1(), l1.getY1(), l1.getX2(), l1.getY2());
+		double det3And4 = det(l2.getX1(), l2.getY1(), l2.getX2(), l2.getY2());
+		double x1LessX2 = l1.getX1() - l1.getX2();
+		double y1LessY2 = l1.getY1() - l1.getY2();
+		double x3LessX4 = l2.getX1() - l2.getX2();
+		double y3LessY4 = l2.getY1() - l2.getY2();
+		double det1Less2And3Less4 = det(x1LessX2, y1LessY2, x3LessX4, y3LessY4);
+		if (det1Less2And3Less4 == 0) {
+			// the denominator is zero so the lines are parallel and there's either no solution (or multiple solutions if the lines overlap) so return null.
+			return null;
+		}
+		double val = det(det1And2, x1LessX2, det3And4, x3LessX4);
+		double x = (val / det1Less2And3Less4);
+		double y = (val / det1Less2And3Less4);
+		return new Point2D.Double(x, y);
+	}
+
+	protected static double det(double a, double b, double c, double d) {
+		return a * d - b * c;
 	}
 
 	public Point2D getIntersectionPoint(Line2D lineA, Line2D lineB) {
@@ -113,17 +173,11 @@ public class Vision {
 	public Point2D findClosestPoint(Point2D source, Point2D[] intersects) {
 		Point2D temp = null;
 		double dist = radius;
-		
+
 		for (Point2D p : intersects) {
-			if (p != null && Math.abs(source.distance(p)) < dist){
-				if(Math.abs(source.distance(p)) == 0.0){
-					double d;
-					d=0;
-					if(d==0){
-						
-					}
-				}
-					
+			if (p != null && Math.abs(source.distance(p)) < dist) {
+				dist = Math.abs(source.distance(p));
+
 				temp = p;
 			}
 		}

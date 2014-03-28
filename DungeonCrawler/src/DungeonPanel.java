@@ -33,7 +33,7 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 		
 		map = new Map(32, 32);
-		v = new Vision(16 * ContentBank.tileSize, 16 * ContentBank.tileSize);
+		v = new Vision(24 * ContentBank.tileSize, 24 * ContentBank.tileSize);
 //		level = createDungeon(32, 32);
 	}
 

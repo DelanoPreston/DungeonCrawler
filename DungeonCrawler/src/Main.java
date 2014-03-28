@@ -9,7 +9,7 @@ public class Main {
 		try{
 		JFrame frame = new JFrame();
 		DungeonPanel gamePanel = new DungeonPanel();
-		frame.setSize(850, 650);
+		frame.setSize(300, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setVisible(true);

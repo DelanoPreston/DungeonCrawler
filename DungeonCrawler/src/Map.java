@@ -30,9 +30,13 @@ public class Map {
 		g.setColor(new Color(155, 112, 105, 255));
 //		g.fillRect(0, 0, getWidth(), getHeight());
 		
-		g.setColor(new Color(127, 127, 127, 255));
+		
 		for (int i = 0; i < wallList.size(); i++) {
+			
+			g.setColor(new Color(127, 127, 127, 255));
 			g.fillRect(wallList.get(i).getX(), wallList.get(i).getY(), wallList.get(i).getSize(), wallList.get(i).getSize());
+			g.setColor(new Color(180, 180, 180, 255));
+			g.drawRect(wallList.get(i).getX(), wallList.get(i).getY(), wallList.get(i).getSize(), wallList.get(i).getSize());
 		}
 
 		// for (int y = 0; y < map.length; y++) {
