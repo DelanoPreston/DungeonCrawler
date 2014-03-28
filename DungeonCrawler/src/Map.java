@@ -67,5 +67,12 @@ public class Map {
 
 			}
 		}
+		wallList.add(new MapTile(new Rectangle(5 * tileSize, 5 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(17 * tileSize, 20 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(17 * tileSize, 21 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(17 * tileSize, 22 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(17 * tileSize, 23 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(17 * tileSize, 24 * tileSize, tileSize, tileSize), true));
+		wallList.add(new MapTile(new Rectangle(5 * tileSize, 20 * tileSize, tileSize, tileSize), true));
 	}
 }

@@ -1,20 +1,19 @@
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 public class Vision {
-	Point2D source;
+	public Point2D source;
 	float radius;
 	Line2D[] rays;
-	Point2D[] allIntersects;
+//	Point2D[] allIntersects;
 
 	Vision(int x, int y) {
-		allIntersects = new Point2D[0];
+//		allIntersects = new Point2D[0];
 		source = new Point2D.Float(x, y);
 		radius = 100;
-		rays = new Line2D[36];
+		rays = new Line2D[360];
 		update();
 	}
 
@@ -22,16 +21,16 @@ public class Vision {
 		for (Line2D l : rays) {
 			g2D.draw(l);
 		}
-		g2D.setColor(new Color(255, 0, 0, 255));
-		for (Point2D p : allIntersects) {
-			g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
-		}
+//		g2D.setColor(new Color(255, 0, 0, 255));
+//		for (Point2D p : allIntersects) {
+//			g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
+//		}
 	}
 
 	public void update() {
 		for (int i = 0; i < rays.length; i++) {
 			double angle = Math.toRadians(i * (360 / rays.length));
-			rays[i] = new Line2D.Float(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
+			rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
 			Point2D[] intersects = new Point2D[0];
 			for (int j = 0; j < Map.wallList.size(); j++) {
 				if (rays[i].intersects(Map.wallList.get(j).positionSize)){
@@ -39,9 +38,17 @@ public class Vision {
 					intersects = concatenateArrays(intersects, temp);
 				}
 			}
-			allIntersects = concatenateArrays(intersects, allIntersects);
-			if (intersects.length > 0)
-				rays[i] = new Line2D.Float(source, findClosestPoint(source, intersects));
+//			allIntersects = concatenateArrays(intersects, allIntersects);
+			if (intersects.length >= 1){
+				Point2D lineEnd = findClosestPoint(source, intersects);
+//				if(lineEnd == null){
+//					lineEnd = new Point2D.Double(0,0);
+//				}else{
+					rays[i] = new Line2D.Double(source, lineEnd);
+//				}
+				
+			}
+			
 		}
 	}
 
@@ -81,7 +88,7 @@ public class Vision {
 			if (po != null) {
 				temp[tempIndex] = po;
 				tempIndex++;
-				System.out.println(po);
+//				System.out.println(po);
 			}
 		}
 
@@ -176,7 +183,7 @@ public class Vision {
 
 	public Point2D findClosestPoint(Point2D source, Point2D[] intersects) {
 		Point2D temp = null;
-		double dist = radius;
+		double dist = radius + 1;
 
 		for (Point2D p : intersects) {
 			if (p != null && Math.abs(source.distance(p)) < dist) {
