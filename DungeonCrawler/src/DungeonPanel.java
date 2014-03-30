@@ -40,7 +40,7 @@ public class DungeonPanel extends JPanel {
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
 
-		map = new Map(32, 32);
+		map = new Map(64, 64);
 		v = new Vision(24 * ContentBank.tileSize, 24 * ContentBank.tileSize);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
@@ -54,9 +54,9 @@ public class DungeonPanel extends JPanel {
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
-		if(popupListener.location != null){
+		if (popupListener.location != null) {
 			v.source = popupListener.location;
-//			System.out.println("yes");
+			// System.out.println("yes");
 		}
 		v.update();
 	}
@@ -66,14 +66,15 @@ public class DungeonPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		Graphics2D g2D = (Graphics2D) g;
 		int tileSize = 8;
 		super.paintComponent(g);
 
 		map.paint(g);
-//		System.out.println("painting");
-		
+		// System.out.println("painting");
+
 		g.setColor(new Color(55, 55, 55, 255));
-		v.paint((Graphics2D) g);
+		v.paint(g2D);
 
 		if (level != null) {
 			for (int y = 0; y < level.length; y++) {
@@ -87,6 +88,9 @@ public class DungeonPanel extends JPanel {
 				}
 			}
 		}
+		int x = (int) (popupListener.location.getX() / ContentBank.tileSize);
+		int y = (int) (popupListener.location.getY() / ContentBank.tileSize);
+		g2D.drawString("mouse is at:" + x + ", " + y, 15, 560);
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class DungeonPanel extends JPanel {
 			}
 		}
 	}
-	
+
 	/**
 	 * PopupListener class, implements ActionListener, this is called when the user clicks anywhere, this is only used for right click for the popup at the
 	 * momment
@@ -154,7 +158,7 @@ public class DungeonPanel extends JPanel {
 		DungeonPanel reference;
 		private int lastOffsetX;
 		private int lastOffsetY;
-		Point2D location = null;
+		Point2D location = new Point2D.Double(0, 0);
 		boolean showPopup;
 
 		PopupListener(DungeonPanel inGamePanel) {
@@ -170,42 +174,42 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public Point2D GetPopupLocation() {
-//			System.out.println("PopupLocation:" + location.getX() + "," + location.getY());
+			// System.out.println("PopupLocation:" + location.getX() + "," + location.getY());
 			return location;
 		}
 
 		public void mousePressed(MouseEvent e) {
-//			// capture starting point
-//			lastOffsetX = (int) (e.getX() / reference.scale);
-//			lastOffsetY = (int) (e.getY() / reference.scale);
+			// // capture starting point
+			// lastOffsetX = (int) (e.getX() / reference.scale);
+			// lastOffsetY = (int) (e.getY() / reference.scale);
 		}
 
 		public void mouseReleased(MouseEvent e) {
-			
+
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-//			// System.out.println(e.getModifiersEx());
-//			if (e.getModifiersEx() == 2048) {// scroll click
-//				showPopup = false;
-//				// new x and y are defined by current mouse location subtracted
-//				// by previously processed mouse location
-//				getMousePosition(e);
-//				int newX = (int) (e.getX() / reference.scale) - lastOffsetX;
-//				int newY = (int) (e.getY() / reference.scale) - lastOffsetY;
-//
-//				// increment last offset to last processed by drag event.
-//				lastOffsetX += newX;
-//				lastOffsetY += newY;
-//
-//				// update the canvas locations
-//				reference.translateX += newX;
-//				reference.translateY += newY;
-//
-//				// schedule a repaint.
-//				reference.repaint();
-//			}
+			// // System.out.println(e.getModifiersEx());
+			// if (e.getModifiersEx() == 2048) {// scroll click
+			// showPopup = false;
+			// // new x and y are defined by current mouse location subtracted
+			// // by previously processed mouse location
+			// getMousePosition(e);
+			// int newX = (int) (e.getX() / reference.scale) - lastOffsetX;
+			// int newY = (int) (e.getY() / reference.scale) - lastOffsetY;
+			//
+			// // increment last offset to last processed by drag event.
+			// lastOffsetX += newX;
+			// lastOffsetY += newY;
+			//
+			// // update the canvas locations
+			// reference.translateX += newX;
+			// reference.translateY += newY;
+			//
+			// // schedule a repaint.
+			// reference.repaint();
+			// }
 		}
 
 		@Override
@@ -215,42 +219,42 @@ public class DungeonPanel extends JPanel {
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
-//			if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-//
-//				// make it a reasonable amount of zoom
-//				// .1 gives a nice slow transition
-//				reference.scale -= (.1 * e.getWheelRotation());
-//				// don't cross negative threshold.
-//				// also, setting scale to 0 has bad effects
-//				reference.scale = Math.max(0.1, reference.scale);
-//				reference.scale = Math.min(1, reference.scale);
-//				System.out.println(reference.scale);
-//				reference.repaint();
-//			}
+			// if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+			//
+			// // make it a reasonable amount of zoom
+			// // .1 gives a nice slow transition
+			// reference.scale -= (.1 * e.getWheelRotation());
+			// // don't cross negative threshold.
+			// // also, setting scale to 0 has bad effects
+			// reference.scale = Math.max(0.1, reference.scale);
+			// reference.scale = Math.min(1, reference.scale);
+			// System.out.println(reference.scale);
+			// reference.repaint();
+			// }
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-//			// this is clicking with no movement
-//			// System.out.println("mouse clicked");
-//			// double[] loc = { popupListener.GetPopupLocation().getX(), popupListener.GetPopupLocation().getY() };
-//			System.out.println("something");
-//			if (level.placingEntity()) {
-//				ConstructionEntity temp = level.getConstructionEntity();
-//				ConstructionEntity asdf = new ConstructionEntity(temp);
-//				asdf.setPlaced();
-//				level.addConstruction(asdf);
-//
-//			} else {
-//				// Location loc = new Location(e.getX(), e.getY());
-//				Human temp = new Human("mouse", getMouseLocation(), 0.0, false, reference.source);
-//				Entity tempSel = reference.level.getSelectedEntity();
-//				tempSel = reference.source.findEntityEvent(temp, "humans");
-//				if (tempSel != null && bgf.getDistance(getMouseLocation(), tempSel.getMapLocation()) < 25)
-//					System.out.println("you found: " + tempSel.name);
-//				else
-//					System.out.println("no one is there");
-//			}
+			// // this is clicking with no movement
+			// // System.out.println("mouse clicked");
+			// // double[] loc = { popupListener.GetPopupLocation().getX(), popupListener.GetPopupLocation().getY() };
+			// System.out.println("something");
+			// if (level.placingEntity()) {
+			// ConstructionEntity temp = level.getConstructionEntity();
+			// ConstructionEntity asdf = new ConstructionEntity(temp);
+			// asdf.setPlaced();
+			// level.addConstruction(asdf);
+			//
+			// } else {
+			// // Location loc = new Location(e.getX(), e.getY());
+			// Human temp = new Human("mouse", getMouseLocation(), 0.0, false, reference.source);
+			// Entity tempSel = reference.level.getSelectedEntity();
+			// tempSel = reference.source.findEntityEvent(temp, "humans");
+			// if (tempSel != null && bgf.getDistance(getMouseLocation(), tempSel.getMapLocation()) < 25)
+			// System.out.println("you found: " + tempSel.name);
+			// else
+			// System.out.println("no one is there");
+			// }
 		}
 
 		@Override
@@ -266,24 +270,24 @@ public class DungeonPanel extends JPanel {
 		}
 
 		private void ShowPopup(MouseEvent e) {
-//			if (e.isPopupTrigger()) {
-//
-//				popup.show(e.getComponent(), e.getX(), e.getY());
-//
-//				getMousePosition(e);
-//			}
+			// if (e.isPopupTrigger()) {
+			//
+			// popup.show(e.getComponent(), e.getX(), e.getY());
+			//
+			// getMousePosition(e);
+			// }
 		}
 
 		public void getMousePosition(MouseEvent e) {
 			location = new Point2D.Double(e.getX(), e.getY());
-//			// this gets the position on the map of the mouse, given the translation, and scale
-//			double x = ((reference.getWidth() / 2) - reference.translateX) - (((reference.getWidth() / 2) - e.getX()) / reference.scale);
-//			double y = ((reference.getHeight() / 2) - reference.translateY) - (((reference.getHeight() / 2) - e.getY()) / reference.scale);
-//			location = new Point2D.Double(x, y);
-//			// System.out.println(location.getX() + ", " + location.getY());
+			// // this gets the position on the map of the mouse, given the translation, and scale
+			// double x = ((reference.getWidth() / 2) - reference.translateX) - (((reference.getWidth() / 2) - e.getX()) / reference.scale);
+			// double y = ((reference.getHeight() / 2) - reference.translateY) - (((reference.getHeight() / 2) - e.getY()) / reference.scale);
+			// location = new Point2D.Double(x, y);
+			// // System.out.println(location.getX() + ", " + location.getY());
 		}
 	}
-	
+
 	public int[][] createDungeon(int width, int height) {
 		int[][] temp = setArray(height, width);
 		Random rand = new Random();

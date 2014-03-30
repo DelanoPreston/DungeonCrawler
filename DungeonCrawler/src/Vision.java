@@ -17,8 +17,8 @@ public class Vision {
 	Vision(int x, int y) {
 		// allIntersects = new Point2D[0];
 		source = new Point2D.Float(x, y);
-		radius = 75;
-		rays = new Line2D[180];
+		radius = 60;
+		rays = new Line2D[360];
 		update();
 		visShape = new GeneralPath();
 
@@ -34,10 +34,10 @@ public class Vision {
 			g2D.draw(visShape);
 		}
 
-//		g2D.setColor(new Color(255, 0, 0, 255));
-//		for (Point2D p : allIntersects) {
-//			g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
-//		}
+		// g2D.setColor(new Color(255, 0, 0, 255));
+		// for (Point2D p : allIntersects) {
+		// g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
+		// }
 	}
 
 	public void update() {
@@ -47,9 +47,11 @@ public class Vision {
 			rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
 			Point2D[] intersects = new Point2D[0];
 			for (int j = 0; j < Map.wallList.size(); j++) {
-				if (rays[i].intersects(Map.wallList.get(j).positionSize)) {
-					Point2D[] temp = getIntersectionPoint(rays[i], Map.wallList.get(j).positionSize);
-					intersects = concatenateArrays(intersects, temp);
+				if (Map.wallList.get(j).solid) {
+					if (rays[i].intersects(Map.wallList.get(j).positionSize)) {
+						Point2D[] temp = getIntersectionPoint(rays[i], Map.wallList.get(j).positionSize);
+						intersects = concatenateArrays(intersects, temp);
+					}
 				}
 			}
 			allIntersects = concatenateArrays(intersects, allIntersects);
@@ -122,11 +124,11 @@ public class Vision {
 			return null;
 		return p;
 	}
-	
-	Point2D useFindInt(Line2D l1, Line2D l2){
+
+	Point2D useFindInt(Line2D l1, Line2D l2) {
 		return findIntersection(l1.getP1(), l1.getP2(), l2.getP1(), l2.getP2());
 	}
-	
+
 	Point2D findIntersection(Point2D p1, Point2D p2, Point2D p3, Point2D p4) {
 		double xD1, yD1, xD2, yD2, xD3, yD3;
 		double dot, deg, len1, len2;
@@ -290,7 +292,8 @@ public class Vision {
 	// if (rayCanStrikeFacing(radians(current_angle), ln.facing)) {
 	//
 	// // If the ray strikes the line, a PVector is returned. Otherwise, it is null.
-	// rayLineIntersection = segIntersection(source.getX(), source.getY(), rayEndUnblocked.getX(), rayEndUnblocked.getY(), ln.v1.getX(), ln.v1.getY(), ln.v2.getX(), ln.v2.getY());
+	// rayLineIntersection = segIntersection(source.getX(), source.getY(), rayEndUnblocked.getX(), rayEndUnblocked.getY(), ln.v1.getX(), ln.v1.getY(),
+	// ln.v2.getX(), ln.v2.getY());
 	//
 	// // If it is not null...
 	// if (rayLineIntersection != null) {

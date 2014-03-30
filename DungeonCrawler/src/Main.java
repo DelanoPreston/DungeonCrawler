@@ -8,8 +8,9 @@ public class Main {
 	public static void main(String[] args) {
 		try{
 		JFrame frame = new JFrame();
+		ContentBank.ContentLoader();
 		DungeonPanel gamePanel = new DungeonPanel();
-		frame.setSize(300, 300);
+		frame.setSize(600, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setVisible(true);
