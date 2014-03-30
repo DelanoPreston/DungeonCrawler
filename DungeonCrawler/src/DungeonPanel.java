@@ -23,6 +23,7 @@ import javax.swing.Timer;
 public class DungeonPanel extends JPanel {
 	int timer = 0;// if I load a game, this will be reset to 0 causing problems with crops and other timed things
 	Timer mainTimer;
+//	MapCreator map;
 	Map map;
 	public int[][] level;
 	Vision v;
@@ -40,8 +41,8 @@ public class DungeonPanel extends JPanel {
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
 
-		map = new Map(64, 64);
-		v = new Vision(24 * ContentBank.tileSize, 24 * ContentBank.tileSize);
+		map = new MapCreator(64, 64).createMap();
+		v = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
@@ -70,7 +71,7 @@ public class DungeonPanel extends JPanel {
 		int tileSize = 8;
 		super.paintComponent(g);
 
-		map.paint(g);
+		map.paint(g2D);
 		// System.out.println("painting");
 
 		g.setColor(new Color(55, 55, 55, 255));

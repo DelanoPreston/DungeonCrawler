@@ -4,28 +4,29 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 public class Vision {
 	public Point2D source;
 	float radius;
 	Line2D[] rays;
-	boolean drawRays = false;
 	GeneralPath visShape;// = new GeneralPath();
+	Map mapRef;
 
 	Point2D[] allIntersects;
 
-	Vision(int x, int y) {
-		// allIntersects = new Point2D[0];
-		source = new Point2D.Float(x, y);
-		radius = 60;
+	Vision(Map mapRef) {
+		this.mapRef = mapRef;
+		source = new Point2D.Float(0, 0);
+		radius = 45;
 		rays = new Line2D[360];
 		update();
 		visShape = new GeneralPath();
-
+		
 	}
 
 	public void paint(Graphics2D g2D) {
-		if (drawRays) {
+		if (Key.drawRays) {
 			for (Line2D l : rays) {
 				g2D.draw(l);
 			}
@@ -42,14 +43,15 @@ public class Vision {
 
 	public void update() {
 		allIntersects = new Point2D[0];
+		List<MapTile> walls = mapRef.getWalls();
 		for (int i = 0; i < rays.length; i++) {
 			double angle = Math.toRadians(i * (360 / rays.length));
 			rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
 			Point2D[] intersects = new Point2D[0];
-			for (int j = 0; j < Map.wallList.size(); j++) {
-				if (Map.wallList.get(j).solid) {
-					if (rays[i].intersects(Map.wallList.get(j).positionSize)) {
-						Point2D[] temp = getIntersectionPoint(rays[i], Map.wallList.get(j).positionSize);
+			for (int j = 0; j < walls.size(); j++) {
+				if (walls.get(j).solid) {
+					if (rays[i].intersects(walls.get(j).positionSize)) {
+						Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
 						intersects = concatenateArrays(intersects, temp);
 					}
 				}

@@ -36,7 +36,7 @@ public class ContentBank {
 //	public static HashMap<String, Item> furniture = new HashMap<>();
 
 	public static void ContentLoader() {
-		random = new Random(1);
+		random = new Random();
 //		loadImages();
 //		loadItems();
 //		loadNames();
