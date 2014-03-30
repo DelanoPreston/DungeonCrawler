@@ -19,6 +19,8 @@ public class Key {
 	public static boolean drawRays = false;
 	public static boolean showPathMap = false;
 	public static boolean showDebug = true;
+	public static boolean showHallMapping = true;
+	public static boolean showPathDebug = false;
 	
 	public static boolean isWall(int key){
 		if(key == sideWall || key == cornerWall)

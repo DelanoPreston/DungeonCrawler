@@ -91,7 +91,7 @@ public class DungeonPanel extends JPanel {
 		}
 		int x = (int) (popupListener.location.getX() / ContentBank.tileSize);
 		int y = (int) (popupListener.location.getY() / ContentBank.tileSize);
-		g2D.drawString("mouse is at:" + x + ", " + y, 15, 560);
+		g2D.drawString("mouse is at: " + x + ", " + y, 15, 560);
 	}
 
 	/**

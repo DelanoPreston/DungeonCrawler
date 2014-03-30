@@ -47,6 +47,7 @@ public class Map implements TileBasedMap {
 		} else {
 			for (int y = 0; y < mapKey.length; y++) {
 				for (int x = 0; x < mapKey[0].length; x++) {
+					g2D.setColor(new Color(110, 110, 110, 255));
 					if (isCell(x, y, Key.floor)) {
 						g2D.setColor(new Color(32, 127, 32, 255));
 					} else if (isCell(x, y, Key.sideWall)) {
@@ -58,8 +59,8 @@ public class Map implements TileBasedMap {
 					}
 					g2D.fillRect(x * tS, y * tS, tS, tS);
 
-					g2D.setColor(new Color(180, 180, 180, 255));
-					g2D.drawRect(x * tS, y * tS, tS, tS);
+					// g2D.setColor(new Color(180, 180, 180, 255));
+					// g2D.drawRect(x * tS, y * tS, tS, tS);
 				}
 			}
 
@@ -93,11 +94,13 @@ public class Map implements TileBasedMap {
 				if (isCell(x, y, Key.unused)) {
 					temp[y][x] = 5;
 				} else if (isCell(x, y, Key.floor)) {
-					temp[y][x] = 2;
+					temp[y][x] = 1;
 				} else if (isCell(x, y, Key.door)) {
 					temp[y][x] = 0;
-				} else if (Key.isWall(checkCell(x, y))) {// isCell(x, y, Key.sideWall)) {
+				} else if (Key.isWall(checkCell(x, y))) {
 					temp[y][x] = calcWallCost(x, y);
+					if (temp[y][x] < 5)
+						temp[y][x] = 5;
 				}
 			}
 		}
@@ -118,6 +121,8 @@ public class Map implements TileBasedMap {
 				// if (isCell(tx, ty, Key.sideWall))
 				if (Key.isWall(checkCell(x, y)))
 					tempCost++;
+				if (isCell(x, y, Key.door))
+					tempCost += 5;
 			}
 		}
 
@@ -141,6 +146,8 @@ public class Map implements TileBasedMap {
 
 	public void setCell(int x, int y, int cellType) {
 		mapKey[y][x] = cellType;
+		if (x == 7 && y == 55 && cellType == Key.door)
+			mapKey[y][x] = cellType;
 	}
 
 	public void resetVisitedMap() {
@@ -169,14 +176,17 @@ public class Map implements TileBasedMap {
 
 	@Override
 	public boolean blocked(int type, int x, int y) {
-		if (type == Key.pathFinderRoomCheck) {
-			if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
-				return true;
-		} else if (type == Key.pathFinderRoomTunneler) {
-			if (isCell(x, y, Key.cornerWall))
-				return true;
+		if (x != 0 || x != mapKey[0].length - 1 || y != 0 || y != mapKey.length) {
+			if (type == Key.pathFinderRoomCheck) {
+				if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
+					return true;
+			} else if (type == Key.pathFinderRoomTunneler) {
+				if (isCell(x, y, Key.cornerWall))
+					return true;
+			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	@Override

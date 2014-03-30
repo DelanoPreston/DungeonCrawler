@@ -66,16 +66,7 @@ public class MapCreator {
 			return mapKey;
 		}
 
-		/**
-		 * 
-		 * @param corner
-		 *        0 is top left, 1 is top right, 2 is bottom right, 3 is bottom left
-		 */
 		public CreateDungeon(int roomNum) {
-
-			for (boolean b : side)
-				b = true;
-
 			// initialize the map
 			for (int y = 0; y < mapKey.length; y++) {
 				for (int x = 0; x < mapKey[0].length; x++) {
@@ -84,9 +75,29 @@ public class MapCreator {
 			}
 			// this creates the rooms
 			for (int r = 0; rooms.size() < roomNum && r < 1000; r++) {
+				// random value that decides default room size
+				int randVal = ContentBank.random.nextInt(100);
+				String roomType = "none";
+				int startRoomWidth = 0;
+				int startRoomHeight = 0;
+				// these if cases, determine if the room is Large, medium, or small
+				if (randVal < 40) {
+					roomType = "Large";
+					startRoomWidth = 10;
+					startRoomHeight = 10;
+				} else if (randVal < 70) {
+					roomType = "Medium";
+					startRoomWidth = 8;
+					startRoomHeight = 8;
+				} else {
+					roomType = "Small";
+					startRoomWidth = 6;
+					startRoomHeight = 6;
+				}
 				// gets random room
-				tempWidth = ContentBank.random.nextInt(8) + 8;
-				tempHeight = ContentBank.random.nextInt(8) + 8;
+
+				tempWidth = ContentBank.random.nextInt(startRoomWidth) + startRoomWidth;
+				tempHeight = ContentBank.random.nextInt(startRoomHeight) + startRoomHeight;
 				tempX = ContentBank.random.nextInt(tileWidth - (1 + tempWidth));
 				tempY = ContentBank.random.nextInt(tileHeight - (1 + tempHeight));
 				createRoom(tempX, tempY, tempWidth, tempHeight);
@@ -97,9 +108,9 @@ public class MapCreator {
 			// connect rooms - halls
 			// for every room
 			for (int r = 0; r < rooms.size(); r++) {
-				AStarPathFinder pf = new AStarPathFinder(map, 100, false);
 				// -check that you can get to each other room
 				for (int tr = r + 1; tr < rooms.size(); tr++) {
+					AStarPathFinder pf = new AStarPathFinder(map, (tileHeight * tileWidth) / (rooms.size() * 4), false);// 2
 					if (r != tr) {
 						// start and end coords
 						int sx = (int) rooms.get(r).getCenter().getX();
@@ -111,11 +122,10 @@ public class MapCreator {
 						if (pCheck == null) {
 							// tunnel
 							Path p = null;
-							// for (int tryCost = 25; p == null; tryCost += 25) {
-							AStarPathFinder tpf = new AStarPathFinder(map, 25, false);
+							AStarPathFinder tpf = new AStarPathFinder(map, rooms.size(), false);// 4
 							p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 							if (p != null) {
-								if (Key.showDebug) {
+								if (Key.showDebug && Key.showHallMapping) {
 									System.out.println("from room: " + r + " to " + tr);
 								}
 								// follow the path to get to the room, creating a hall as you go
@@ -126,17 +136,20 @@ public class MapCreator {
 										map.setCell(p.getX(pathKey), p.getY(pathKey), Key.floor);
 									}
 								}
+								// redraw the pathmap, so the pathfinder will use already existing halls
+								map.createPathMap();
 							}
-							// }
-							// redraw the pathmap, so the pathfinder will use already existing halls
-							map.createPathMap();
 						} else {
 							// awesome
+							if (Key.showDebug && Key.showHallMapping) {
+								System.out.println("path from room: " + r + " to " + tr + " is valid");
+							}
 						}
 					}
 				}
 			}
 			// this should wrap all the halls with walls - and removes double doors
+			// this loop goes through the entire mapKey, except row 0, column 0, maxheight - 1, and maxwidth - 1
 			for (int y = 1; y < mapKey.length - 1; y++) {
 				for (int x = 1; x < mapKey[0].length - 1; x++) {
 					if (isCell(x, y, Key.unused)) {
@@ -145,8 +158,28 @@ public class MapCreator {
 						}
 
 					} else if (isCell(x, y, Key.door)) {
+						// this removes double doors
 						if (isCell(x + 1, y, Key.door) || isCell(x - 1, y, Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y - 1, Key.door)) {
-							setCell(x, y, Key.floor);
+							if (isCell(x + 1, y, Key.floor) && isCell(x - 1, y, Key.floor) || isCell(x, y + 1, Key.floor) && isCell(x, y - 1, Key.floor)) {
+								setCell(x, y, Key.sideWall);
+							} else {
+								setCell(x, y, Key.floor);
+							}
+						}
+					}
+				}
+			}
+
+			// this removes awkward walls (surrounded by 3 floor tiles
+			for (int y = 1; y < mapKey.length - 1; y++) {
+				for (int x = 1; x < mapKey[0].length - 1; x++) {
+					if (isCell(x, y, Key.sideWall)) {
+						if (isCell(x + 1, y, Key.floor) && isCell(x - 1, y, Key.floor)) {
+							if (isCell(x, y + 1, Key.floor) || isCell(x, y - 1, Key.floor))
+								setCell(x, y, Key.floor);
+						} else if (isCell(x, y + 1, Key.floor) && isCell(x, y - 1, Key.floor)) {
+							if (isCell(x + 1, y, Key.floor) || isCell(x - 1, y, Key.floor))
+								setCell(x, y, Key.floor);
 						}
 					}
 				}
@@ -197,14 +230,7 @@ public class MapCreator {
 		}
 
 		public boolean isCell(int x, int y, int cellType) {
-			try {
-				return mapKey[y][x] == cellType;
-			} catch (Exception e) {
-				System.out.println(x);
-				System.out.println(y);
-				e.printStackTrace();
-			}
-			return false;
+			return mapKey[y][x] == cellType;
 		}
 
 		public int checkCell(int x, int y) {
@@ -213,6 +239,8 @@ public class MapCreator {
 
 		public void setCell(int x, int y, int cellType) {
 			mapKey[y][x] = cellType;
+			if (x == 7 && y == 55 && cellType == Key.door)
+				mapKey[y][x] = cellType;
 		}
 
 	}

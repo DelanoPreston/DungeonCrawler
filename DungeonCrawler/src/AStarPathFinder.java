@@ -204,7 +204,7 @@ public class AStarPathFinder {
 		path.prependStep(startX, startY);
 
 		path.setTotalCost(totalPathCost);
-		if (Key.showDebug)
+		if (Key.showDebug && Key.showPathDebug)
 			System.out.println("AStarPathFinder: cost: " + totalPathCost);
 
 		// thats it, we have our path
