@@ -41,7 +41,8 @@ public class DungeonPanel extends JPanel {
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
 
-		map = new MapCreator(64, 64).createMap();
+		map = new Map(64, 64);
+//		map = new MapCreator(64, 64).createMap();
 		v = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
