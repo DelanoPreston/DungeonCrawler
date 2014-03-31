@@ -23,7 +23,7 @@ public class Key {
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 	// miniMap things
-	public static boolean drawMiniMap = false;
+	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;
 	// fog of war things
 	public static boolean drawFogOfWar = false;
