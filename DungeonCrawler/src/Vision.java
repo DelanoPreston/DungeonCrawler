@@ -130,30 +130,30 @@ public class Vision {
 		int count = 0;
 		Point2D[] p = new Point2D[4];
 
-		if (source.getX() > rec.getCenterX()) {
-			// Left side...
-			p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
-		} else if (source.getX() < rec.getCenterX()) {
-			// Right side
-			p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
-		}
+//		if (source.getX() > rec.getCenterX()) {
+//			// Left side...
+//			p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
+//		} else if (source.getX() < rec.getCenterX()) {
+//			// Right side
+//			p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+//		}
+//
+//		if (source.getY() > rec.getCenterY()) {
+//			// Top line
+//			p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
+//		} else if (source.getY() < rec.getCenterY()) {
+//			// Bottom line
+//			p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
+//		}
 
-		if (source.getY() > rec.getCenterY()) {
-			// Top line
-			p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
-		} else if (source.getY() < rec.getCenterY()) {
-			// Bottom line
-			p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
-		}
-
-		// // Top line
-		// p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
-		// // Right side
-		// p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
-		// // Bottom line
-		// p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
-		// // Left side...
-		// p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
+		// Top line
+		p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
+		// Right side
+		p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		// Bottom line
+		p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
+		// Left side...
+		p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
 
 		// until the end of this method, add this does is remove nulls from the list
 		for (Point2D po : p) {

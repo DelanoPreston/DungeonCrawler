@@ -9,16 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Map implements TileBasedMap {
-	int[][] pathMap;
+	Tile[][] map;
+	// int[][] pathMap;
 	private boolean[][] visited;
-	private boolean[][] visible;
-	int[][] mapKey;
+	// private boolean[][] visible;
+	// int[][] mapKey;
 	List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 
 	public Map(int width, int height) {
-		mapKey = new int[height][width];
-		initializeVisible();
+
+		// mapKey = new int[height][width];
+		initializeTiles(width, height);
 		// this initializes and creates the mapKey, pathMap, and the walls, and rooms
 		createDungeon(50);
 		// this resets and initializes the visited map;
@@ -29,29 +31,38 @@ public class Map implements TileBasedMap {
 		return wallList;
 	}
 
-	public void initializeVisible() {
-		visible = new boolean[mapKey.length][mapKey[0].length];
-		for (int y = 0; y < visible.length; y++) {
-			for (int x = 0; x < visible[0].length; x++) {
-				visible[y][x] = false;
+	public void resetVisited() {
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
+				map[y][x].setVisited(false);
+			}
+		}
+	}
+
+	public void initializeTiles(int width, int height) {
+		map = new Tile[height][width];
+		// visible = new boolean[mapKey.length][mapKey[0].length];
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
+				map[y][x] = new Tile();
 			}
 		}
 	}
 
 	public void setVisible(Shape s) {
 		int tS = ContentBank.tileSize;
-		for (int y = 0; y < visible.length; y++) {
-			for (int x = 0; x < visible[0].length; x++) {
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
 				// this gets point on the displayed map and finds its array location
 				if (s.contains(new Point2D.Double((x * tS) + (tS / 2), (y * tS) + (tS / 2)))) {
-					if (!visible[y][x]) {
-						visible[y][x] = true;
+					if (!map[y][x].getVisible()) {
+						map[y][x].setVisible(true);
 						// this goes through the surrounding walls of any new discovered tile, and sets those walls to visible
 						for (int ty = y - 1; ty <= y + 1; ty++) {
 							for (int tx = x - 1; tx <= x + 1; tx++) {
-								if (tx >= 0 && ty >= 0 && tx < mapKey[0].length && ty < mapKey.length) {
+								if (tx >= 0 && ty >= 0 && tx < map[0].length && ty < map.length) {
 									if (Key.isWall(checkCell(tx, ty)))
-										visible[ty][tx] = true;
+										map[ty][tx].setVisible(true);
 								}
 							}
 						}
@@ -95,8 +106,8 @@ public class Map implements TileBasedMap {
 
 		for (int y = py - yOffset; y < py + yOffset; y++) {
 			for (int x = px - xOffset; x < px + xOffset; x++) {
-				if (x >= 0 && y >= 0 && x < mapKey[0].length && y < mapKey.length) {
-					if (visible[y][x] || !Key.drawMMFogOfWar) {
+				if (x >= 0 && y >= 0 && x < map[0].length && y < map.length) {
+					if (map[y][x].getVisible() || !Key.drawMMFogOfWar) {
 						// if the x an y are out of bounds it draws a transparent
 						// if (x < 0 || y < 0 || x >= mapKey[0].length || y >= mapKey.length) {
 						// g2D.setColor(new Color(0, 0, 0, 0));
@@ -139,16 +150,16 @@ public class Map implements TileBasedMap {
 		int tS = ContentBank.tileSize;
 		if (Key.drawPathMap) {
 			int tempVal = 0;
-			for (int y = 0; y < pathMap.length; y++) {
-				for (int x = 0; x < pathMap[0].length; x++) {
-					if (pathMap[y][x] > tempVal)
-						tempVal = pathMap[y][x];
+			for (int y = 0; y < map.length; y++) {
+				for (int x = 0; x < map[0].length; x++) {
+					if (map[y][x].getCost() > tempVal)
+						map[y][x].setCost(tempVal);
 				}
 			}
 			tempVal = 255 / tempVal;
-			for (int y = 0; y < pathMap.length; y++) {
-				for (int x = 0; x < pathMap[0].length; x++) {
-					int value = 255 - (pathMap[y][x] * tempVal);
+			for (int y = 0; y < map.length; y++) {
+				for (int x = 0; x < map[0].length; x++) {
+					int value = 255 - (map[y][x].getCost() * tempVal);
 
 					g2D.setColor(new Color(value, value, value, 255));
 
@@ -161,8 +172,8 @@ public class Map implements TileBasedMap {
 				}
 			}
 		} else {
-			for (int y = 0; y < mapKey.length; y++) {
-				for (int x = 0; x < mapKey[0].length; x++) {
+			for (int y = 0; y < map.length; y++) {
+				for (int x = 0; x < map[0].length; x++) {
 					g2D.setColor(new Color(110, 110, 110, 255));
 					if (isCell(x, y, Key.floor)) {
 						g2D.setColor(new Color(32, 127, 32, 255));
@@ -194,34 +205,30 @@ public class Map implements TileBasedMap {
 	}
 
 	public void createPathMap() {
-		int[][] temp = new int[mapKey.length][mapKey[0].length];
-
-		for (int y = 0; y < temp.length; y++) {
-			for (int x = 0; x < temp[0].length; x++) {
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
 				if (isCell(x, y, Key.unused)) {
-					temp[y][x] = 4;
+					map[y][x].setCost(4);
 				} else if (isCell(x, y, Key.floor)) {
-					temp[y][x] = 2;
+					map[y][x].setCost(2);
 				} else if (isCell(x, y, Key.door)) {
-					temp[y][x] = 1;
+					map[y][x].setCost(1);
 				} else if (Key.isWall(checkCell(x, y))) {
-					temp[y][x] = calcWallCost(x, y);
-					if (temp[y][x] < 5)
-						temp[y][x] = 5;
+					map[y][x].setCost(calcWallCost(x, y));
+					if (map[y][x].getCost() < 5)
+						map[y][x].setCost(5);
 				}
 			}
 		}
-
-		pathMap = temp;
 	}
 
 	private int calcWallCost(int x, int y) {
 		int tempCost = 0;
 		// makes sure its in the bound of the array
-		int startX = Math.min(Math.max(x - 2, 0), mapKey.length - 1);
-		int startY = Math.min(Math.max(y - 2, 0), mapKey[0].length - 1);
-		int endX = Math.min(Math.max(x + 2, 0), mapKey.length - 1);
-		int endY = Math.min(Math.max(y + 2, 0), mapKey[0].length - 1);
+		int startX = Math.min(Math.max(x - 2, 0), map.length - 1);
+		int startY = Math.min(Math.max(y - 2, 0), map[0].length - 1);
+		int endX = Math.min(Math.max(x + 2, 0), map.length - 1);
+		int endY = Math.min(Math.max(y + 2, 0), map[0].length - 1);
 		// the t is for temp
 		for (int ty = startY; ty < endY; ty++) {
 			for (int tx = startX; tx < endX; tx++) {
@@ -239,7 +246,7 @@ public class Map implements TileBasedMap {
 
 	public boolean isCell(int x, int y, int cellType) {
 		// try {
-		return mapKey[y][x] == cellType;
+		return map[y][x].getKey() == cellType;
 		// } catch (Exception e) {
 		// System.out.println(x);
 		// System.out.println(y);
@@ -249,42 +256,39 @@ public class Map implements TileBasedMap {
 	}
 
 	public int checkCell(int x, int y) {
-		return mapKey[y][x];
+		return map[y][x].getKey();
 	}
 
 	public void setCell(int x, int y, int cellType) {
-		mapKey[y][x] = cellType;
-		if (x == 7 && y == 55 && cellType == Key.door)
-			mapKey[y][x] = cellType;
+		map[y][x].setKey(cellType);
 	}
 
 	public void resetVisitedMap() {
-		visited = new boolean[mapKey.length][mapKey[0].length];
-		for (int i = 0; i < visited.length; i++) {
-			for (int j = 0; j < visited[0].length; j++) {
-				visited[i][j] = false;
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				map[i][j].setVisible(false);
 			}
 		}
 	}
 
 	@Override
 	public int getWidthInTiles() {
-		return mapKey[0].length;
+		return map[0].length;
 	}
 
 	@Override
 	public int getHeightInTiles() {
-		return mapKey.length;
+		return map.length;
 	}
 
 	@Override
 	public void pathFinderVisited(int x, int y) {
-		visited[x][y] = true;
+		map[x][y].setVisited(true);
 	}
 
 	@Override
 	public boolean blocked(int type, int x, int y) {
-		if (x != 0 || x != mapKey[0].length - 1 || y != 0 || y != mapKey.length) {
+		if (x != 0 || x != map[0].length - 1 || y != 0 || y != map.length) {
 			if (type == Key.pathFinderRoomCheck) {
 				if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
 					return true;
@@ -304,7 +308,7 @@ public class Map implements TileBasedMap {
 
 	@Override
 	public float getCost(int type, int sx, int sy, int tx, int ty) {
-		double tempCost = Math.max(pathMap[ty][tx], pathMap[sy][sx]);
+		double tempCost = Math.max(map[ty][tx].getCost(), map[sy][sx].getCost());
 		if (Math.abs(sx - tx) == 1 && Math.abs(sy - ty) == 1)
 			// return (float) Math.sqrt(tempCost + tempCost);
 			return 2;// no diagonal right now anyway
@@ -313,13 +317,13 @@ public class Map implements TileBasedMap {
 
 	private void createDungeon(int roomNum) {
 		// ************************************************************************
-		// initialize the map
+		// initialize the map - already initialized
 		// ************************************************************************
-		for (int y = 0; y < mapKey.length; y++) {
-			for (int x = 0; x < mapKey[0].length; x++) {
-				setCell(x, y, Key.unused);
-			}
-		}
+		// for (int y = 0; y < mapKey.length; y++) {
+		// for (int x = 0; x < mapKey[0].length; x++) {
+		// setCell(x, y, Key.unused);
+		// }
+		// }
 		// ************************************************************************
 		// this creates the rooms
 		// ************************************************************************
@@ -403,8 +407,8 @@ public class Map implements TileBasedMap {
 		// this should wrap all the halls with walls - and removes double doors
 		// this loop goes through the entire mapKey, except row 0, column 0, maxheight - 1, and maxwidth - 1
 		// ************************************************************************
-		for (int y = 1; y < mapKey.length - 1; y++) {
-			for (int x = 1; x < mapKey[0].length - 1; x++) {
+		for (int y = 1; y < map.length - 1; y++) {
+			for (int x = 1; x < map[0].length - 1; x++) {
 				if (isCell(x, y, Key.unused)) {
 					if (isCell(x + 1, y, Key.floor) || isCell(x - 1, y, Key.floor) || isCell(x, y + 1, Key.floor) || isCell(x, y - 1, Key.floor)) {
 						setCell(x, y, Key.sideWall);
@@ -426,8 +430,8 @@ public class Map implements TileBasedMap {
 		// ************************************************************************
 		// this removes awkward walls (surrounded by 3 floor tiles
 		// ************************************************************************
-		for (int y = 1; y < mapKey.length - 1; y++) {
-			for (int x = 1; x < mapKey[0].length - 1; x++) {
+		for (int y = 1; y < map.length - 1; y++) {
+			for (int x = 1; x < map[0].length - 1; x++) {
 				if (isCell(x, y, Key.sideWall)) {
 					if (isCell(x + 1, y, Key.floor) && isCell(x - 1, y, Key.floor)) {
 						if (isCell(x, y + 1, Key.floor) || isCell(x, y - 1, Key.floor))
@@ -444,11 +448,11 @@ public class Map implements TileBasedMap {
 		// this adds the walls to the walllist
 		// ************************************************************************
 		int tS = ContentBank.tileSize;
-		for (int y = 0; y < mapKey.length; y++) {
-			for (int x = 0; x < mapKey[0].length; x++) {
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
 				if (Key.isWall(checkCell(x, y))) {// || tempKey[y][x] == 1 || tempKey[y][x] == 2) {
 					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), true));
-				} else if (mapKey[y][x] == Key.door) {
+				} else if (map[y][x].getKey() == Key.door) {
 					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), false));
 				}
 			}
@@ -567,6 +571,70 @@ public class Map implements TileBasedMap {
 
 		public Point2D locForDoor(int side) {
 			return new Point2D.Double(1, 1);
+		}
+	}
+
+	class Tile {
+		int key;
+		int cost;
+		boolean visible;
+		boolean visited;
+		Rectangle wall;
+
+		public Tile() {
+			this.key = Key.unused;
+			this.cost = 0;
+			this.visible = false;
+			this.visited = false;
+			this.wall = null;
+		}
+
+		public Tile(int key, int cost, boolean visible, Rectangle wall) {
+			this.key = key;
+			this.cost = cost;
+			this.visible = visible;
+			this.visited = false;
+			this.wall = wall;
+		}
+
+		public int getKey() {
+			return key;
+		}
+
+		public int getCost() {
+			return cost;
+		}
+
+		public boolean getVisible() {
+			return visible;
+		}
+
+		public boolean getVisited() {
+			return visited;
+		}
+
+		public Rectangle getWall() {
+			return wall;
+		}
+
+		public void setKey(int key) {
+			this.key = key;
+		}
+
+		public void setCost(int cost) {
+			this.cost = cost;
+		}
+
+		public void setVisible(boolean visible) {
+			this.visible = visible;
+		}
+
+		public void setVisited(boolean visited) {
+			this.visited = visited;
+		}
+
+		public void setWall(Rectangle wall) {
+			this.wall = wall;
 		}
 	}
 }
