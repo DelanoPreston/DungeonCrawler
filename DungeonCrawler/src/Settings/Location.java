@@ -1,3 +1,4 @@
+package Settings;
 
 
 public class Location {

@@ -1,3 +1,4 @@
+package Settings;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -8,12 +9,14 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import DataStructures.Room;
+import DataStructures.Tile;
+import Pathfinding.AStarPathFinder;
+import Pathfinding.Path;
+import Pathfinding.TileBasedMap;
+
 public class Map implements TileBasedMap {
 	Tile[][] map;
-	// int[][] pathMap;
-	private boolean[][] visited;
-	// private boolean[][] visible;
-	// int[][] mapKey;
 	List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 
@@ -41,7 +44,6 @@ public class Map implements TileBasedMap {
 
 	public void initializeTiles(int width, int height) {
 		map = new Tile[height][width];
-		// visible = new boolean[mapKey.length][mapKey[0].length];
 		for (int y = 0; y < map.length; y++) {
 			for (int x = 0; x < map[0].length; x++) {
 				map[y][x] = new Tile();
@@ -207,7 +209,7 @@ public class Map implements TileBasedMap {
 	public void createPathMap() {
 		for (int y = 0; y < map.length; y++) {
 			for (int x = 0; x < map[0].length; x++) {
-				if (isCell(x, y, Key.unused) ||isCell(x, y, Key.floor)) {
+				if (isCell(x, y, Key.unused) || isCell(x, y, Key.floor)) {
 					map[y][x].setCost(4);
 					// } else if (isCell(x, y, Key.floor)) {
 					// map[y][x].setCost(4);//2
@@ -501,140 +503,5 @@ public class Map implements TileBasedMap {
 		}
 		// returns false because there is no space for the room
 		return false;
-	}
-
-	class Room {
-		public String roomType;
-		public int x;
-		public int y;
-		public int height;
-		public int width;
-		// 0 is N, 1 is E, 2 is S, 3 is W
-		boolean[] sideAvail;
-
-		public int getRoomX1() {
-			return x;
-		}
-
-		public int getRoomY1() {
-			return y;
-		}
-
-		public int getRoomX2() {
-			return x + width;
-		}
-
-		public int getRoomY2() {
-			return y + height;
-		}
-
-		public int getFloorX1() {
-			return x + 1;
-		}
-
-		public int getFloorY1() {
-			return y + 1;
-		}
-
-		public int getFloorX2() {
-			return x + width - 2;
-		}
-
-		public int getFloorY2() {
-			return y + height - 2;
-		}
-
-		public Point2D getCenter() {
-			int x1 = width / 2 + x;
-			int y1 = height / 2 + y;
-			// System.out.println("\t\t" + x1 + ", " + y1);
-			return new Point2D.Double(x1, y1);
-		}
-
-		public Room(String roomType, int x, int y, int width, int height) {
-			this.roomType = roomType;
-			this.x = x;
-			this.y = y;
-			this.height = height;
-			this.width = width;
-		}
-
-		public boolean spaceAvailable(int side, Room toBePlacedRoom, int[][] mapKey) {
-			for (int y = toBePlacedRoom.y; y < toBePlacedRoom.y + toBePlacedRoom.height; y++) {
-				for (int x = toBePlacedRoom.x; x < toBePlacedRoom.x + toBePlacedRoom.width; x++) {
-					if (mapKey[y][x] == 1 || mapKey[y][x] == 2)
-						return false;
-				}
-			}
-			return true;
-		}
-
-		public Point2D locForDoor(int side) {
-			return new Point2D.Double(1, 1);
-		}
-	}
-
-	class Tile {
-		int key;
-		int cost;
-		boolean visible;
-		boolean visited;
-		Rectangle wall;
-
-		public Tile() {
-			this.key = Key.unused;
-			this.cost = 0;
-			this.visible = false;
-			this.visited = false;
-			this.wall = null;
-		}
-
-		public Tile(int key, int cost, boolean visible, Rectangle wall) {
-			this.key = key;
-			this.cost = cost;
-			this.visible = visible;
-			this.visited = false;
-			this.wall = wall;
-		}
-
-		public int getKey() {
-			return key;
-		}
-
-		public int getCost() {
-			return cost;
-		}
-
-		public boolean getVisible() {
-			return visible;
-		}
-
-		public boolean getVisited() {
-			return visited;
-		}
-
-		public Rectangle getWall() {
-			return wall;
-		}
-
-		public void setKey(int key) {
-			this.key = key;
-		}
-
-		public void setCost(int cost) {
-			this.cost = cost;
-		}
-
-		public void setVisible(boolean visible) {
-			this.visible = visible;
-		}
-
-		public void setVisited(boolean visited) {
-			this.visited = visited;
-		}
-
-		public void setWall(Rectangle wall) {
-			this.wall = wall;
-		}
 	}
 }

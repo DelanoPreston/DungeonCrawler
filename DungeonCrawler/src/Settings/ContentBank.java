@@ -1,3 +1,4 @@
+package Settings;
 
 
 import java.awt.Image;

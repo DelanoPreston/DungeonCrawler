@@ -1,3 +1,4 @@
+package Settings;
 
 import javax.swing.JFrame;
 

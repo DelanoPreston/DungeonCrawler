@@ -1,3 +1,4 @@
+package Settings;
 public class Key {
 	// pathfinder types
 	public static int pathFinderRoomCheck = -100;

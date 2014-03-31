@@ -1,5 +1,9 @@
+package Pathfinding;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import Settings.Key;
+import Settings.Map;
 
 public class AStarPathFinder {
 	/** The set of nodes that have been searched through */

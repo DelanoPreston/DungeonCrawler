@@ -1,7 +1,11 @@
+package Pathfinding;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Settings.ContentBank;
+import Settings.Location;
 
 public class Path {
 	/** The list of steps building up this path */
