@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +42,11 @@ public class Map implements TileBasedMap {
 		int tS = ContentBank.tileSize;
 		for (int y = 0; y < visible.length; y++) {
 			for (int x = 0; x < visible[0].length; x++) {
-				//this gets point on the displayed map and finds its array location
+				// this gets point on the displayed map and finds its array location
 				if (s.contains(new Point2D.Double((x * tS) + (tS / 2), (y * tS) + (tS / 2)))) {
 					if (!visible[y][x]) {
 						visible[y][x] = true;
-						//this goes through the surrounding walls of any new discovered tile, and sets those walls to visible
+						// this goes through the surrounding walls of any new discovered tile, and sets those walls to visible
 						for (int ty = y - 1; ty <= y + 1; ty++) {
 							for (int tx = x - 1; tx <= x + 1; tx++) {
 								if (tx >= 0 && ty >= 0 && tx < mapKey[0].length && ty < mapKey.length) {
@@ -76,7 +77,7 @@ public class Map implements TileBasedMap {
 	 * @param h
 	 *        - the miniature map tile height
 	 */
-	public void drawMiniMap(Dimension d, Graphics2D g2D, int px, int py, int w, int h) {
+	public void drawMiniMap(Graphics2D g2D, Dimension d, int px, int py, int w, int h) {
 		// Start location
 		int mmTileSize = 6;
 		int sx = d.width - (w * mmTileSize);
@@ -127,7 +128,14 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	public void paint(Graphics2D g2D) {
+	public void drawGameMap(Graphics2D g2D, Dimension d, Shape visible) {
+		Area screen = new Area(new Rectangle(0, 0, d.height, d.width));
+		screen.subtract((Area) visible);
+
+		g2D.draw(screen);
+	}
+
+	public void drawWholeMap(Graphics2D g2D) {
 		int tS = ContentBank.tileSize;
 		if (Key.drawPathMap) {
 			int tempVal = 0;

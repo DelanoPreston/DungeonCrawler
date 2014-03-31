@@ -1,6 +1,10 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint.CycleMethod;
+import java.awt.RadialGradientPaint;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -11,7 +15,6 @@ public class Vision {
 	public Point2D source;
 	float radius;
 	Line2D[] rays;
-//	GeneralPath visShape;
 	Map mapRef;
 	Point2D[] allIntersects;
 	Shape shape;
@@ -21,18 +24,33 @@ public class Vision {
 		source = new Point2D.Float(0, 0);
 		radius = 45;
 		rays = new Line2D[180];
-		update();
+		// update();
 		shape = new GeneralPath();
 	}
 
-	public void paint(Graphics2D g2D) {
+	public void paint(Graphics2D g2D, Dimension d) {
 		if (Key.drawRays) {
 			for (Line2D l : rays) {
 				g2D.draw(l);
 			}
 		} else {
 			g2D.setColor(new Color(0, 0, 0, 64));
-			g2D.fill(shape);
+			if (Key.drawInverseVisionShape) {
+				Point2D center = source;
+//				 float radius = 25;
+				Point2D focus = source;
+				//this second number describes how dark the transition is depending on the color list
+				float[] dist = { 0.0f, 0.1f, 1.0f };
+				Color[] colors = { new Color(0, 0, 0, 64), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
+				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
+				// AffineTransform af = new AffineTransform();
+				// af
+				g2D.setPaint(p);
+				g2D.fill(createDrawVisionShape(d));
+			} else {
+				g2D.fill(shape);
+			}
+
 			// g2D.draw(visShape);
 		}
 	}
@@ -248,4 +266,25 @@ public class Vision {
 		shape = visShape;
 	}
 
+	public Shape createDrawVisionShape(Dimension d) {
+		GeneralPath tempShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+		for (int i = 0; i < rays.length; i++) {
+			if (i == 0) {
+				tempShape.moveTo(rays[i].getX2(), rays[i].getY2());
+			} else {
+				tempShape.lineTo(rays[i].getX2(), rays[i].getY2());
+			}
+		}
+		if (Key.drawInverseVisionShape) {
+			tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
+			tempShape.lineTo(d.getWidth(), rays[0].getY2());
+			tempShape.lineTo(d.getWidth(), 0);
+			tempShape.lineTo(0, 0);
+			tempShape.lineTo(0, d.getHeight());
+			tempShape.lineTo(d.getWidth(), d.getHeight());
+			tempShape.lineTo(d.getWidth(), rays[0].getY2());
+		}
+		tempShape.closePath();
+		return tempShape;
+	}
 }

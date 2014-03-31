@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
@@ -72,15 +73,21 @@ public class DungeonPanel extends JPanel {
 		int tileSize = 8;
 		super.paintComponent(g);
 
-		map.paint(g2D);
+		if (Key.drawGamePlay) {
+			map.drawGameMap(g2D, this.getSize(), v.getShape());
+		} else {
+			map.drawWholeMap(g2D);
+		}
 
-		// System.out.println("painting");
-
-		// g.setColor(new Color(55, 55, 55, 255));
-		v.paint(g2D);
-		int tx = (int) v.getTileSource().getX();
-		int ty = (int) v.getTileSource().getY();
-		map.drawMiniMap(this.getSize(), g2D, tx, ty, 24, 24);
+		v.paint(g2D, this.getSize());
+		
+		
+		
+		if (Key.drawMiniMap) {
+			int tx = (int) v.getTileSource().getX();
+			int ty = (int) v.getTileSource().getY();
+			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
+		}
 
 		if (level != null) {
 			for (int y = 0; y < level.length; y++) {
