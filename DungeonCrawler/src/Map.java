@@ -1,6 +1,8 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +10,14 @@ import java.util.List;
 public class Map implements TileBasedMap {
 	int[][] pathMap;
 	private boolean[][] visited;
+	private boolean[][] visible;
 	int[][] mapKey;
 	List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 
 	public Map(int width, int height) {
 		mapKey = new int[height][width];
+		initializeVisible();
 		// this initializes and creates the mapKey, pathMap, and the walls, and rooms
 		createDungeon(50);
 		// this resets and initializes the visited map;
@@ -22,6 +26,105 @@ public class Map implements TileBasedMap {
 
 	public List<MapTile> getWalls() {
 		return wallList;
+	}
+
+	public void initializeVisible() {
+		visible = new boolean[mapKey.length][mapKey[0].length];
+		for (int y = 0; y < visible.length; y++) {
+			for (int x = 0; x < visible[0].length; x++) {
+				visible[y][x] = false;
+			}
+		}
+	}
+
+	public void setVisible(Shape s) {
+		int tS = ContentBank.tileSize;
+		for (int y = 0; y < visible.length; y++) {
+			for (int x = 0; x < visible[0].length; x++) {
+				//this gets point on the displayed map and finds its array location
+				if (s.contains(new Point2D.Double((x * tS) + (tS / 2), (y * tS) + (tS / 2)))) {
+					if (!visible[y][x]) {
+						visible[y][x] = true;
+						//this goes through the surrounding walls of any new discovered tile, and sets those walls to visible
+						for (int ty = y - 1; ty <= y + 1; ty++) {
+							for (int tx = x - 1; tx <= x + 1; tx++) {
+								if (tx >= 0 && ty >= 0 && tx < mapKey[0].length && ty < mapKey.length) {
+									if (Key.isWall(checkCell(tx, ty)))
+										visible[ty][tx] = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * This draws the miniature map in the top right corner
+	 * 
+	 * @param d
+	 *        - the dimensions of the panel
+	 * @param g2D
+	 *        - graphics
+	 * @param px
+	 *        - the player's x position
+	 * @param py
+	 *        - the player's y position
+	 * @param w
+	 *        - the miniature map tile width
+	 * @param h
+	 *        - the miniature map tile height
+	 */
+	public void drawMiniMap(Dimension d, Graphics2D g2D, int px, int py, int w, int h) {
+		// Start location
+		int mmTileSize = 6;
+		int sx = d.width - (w * mmTileSize);
+		int sy = 0;
+		int xOffset = w / 2;
+		int yOffset = h / 2;
+
+		Color yellow = Color.YELLOW;
+		Color green = Color.GREEN;
+		Color gray = Color.GRAY;
+		// Color darkGray = Color.DARK_GRAY;
+		Color brown = new Color(187, 122, 80, 255);
+		Color transparent = new Color(0, 0, 0, 0);
+		// Color black = Color.BLACK;
+
+		for (int y = py - yOffset; y < py + yOffset; y++) {
+			for (int x = px - xOffset; x < px + xOffset; x++) {
+				if (x >= 0 && y >= 0 && x < mapKey[0].length && y < mapKey.length) {
+					if (visible[y][x] || !Key.drawMMFogOfWar) {
+						// if the x an y are out of bounds it draws a transparent
+						// if (x < 0 || y < 0 || x >= mapKey[0].length || y >= mapKey.length) {
+						// g2D.setColor(new Color(0, 0, 0, 0));
+						// } else
+						if (x == px && y == py) {
+							g2D.setColor(yellow);
+						} else if (isCell(x, y, Key.floor)) {
+							g2D.setColor(green);
+						} else if (Key.isWall(checkCell(x, y))) {
+							g2D.setColor(gray);
+						} else if (isCell(x, y, Key.door)) {
+							g2D.setColor(brown);
+						} else {
+							// Redundant
+							g2D.setColor(transparent);
+						}
+					} else {
+						// Redundant
+						g2D.setColor(transparent);
+					}
+				} else {
+					// Redundant
+					g2D.setColor(transparent);
+				}
+				// does not even draw anything if its out of bounds of the mapkey
+				// if (x >= 0 || y >= 0 || x < mapKey[0].length || y < mapKey.length)
+				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
+			}
+		}
 	}
 
 	public void paint(Graphics2D g2D) {
@@ -88,11 +191,11 @@ public class Map implements TileBasedMap {
 		for (int y = 0; y < temp.length; y++) {
 			for (int x = 0; x < temp[0].length; x++) {
 				if (isCell(x, y, Key.unused)) {
-					temp[y][x] = 5;
+					temp[y][x] = 4;
 				} else if (isCell(x, y, Key.floor)) {
-					temp[y][x] = 1;
+					temp[y][x] = 2;
 				} else if (isCell(x, y, Key.door)) {
-					temp[y][x] = 0;
+					temp[y][x] = 1;
 				} else if (Key.isWall(checkCell(x, y))) {
 					temp[y][x] = calcWallCost(x, y);
 					if (temp[y][x] < 5)

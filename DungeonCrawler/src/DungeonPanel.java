@@ -23,7 +23,7 @@ import javax.swing.Timer;
 public class DungeonPanel extends JPanel {
 	int timer = 0;// if I load a game, this will be reset to 0 causing problems with crops and other timed things
 	Timer mainTimer;
-//	MapCreator map;
+	// MapCreator map;
 	Map map;
 	public int[][] level;
 	Vision v;
@@ -60,6 +60,7 @@ public class DungeonPanel extends JPanel {
 			// System.out.println("yes");
 		}
 		v.update();
+		map.setVisible(v.getShape());
 	}
 
 	/**
@@ -72,10 +73,14 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 
 		map.paint(g2D);
+
 		// System.out.println("painting");
 
-		g.setColor(new Color(55, 55, 55, 255));
+		// g.setColor(new Color(55, 55, 55, 255));
 		v.paint(g2D);
+		int tx = (int) v.getTileSource().getX();
+		int ty = (int) v.getTileSource().getY();
+		map.drawMiniMap(this.getSize(), g2D, tx, ty, 24, 24);
 
 		if (level != null) {
 			for (int y = 0; y < level.length; y++) {
@@ -91,7 +96,7 @@ public class DungeonPanel extends JPanel {
 		}
 		int x = (int) (popupListener.location.getX() / ContentBank.tileSize);
 		int y = (int) (popupListener.location.getY() / ContentBank.tileSize);
-		g2D.drawString("mouse is at: " + x + ", " + y, 15, 560);
+		g2D.drawString("Mouse is at: " + x + ", " + y, 15, 560);
 	}
 
 	/**
@@ -157,8 +162,8 @@ public class DungeonPanel extends JPanel {
 	 */
 	class PopupListener implements MouseListener, MouseWheelListener, MouseMotionListener {
 		DungeonPanel reference;
-//		private int lastOffsetX;
-//		private int lastOffsetY;
+		// private int lastOffsetX;
+		// private int lastOffsetY;
 		Point2D location = new Point2D.Double(0, 0);
 		boolean showPopup;
 

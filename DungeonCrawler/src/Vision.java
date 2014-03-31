@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -10,10 +11,10 @@ public class Vision {
 	public Point2D source;
 	float radius;
 	Line2D[] rays;
-	GeneralPath visShape;
+//	GeneralPath visShape;
 	Map mapRef;
-
 	Point2D[] allIntersects;
+	Shape shape;
 
 	Vision(Map mapRef) {
 		this.mapRef = mapRef;
@@ -21,7 +22,7 @@ public class Vision {
 		radius = 45;
 		rays = new Line2D[180];
 		update();
-		visShape = new GeneralPath();
+		shape = new GeneralPath();
 	}
 
 	public void paint(Graphics2D g2D) {
@@ -30,8 +31,9 @@ public class Vision {
 				g2D.draw(l);
 			}
 		} else {
-			g2D.setColor(new Color(0, 0, 0, 255));
-			g2D.draw(visShape);
+			g2D.setColor(new Color(0, 0, 0, 64));
+			g2D.fill(shape);
+			// g2D.draw(visShape);
 		}
 	}
 
@@ -48,9 +50,9 @@ public class Vision {
 			// checks if it intersects with each wall in the list
 			for (int j = 0; j < walls.size(); j++) {
 				if (walls.get(j).solid) {
-					//this uses the generic collision to check if there is a collision
+					// this uses the generic collision to check if there is a collision
 					if (rays[i].intersects(walls.get(j).positionSize)) {
-						//then this checks the close walls that seem to have an intersection, and gets the points
+						// then this checks the close walls that seem to have an intersection, and gets the points
 						Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
 						intersects = concatenateArrays(intersects, temp);
 					}
@@ -69,6 +71,18 @@ public class Vision {
 			}
 		}
 		createVisionShape();
+	}
+
+	public Point2D getSource() {
+		return source;
+	}
+
+	public Shape getShape() {
+		return shape;
+	}
+
+	public Point2D getTileSource() {
+		return new Point2D.Double(source.getX() / ContentBank.tileSize, source.getY() / ContentBank.tileSize);
 	}
 
 	public Point2D[] getIntersectionPoint(Line2D l, Rectangle2D rec) {
@@ -135,7 +149,7 @@ public class Vision {
 		double xD1, yD1, xD2, yD2, xD3, yD3;
 		double dot, deg, len1, len2;
 		double segmentLen1, segmentLen2;
-		double ua, ub, div;
+		double ua, div;// , ub;//I did not write this method, though ub does not seemed to be used anywhere
 
 		// calculate differences
 		xD1 = p2.getX() - p1.getX();
@@ -162,7 +176,7 @@ public class Vision {
 		Point2D pt = new Point2D.Double(0, 0);
 		div = yD2 * xD1 - xD2 * yD1;
 		ua = (xD2 * yD3 - yD2 * xD3) / div;
-		ub = (xD1 * yD3 - yD1 * xD3) / div;
+		// ub = (xD1 * yD3 - yD1 * xD3) / div;
 		pt.setLocation(p1.getX() + ua * xD1, p1.getY() + ua * yD1);
 
 		// calculate the combined length of the two segments
@@ -222,7 +236,7 @@ public class Vision {
 	}
 
 	public void createVisionShape() {
-		visShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+		GeneralPath visShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
 		for (int i = 0; i < rays.length; i++) {
 			if (i == 0) {
 				visShape.moveTo(rays[i].getX2(), rays[i].getY2());
@@ -231,126 +245,7 @@ public class Vision {
 			}
 		}
 		visShape.closePath();
+		shape = visShape;
 	}
-
-	// // Vector2D pos; // this is the position on the grid
-	// // Map map = new Map(10, 10);
-	// Location source; // this is the screen position for the light
-	// float radius;
-	// float angle;
-	// float angleSpread;
-	//
-	// Vision(int x, int y) {
-	// source = new Location(x, y);
-	// radius = 400;
-	// angle = 0;
-	// angleSpread = 360; // 30
-	// }
-	// private static class Line
-	// {
-	// final Location start, end;
-	// final double xshift;
-	//
-	// public Line(Location s, Location e) {
-	// start = s.getY() > e.getY() ? s : e; // ensures that the starting point of the lines is always above(>y) the end point
-	// end = s.getY() > e.getY() ? e : s;
-	// double mul = 1. / (start.getY() - end.getY());
-	// xshift = (end.getX() - start.getX()) * mul;
-	// }
-	// }
-	// void render() {
-	// // //////////////////////////////////
-	// // stroke(255);
-	// // fill(255, 255, 0);
-	// // ellipse(pos.getX() + ContentBank.tileSize / 2, pos.getY() + ContentBank.tileSize / 2, ContentBank.tileSize, ContentBank.tileSize);
-	// // shine();
-	// }
-	//
-	// void shine() {
-	// // //////////////////////////////////
-	// Vector lightPoints = new Vector();
-	//
-	// // For each ray...
-	// for (float current_angle = angle - angleSpread / 2; current_angle < angle + angleSpread / 2; current_angle += 1) {
-	//
-	// float x1 = (float) (Math.cos(Math.toRadians(current_angle)) * radius + source.getX());
-	// float y1 = (float) (Math.sin(Math.toRadians(current_angle)) * radius + source.getY());
-	// Location rayEndUnblocked = new Location(x1, y1);
-	// Location rayEndBlocked = null;
-	// Location rayLineIntersection = null;
-	//
-	// // For each block...
-	// for (int b = 0; b < Map.wallList.size(); b++) {
-	//
-	// // Get its lines...
-	// Vector lines = ((Block) blocks.get(b)).lines;
-	//
-	// // ...and test collision
-	// for (int i = 0; i < lines.size(); i++) {
-	//
-	// Line ln = (Line) lines.get(i);
-	//
-	// // ...if the line's normal is facing the ray.
-	// if (rayCanStrikeFacing(radians(current_angle), ln.facing)) {
-	//
-	// // If the ray strikes the line, a PVector is returned. Otherwise, it is null.
-	// rayLineIntersection = segIntersection(source.getX(), source.getY(), rayEndUnblocked.getX(), rayEndUnblocked.getY(), ln.v1.getX(), ln.v1.getY(),
-	// ln.v2.getX(), ln.v2.getY());
-	//
-	// // If it is not null...
-	// if (rayLineIntersection != null) {
-	// // And it hasn't yet been assigned a closer vector...
-	// if (rayEndBlocked == null) {
-	// // Assign the intersecting vector.
-	// rayEndBlocked = new PVector(rayLineIntersection.getX(), rayLineIntersection.getY(), rayLineIntersection.z);
-	// }
-	// // But if it has already been assigned a closer vector...
-	// else {
-	// // See if this new vector is closer before assigning it
-	// if (pos.dist(rayLineIntersection) < pos.dist(rayEndBlocked)) {
-	// rayEndBlocked.set(rayLineIntersection);
-	// }
-	// }
-	// }
-	// }
-	//
-	// }
-	//
-	// }
-	//
-	// // Add a point of light
-	// if (rayEndBlocked != null) {
-	// lightPoints.add(rayEndBlocked);
-	// } else {
-	// lightPoints.add(rayEndUnblocked);
-	// }
-	//
-	// }
-	//
-	// // Render the light according to preference
-	// if (SHOW_RAYS) {
-	// for (int i = 0; i < lightPoints.size(); i++) {
-	// PVector v1 = (PVector) lightPoints.get(i);
-	// line(source.getX(), source.getY(), v1.getX(), v1.getY());
-	// }
-	// } else {
-	// // Draw a polygon using the points of light
-	// fill(255, 128);
-	// noStroke();
-	// beginShape();
-	//
-	// // Put a point at the source if it's not an omni light, which by definition is any light without an angle of 360
-	// if (angleSpread < 360)
-	// vertex(source.getX(), source.getY());
-	//
-	// // Build a polygon using the points which were created
-	// for (int i = 0; i < lightPoints.size(); i++) {
-	// PVector v1 = (PVector) lightPoints.get(i);
-	// vertex(v1.getX(), v1.getY());
-	// }
-	// endShape();
-	// }
-	//
-	// }
 
 }

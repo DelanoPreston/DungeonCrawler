@@ -18,6 +18,8 @@ public class Key {
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
+	public static boolean drawMMFogOfWar = false;
+	public static boolean drawFogOfWar = false;
 
 	// debug tools
 	public static boolean showDebug = false;
