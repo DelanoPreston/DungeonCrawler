@@ -18,11 +18,13 @@ public class Key {
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
-	public static boolean drawMiniMap = true;
+	public static boolean drawMap = true;
+	public static boolean drawMiniMap = false;
 	public static boolean drawMMFogOfWar = true;
 	public static boolean drawFogOfWar = false;
 	public static boolean drawGamePlay = false;
-	public static boolean drawInverseVisionShape = true;
+	public static boolean drawInverseVisionShape = false;
+	public static boolean drawVisionScreenV2 = true;
 
 	// debug tools
 	public static boolean showDebug = false;

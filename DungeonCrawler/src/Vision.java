@@ -37,16 +37,35 @@ public class Vision {
 			g2D.setColor(new Color(0, 0, 0, 64));
 			if (Key.drawInverseVisionShape) {
 				Point2D center = source;
-//				 float radius = 25;
+				// float radius = 25;
 				Point2D focus = source;
-				//this second number describes how dark the transition is depending on the color list
+				// this second number describes how dark the transition is depending on the color list
 				float[] dist = { 0.0f, 0.1f, 1.0f };
 				Color[] colors = { new Color(0, 0, 0, 64), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
 				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
-				// AffineTransform af = new AffineTransform();
-				// af
 				g2D.setPaint(p);
 				g2D.fill(createDrawVisionShape(d));
+			} else if (Key.drawVisionScreenV2) {
+				g2D.setColor(Color.BLACK);
+				Point2D center = source;
+				// float radius = 25;
+				Point2D focus = source;
+				// this second number describes how dark the transition is depending on the color list
+				float[] dist = { 0.0f, 0.05f, 1.0f };
+				Color[] colors = { new Color(0, 0, 0, 64), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
+				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
+				g2D.setPaint(p);
+				g2D.fill(createDrawVisionShape(d));
+				
+				Point2D center2 = source;
+				// float radius = 25;
+				Point2D focus2 = source;
+				// this second number describes how dark the transition is depending on the color list
+				float[] dist2 = { 0.0f, 0.8f, 1.0f };
+				Color[] colors2 = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
+				RadialGradientPaint p2 = new RadialGradientPaint(center2, radius, focus2, dist2, colors2, CycleMethod.NO_CYCLE);
+				g2D.setPaint(p2);
+				g2D.fill(shape);
 			} else {
 				g2D.fill(shape);
 			}
@@ -275,7 +294,7 @@ public class Vision {
 				tempShape.lineTo(rays[i].getX2(), rays[i].getY2());
 			}
 		}
-		if (Key.drawInverseVisionShape) {
+		if (Key.drawInverseVisionShape || Key.drawVisionScreenV2) {
 			tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
 			tempShape.lineTo(d.getWidth(), rays[0].getY2());
 			tempShape.lineTo(d.getWidth(), 0);

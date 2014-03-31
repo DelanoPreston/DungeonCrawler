@@ -72,17 +72,16 @@ public class DungeonPanel extends JPanel {
 		Graphics2D g2D = (Graphics2D) g;
 		int tileSize = 8;
 		super.paintComponent(g);
-
-		if (Key.drawGamePlay) {
-			map.drawGameMap(g2D, this.getSize(), v.getShape());
-		} else {
-			map.drawWholeMap(g2D);
+		if (Key.drawMap) {
+			if (Key.drawGamePlay) {
+				map.drawGameMap(g2D, this.getSize(), v.getShape());
+			} else {
+				map.drawWholeMap(g2D);
+			}
 		}
 
 		v.paint(g2D, this.getSize());
-		
-		
-		
+
 		if (Key.drawMiniMap) {
 			int tx = (int) v.getTileSource().getX();
 			int ty = (int) v.getTileSource().getY();
