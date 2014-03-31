@@ -10,6 +10,7 @@ public class Main {
 			DungeonPanel gamePanel = new DungeonPanel();
 			frame.setSize(900, 600);
 //			frame.setSize(300, 300);
+//			frame.setSize(200, 200);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(true);
 			frame.setVisible(true);

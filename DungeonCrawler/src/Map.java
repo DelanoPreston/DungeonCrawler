@@ -207,10 +207,10 @@ public class Map implements TileBasedMap {
 	public void createPathMap() {
 		for (int y = 0; y < map.length; y++) {
 			for (int x = 0; x < map[0].length; x++) {
-				if (isCell(x, y, Key.unused)) {
+				if (isCell(x, y, Key.unused) ||isCell(x, y, Key.floor)) {
 					map[y][x].setCost(4);
-				} else if (isCell(x, y, Key.floor)) {
-					map[y][x].setCost(2);
+					// } else if (isCell(x, y, Key.floor)) {
+					// map[y][x].setCost(4);//2
 				} else if (isCell(x, y, Key.door)) {
 					map[y][x].setCost(1);
 				} else if (Key.isWall(checkCell(x, y))) {

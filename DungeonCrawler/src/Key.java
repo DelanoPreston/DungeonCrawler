@@ -26,7 +26,7 @@ public class Key {
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = true;
 	public static boolean drawInverseVisionShape = false;
 	public static boolean drawVisionScreenV2 = true;
