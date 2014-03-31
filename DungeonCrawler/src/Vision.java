@@ -56,7 +56,7 @@ public class Vision {
 				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
 				g2D.setPaint(p);
 				g2D.fill(createDrawVisionShape(d));
-				
+
 				Point2D center2 = source;
 				// float radius = 25;
 				Point2D focus2 = source;
@@ -97,7 +97,11 @@ public class Vision {
 			}
 			allIntersects = concatenateArrays(intersects, allIntersects);
 			if (intersects.length >= 1) {
-				Point2D lineEnd = findClosestPoint(source, intersects);
+				Point2D lineEnd = null;
+				// if (Key.drawClosestIntersect)
+				lineEnd = findClosestPoint(source, intersects);
+				// else
+				// lineEnd = findSecondClosestPoint(source, intersects);
 
 				// catch for the bad values
 				if (lineEnd.getY() > 240) {
@@ -126,15 +130,32 @@ public class Vision {
 		int count = 0;
 		Point2D[] p = new Point2D[4];
 
-		// Top line
-		p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
-		// Bottom line
-		p[1] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
-		// Left side...
-		p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
-		// Right side
-		p[3] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		if (source.getX() > rec.getCenterX()) {
+			// Left side...
+			p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
+		} else if (source.getX() < rec.getCenterX()) {
+			// Right side
+			p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		}
 
+		if (source.getY() > rec.getCenterY()) {
+			// Top line
+			p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
+		} else if (source.getY() < rec.getCenterY()) {
+			// Bottom line
+			p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
+		}
+
+		// // Top line
+		// p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
+		// // Right side
+		// p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		// // Bottom line
+		// p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
+		// // Left side...
+		// p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
+
+		// until the end of this method, add this does is remove nulls from the list
 		for (Point2D po : p) {
 			if (po != null) {
 				count++;
@@ -271,6 +292,32 @@ public class Vision {
 
 		return temp;
 	}
+
+	// public Point2D findSecondClosestPoint(Point2D source, Point2D[] intersects) {
+	// Point2D temp = null;
+	// double closeDist = radius + 1;
+	// double secDist = radius + 1;
+	//
+	// for (Point2D p : intersects) {
+	// if (p != null) {// && Math.abs(source.distance(p)) < closeDist) {
+	// if (temp != null) {
+	// if(Math.abs(source.distance(p)) < closeDist){
+	// secDist = closeDist;
+	// closeDist = Math.abs(source.distance(p));
+	// }else if(Math.abs(source.distance(p)) < secDist && closeDist < secDist- ContentBank.tileSize){
+	// secDist = Math.abs(source.distance(p));
+	// temp = p;
+	// }
+	// }else{
+	// // if any intersection, set the return point to it, then if there is another, that is not as close, then choose that
+	// temp = p;
+	// closeDist = Math.abs(source.distance(p));
+	// }
+	// }
+	// }
+	//
+	// return temp;
+	// }
 
 	public void createVisionShape() {
 		GeneralPath visShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);

@@ -238,14 +238,14 @@ public class Map implements TileBasedMap {
 	}
 
 	public boolean isCell(int x, int y, int cellType) {
-		try {
-			return mapKey[y][x] == cellType;
-		} catch (Exception e) {
-			System.out.println(x);
-			System.out.println(y);
-			e.printStackTrace();
-		}
-		return false;
+		// try {
+		return mapKey[y][x] == cellType;
+		// } catch (Exception e) {
+		// System.out.println(x);
+		// System.out.println(y);
+		// e.printStackTrace();
+		// }
+		// return false;
 	}
 
 	public int checkCell(int x, int y) {
@@ -289,8 +289,13 @@ public class Map implements TileBasedMap {
 				if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
 					return true;
 			} else if (type == Key.pathFinderRoomTunneler) {
-				if (isCell(x, y, Key.cornerWall))
-					return true;
+				if (Key.isWall(checkCell(x, y))) {
+					if (isCell(x, y, Key.cornerWall))
+						return true;
+					else if (x < getWidthInTiles() - 1 && isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall)
+							|| y < getHeightInTiles() - 1 && isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall))
+						return true;
+				}
 			}
 			return false;
 		}
@@ -473,8 +478,8 @@ public class Map implements TileBasedMap {
 					// this if gets the border of the room and sets them to side walls
 					if (y == ry || y == ry + rheight - 1 || x == rx || x == rx + rwidth - 1) {
 						// this gets the corners of the walls and sets them to corner walls
-						if (y <= ry + 1 && x <= rx + 1 || y <= ry + 1 && x >= rx + rwidth - 2 || y >= ry + rheight - 2 && x <= rx + 1 || y >= ry + rheight - 2
-								&& x >= rx + rwidth - 2)
+						if (y <= ry && x <= rx || y <= ry && x >= rx + rwidth - 1 || y >= ry + rheight - 1 && x <= rx || y >= ry + rheight - 1
+								&& x >= rx + rwidth - 1)
 							setCell(x, y, Key.cornerWall);
 						// this makes sure if its a corner wall it leaves it alone
 						else if (!isCell(x, y, Key.cornerWall))

@@ -14,15 +14,20 @@ public class Key {
 	public static int stone = 20;
 
 	// draw settings
+	// vision things
 	public static boolean drawRays = false;
+	public static boolean drawClosestIntersect = false;
+	// map things
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
+	// miniMap things
 	public static boolean drawMiniMap = false;
-	public static boolean drawMMFogOfWar = true;
-	public static boolean drawFogOfWar = false;
 	public static boolean drawGamePlay = false;
+	// fog of war things
+	public static boolean drawFogOfWar = false;
+	public static boolean drawMMFogOfWar = true;
 	public static boolean drawInverseVisionShape = false;
 	public static boolean drawVisionScreenV2 = true;
 
