@@ -26,7 +26,7 @@ public class Map implements TileBasedMap {
 
 	public void paint(Graphics2D g2D) {
 		int tS = ContentBank.tileSize;
-		if (Key.showPathMap) {
+		if (Key.drawPathMap) {
 			int tempVal = 0;
 			for (int y = 0; y < pathMap.length; y++) {
 				for (int x = 0; x < pathMap[0].length; x++) {
@@ -43,7 +43,7 @@ public class Map implements TileBasedMap {
 
 					g2D.fillRect(x * tS, y * tS, tS, tS);
 
-					if (Key.showGrid) {
+					if (Key.drawGrid) {
 						g2D.setColor(new Color(180, 180, 180, 255));
 						g2D.drawRect(x * tS, y * tS, tS, tS);
 					}
@@ -64,11 +64,20 @@ public class Map implements TileBasedMap {
 					}
 					g2D.fillRect(x * tS, y * tS, tS, tS);
 
-					if (Key.showGrid) {
+					if (Key.drawGrid) {
 						g2D.setColor(new Color(180, 180, 180, 255));
 						g2D.drawRect(x * tS, y * tS, tS, tS);
 					}
 				}
+			}
+		}
+
+		if (Key.drawRoomNumbers) {
+			g2D.setColor(new Color(255, 255, 255, 255));
+			for (int r = 0; r < rooms.size(); r++) {
+				int x = (int) (rooms.get(r).getCenter().getX() * tS);
+				int y = (int) (rooms.get(r).getCenter().getY() * tS);
+				g2D.drawString(String.valueOf(r), x, y);
 			}
 		}
 	}
@@ -186,7 +195,7 @@ public class Map implements TileBasedMap {
 		return (float) tempCost;
 	}
 
-	private void createDungeon(int roomNum){
+	private void createDungeon(int roomNum) {
 		// ************************************************************************
 		// initialize the map
 		// ************************************************************************
@@ -198,7 +207,7 @@ public class Map implements TileBasedMap {
 		// ************************************************************************
 		// this creates the rooms
 		// ************************************************************************
-		for (int r = 0; rooms.size() < roomNum && r < 1000; r++) {
+		for (int r = 0; rooms.size() < roomNum && r < 2500; r++) {
 			// random value that decides default room size
 			int randVal = ContentBank.random.nextInt(100);
 			String roomType = "none";
@@ -235,7 +244,7 @@ public class Map implements TileBasedMap {
 			for (int tr = r + 1; tr < rooms.size(); tr++) {
 				// redraw the pathmap, so the pathfinder will use already existing halls and rooms
 				createPathMap();
-				AStarPathFinder pf = new AStarPathFinder(this, (getHeightInTiles() * getWidthInTiles()) / (rooms.size() * 4), false);// 2
+				AStarPathFinder pf = new AStarPathFinder(this, 10000, false);// 2
 				if (r != tr) {
 					// start and end coords
 					int sx = (int) rooms.get(r).getCenter().getX();
@@ -249,7 +258,7 @@ public class Map implements TileBasedMap {
 						Path p = null;
 						// redraw the pathmap, so the pathfinder will use already existing halls and rooms
 						createPathMap();
-						AStarPathFinder tpf = new AStarPathFinder(this, rooms.size(), false);// 4
+						AStarPathFinder tpf = new AStarPathFinder(this, (getHeightInTiles() * getWidthInTiles()) / ((rooms.size() * 2)), false);// 4
 						p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 						if (p != null) {
 							if (Key.showDebug && Key.showHallMapping) {
@@ -298,9 +307,9 @@ public class Map implements TileBasedMap {
 			}
 		}
 
-		//************************************************************************
+		// ************************************************************************
 		// this removes awkward walls (surrounded by 3 floor tiles
-		//************************************************************************
+		// ************************************************************************
 		for (int y = 1; y < mapKey.length - 1; y++) {
 			for (int x = 1; x < mapKey[0].length - 1; x++) {
 				if (isCell(x, y, Key.sideWall)) {
@@ -315,9 +324,9 @@ public class Map implements TileBasedMap {
 			}
 		}
 
-		//************************************************************************
+		// ************************************************************************
 		// this adds the walls to the walllist
-		//************************************************************************
+		// ************************************************************************
 		int tS = ContentBank.tileSize;
 		for (int y = 0; y < mapKey.length; y++) {
 			for (int x = 0; x < mapKey[0].length; x++) {
@@ -329,9 +338,9 @@ public class Map implements TileBasedMap {
 			}
 		}
 
-		//************************************************************************
+		// ************************************************************************
 		// for debugging purposes
-		//************************************************************************
+		// ************************************************************************
 		createPathMap();
 	}
 
@@ -422,7 +431,7 @@ public class Map implements TileBasedMap {
 			return new Point2D.Double(x1, y1);
 		}
 
-		public Room(String roomType, int x, int y, int height, int width) {
+		public Room(String roomType, int x, int y, int width, int height) {
 			this.roomType = roomType;
 			this.x = x;
 			this.y = y;

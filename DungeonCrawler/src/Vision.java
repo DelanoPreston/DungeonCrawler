@@ -10,7 +10,7 @@ public class Vision {
 	public Point2D source;
 	float radius;
 	Line2D[] rays;
-	GeneralPath visShape;// = new GeneralPath();
+	GeneralPath visShape;
 	Map mapRef;
 
 	Point2D[] allIntersects;
@@ -19,10 +19,9 @@ public class Vision {
 		this.mapRef = mapRef;
 		source = new Point2D.Float(0, 0);
 		radius = 45;
-		rays = new Line2D[360];
+		rays = new Line2D[180];
 		update();
 		visShape = new GeneralPath();
-		
 	}
 
 	public void paint(Graphics2D g2D) {
@@ -34,23 +33,24 @@ public class Vision {
 			g2D.setColor(new Color(0, 0, 0, 255));
 			g2D.draw(visShape);
 		}
-
-		// g2D.setColor(new Color(255, 0, 0, 255));
-		// for (Point2D p : allIntersects) {
-		// g2D.fillOval((int) p.getX() - 1, (int) p.getY() - 1, 2, 2);
-		// }
 	}
 
 	public void update() {
+		// recreates the intersect array, for new position
 		allIntersects = new Point2D[0];
+		// re grabs the list of walls from the map
 		List<MapTile> walls = mapRef.getWalls();
+		// calculates values for each ray in the cast
 		for (int i = 0; i < rays.length; i++) {
 			double angle = Math.toRadians(i * (360 / rays.length));
 			rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
 			Point2D[] intersects = new Point2D[0];
+			// checks if it intersects with each wall in the list
 			for (int j = 0; j < walls.size(); j++) {
 				if (walls.get(j).solid) {
+					//this uses the generic collision to check if there is a collision
 					if (rays[i].intersects(walls.get(j).positionSize)) {
+						//then this checks the close walls that seem to have an intersection, and gets the points
 						Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
 						intersects = concatenateArrays(intersects, temp);
 					}

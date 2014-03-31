@@ -42,7 +42,6 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(64, 64);
-//		map = new MapCreator(64, 64).createMap();
 		v = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
@@ -158,8 +157,8 @@ public class DungeonPanel extends JPanel {
 	 */
 	class PopupListener implements MouseListener, MouseWheelListener, MouseMotionListener {
 		DungeonPanel reference;
-		private int lastOffsetX;
-		private int lastOffsetY;
+//		private int lastOffsetX;
+//		private int lastOffsetY;
 		Point2D location = new Point2D.Double(0, 0);
 		boolean showPopup;
 
@@ -271,7 +270,7 @@ public class DungeonPanel extends JPanel {
 			// System.out.println("mouse exited");
 		}
 
-		private void ShowPopup(MouseEvent e) {
+		public void ShowPopup(MouseEvent e) {
 			// if (e.isPopupTrigger()) {
 			//
 			// popup.show(e.getComponent(), e.getX(), e.getY());

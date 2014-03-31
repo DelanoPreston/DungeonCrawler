@@ -36,10 +36,10 @@ public class ContentBank {
 //	public static HashMap<String, Item> furniture = new HashMap<>();
 
 	public static void ContentLoader() {
-		random = new Random(29);
-//		loadImages();
+		random = new Random();
+		loadImages();
 //		loadItems();
-//		loadNames();
+		loadNames();
 	}
 
 	private static void loadNames() {
@@ -124,6 +124,7 @@ public class ContentBank {
 				index++;
 			}
 		} catch (IOException e) {
+			if(Key.showErrors && Key.showDebug)
 			e.printStackTrace();
 		}
 	}
