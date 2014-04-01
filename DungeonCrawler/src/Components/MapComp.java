@@ -1,5 +1,7 @@
 package Components;
 
-public class MapComp {
+import DataStructures.Tile;
 
+public class MapComp {
+	Tile[][] mapKey;
 }
