@@ -14,6 +14,9 @@ public class Key {
 	public static int door = 12;
 	public static int stone = 20;
 
+	//resolution of ray casting
+	public static int rayCastResolution = 36;
+	
 	// draw settings
 	// vision things
 	public static boolean drawRays = false;
@@ -37,6 +40,7 @@ public class Key {
 	public static boolean showHallMapping = false;
 	public static boolean showPathDebug = false;
 	public static boolean showErrors = false;
+	
 
 	public static boolean isWall(int key) {
 		if (key == sideWall || key == cornerWall)
