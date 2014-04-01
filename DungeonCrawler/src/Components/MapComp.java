@@ -2,6 +2,8 @@ package Components;
 
 import DataStructures.Tile;
 
-public class MapComp {
+import com.artemis.Component;
+
+public class MapComp extends Component {
 	Tile[][] mapKey;
 }

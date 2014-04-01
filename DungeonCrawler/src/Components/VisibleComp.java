@@ -1,19 +1,20 @@
 package Components;
 
-import java.awt.Shape;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 import Settings.Key;
 
-public class VisibleComp {
+import com.artemis.Component;
+
+public class VisibleComp extends Component {
 	// public Point2D source;//the positionComp
 	// float radius;//possibly not, a visionComponent
 	// Map mapRef;//use the map comp
 	Line2D[] rays;
 	Point2D[] allIntersects;
 	int resolution;
-	Shape shape;
+	
 
 	public VisibleComp() {
 		this(Key.rayCastResolution);
@@ -36,10 +37,7 @@ public class VisibleComp {
 		return resolution;
 	}
 
-	public Shape getShape() {
-		return shape;
-	}
-
+	
 	public void setRays(Line2D[] lines) {
 		rays = lines;
 	}
@@ -52,8 +50,6 @@ public class VisibleComp {
 		this.resolution = resolution;
 	}
 
-	public void setShape(Shape shape) {
-		this.shape = shape;
-	}
+	
 
 }

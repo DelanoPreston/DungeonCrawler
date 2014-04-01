@@ -1,4 +1,6 @@
-package Settings;
+package DataStructures;
+
+import Settings.ContentBank;
 
 
 public class Location {

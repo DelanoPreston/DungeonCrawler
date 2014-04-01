@@ -17,6 +17,8 @@ import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import DataStructures.Location;
+
 /**
  * GamePanel class that extends JPanel
  */

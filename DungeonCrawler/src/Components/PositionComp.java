@@ -1,36 +1,46 @@
 package Components;
 
-public class PositionComp {
-	int x;
-	int y;
+import com.artemis.Component;
+
+public class PositionComp extends Component {
+	float x;
+	float y;
 
 	public PositionComp() {
 		this(0, 0);
 	}
 
-	public PositionComp(int x, int y) {
+	public PositionComp(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 
-	public void setPosition(int x, int y) {
+	public void addX(float xVal) {
+		this.x += xVal;
+	}
+
+	public void addY(float yVal) {
+		this.y += yVal;
+	}
+
+	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public void setX(int x) {
+	public void setX(float x) {
 		this.x = x;
 	}
 
-	public void setY(int y) {
+	public void setY(float y) {
 		this.y = y;
 	}
 }
