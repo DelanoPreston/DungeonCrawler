@@ -18,6 +18,5 @@ public class ImageComp extends Component {
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
-	
+
 }

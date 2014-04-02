@@ -1,7 +1,5 @@
 package Components;
 
-import javax.xml.crypto.dsig.Transform;
-
 import com.artemis.Component;
 import com.artemis.utils.Utils;
 
@@ -68,7 +66,7 @@ public class TransformComp extends Component {
 		return (float) Math.toRadians(rotation);
 	}
 
-	public float getDistanceTo(Transform t) {
+	public float getDistanceTo(TransformComp t) {
 		return Utils.distance(t.getX(), t.getY(), x, y);
 	}
 

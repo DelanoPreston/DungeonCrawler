@@ -2,6 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/Preston Delano/Downloads/artemis-a609b2076aacc0ef5ecf0b390205d01bb88ceae2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Preston Delano/git/DungeonCrawler/DungeonCrawler/artemis-a609b2076aacc0ef5ecf0b390205d01bb88ceae2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Slick2D"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Manual Installation/eclipse/lib/slick/lib/jinput.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Manual Installation/eclipse/lib/slick/lib/lwjgl.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Manual Installation/eclipse/lib/slick/lib/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Manual Installation/eclipse/lib/slick/lib/slick.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

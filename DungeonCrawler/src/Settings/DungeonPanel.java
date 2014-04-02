@@ -3,7 +3,6 @@ package Settings;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,15 +13,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
-import DataStructures.Room;
 
 /**
  * GamePanel class that extends JPanel

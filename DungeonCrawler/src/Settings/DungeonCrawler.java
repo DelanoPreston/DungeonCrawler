@@ -2,13 +2,9 @@ package Settings;
 
 import javax.swing.JFrame;
 
-import Components.PositionComp;
-import Components.RotationComp;
-import Components.VelocityComp;
 import Systems.MovementSystem;
 import Systems.RenderingSystem;
 
-import com.artemis.Entity;
 import com.artemis.World;
 
 public class DungeonCrawler {

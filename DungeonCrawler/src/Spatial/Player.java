@@ -4,24 +4,24 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
-import javax.xml.crypto.dsig.Transform;
+import Components.TransformComp;
 
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.World;
 
-public class PlayerShip extends Spatial {
+public class Player extends Spatial {
 
-	private Transform transform;
+	private TransformComp transform;
 	private Polygon ship;
 
-	public PlayerShip(World world, Entity owner) {
+	public Player(World world, Entity owner) {
 		super(world, owner);
 	}
 
 	@Override
 	public void initalize() {
-		ComponentMapper<Transform> transformMapper = new ComponentMapper<Transform>(Transform.class, world);
+		ComponentMapper<TransformComp> transformMapper = new ComponentMapper<TransformComp>(TransformComp.class, world);
 		transform = transformMapper.get(owner);
 
 		ship = new Polygon();
