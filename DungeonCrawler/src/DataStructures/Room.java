@@ -2,6 +2,8 @@ package DataStructures;
 
 import java.awt.geom.Point2D;
 
+import Settings.ContentBank;
+
 public class Room {
 	public String roomType;
 	public int x;
@@ -46,6 +48,13 @@ public class Room {
 	public Point2D getCenter() {
 		int x1 = width / 2 + x;
 		int y1 = height / 2 + y;
+		// System.out.println("\t\t" + x1 + ", " + y1);
+		return new Point2D.Double(x1, y1);
+	}
+	
+	public Point2D getMapLocation(){
+		int x1 = (width / 2 + x) * ContentBank.tileSize;
+		int y1 = (height / 2 + y) * ContentBank.tileSize;
 		// System.out.println("\t\t" + x1 + ", " + y1);
 		return new Point2D.Double(x1, y1);
 	}

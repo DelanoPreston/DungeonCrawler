@@ -1,7 +1,7 @@
 package Systems;
 
+import Components.ImageComp;
 import Components.PositionComp;
-import Components.VelocityComp;
 
 import com.artemis.Aspect;
 import com.artemis.Entity;
@@ -11,13 +11,12 @@ public class RenderingSystem extends EntityProcessingSystem {
 
 	@SuppressWarnings("unchecked")
 	public RenderingSystem() {
-		super(Aspect.getAspectForAll(PositionComp.class, VelocityComp.class));
+		super(Aspect.getAspectForAll(PositionComp.class, ImageComp.class));
 	}
 
 	@Override
 	protected void process(Entity arg0) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }

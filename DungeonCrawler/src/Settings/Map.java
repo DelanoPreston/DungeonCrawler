@@ -1,4 +1,5 @@
 package Settings;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -110,10 +111,6 @@ public class Map implements TileBasedMap {
 			for (int x = px - xOffset; x < px + xOffset; x++) {
 				if (x >= 0 && y >= 0 && x < map[0].length && y < map.length) {
 					if (map[y][x].getVisible() || !Key.drawMMFogOfWar) {
-						// if the x an y are out of bounds it draws a transparent
-						// if (x < 0 || y < 0 || x >= mapKey[0].length || y >= mapKey.length) {
-						// g2D.setColor(new Color(0, 0, 0, 0));
-						// } else
 						if (x == px && y == py) {
 							g2D.setColor(yellow);
 						} else if (isCell(x, y, Key.floor)) {
@@ -135,7 +132,7 @@ public class Map implements TileBasedMap {
 					g2D.setColor(transparent);
 				}
 				// does not even draw anything if its out of bounds of the mapkey
-				// if (x >= 0 || y >= 0 || x < mapKey[0].length || y < mapKey.length)
+//				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
 				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
 			}
 		}

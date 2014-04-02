@@ -1,7 +1,9 @@
 package Settings;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,12 +14,15 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
+import DataStructures.Room;
 
 /**
  * GamePanel class that extends JPanel
@@ -29,7 +34,9 @@ public class DungeonPanel extends JPanel {
 	// MapCreator map;
 	Map map;
 	public int[][] level;
-	Vision v;
+	// List<Vision> v = new ArrayList<>();
+	// VisionManager vm;
+	// Vision v2;
 	PopupListener popupListener;
 
 	// double translateX = -3200;
@@ -45,7 +52,11 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(64, 64);
-		v = new Vision(map);
+		// v.add(new Vision(map, 360, 75));
+		// for (Room r : map.rooms)
+		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
+		// vm = new VisionManager();
+		// v2 = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
@@ -58,12 +69,17 @@ public class DungeonPanel extends JPanel {
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
-		if (popupListener.location != null) {
-			v.source = popupListener.location;
-			// System.out.println("yes");
-		}
-		v.update();
-		map.setVisible(v.getShape());
+		// if (popupListener.location != null) {
+		// v.get(0).source = popupListener.location;
+		// // System.out.println("yes");
+		// }
+		// for (int i = 0; i < v.size(); i++)
+		// v.get(i).update();
+		//
+		// vm.update(this.getSize(), v);
+		//
+		// // v2.update();
+		// map.setVisible(v.get(0).getShape());
 	}
 
 	/**
@@ -76,17 +92,18 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				map.drawGameMap(g2D, this.getSize(), v.getShape());
+				// map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
 			} else {
 				map.drawWholeMap(g2D);
 			}
 		}
-
-		v.paint(g2D, this.getSize());
+		// for (Vision vis : v)
+		// vis.paint(g2D, this.getSize());
+		// vm.paint(g2D);
 
 		if (Key.drawMiniMap) {
-			int tx = (int) v.getTileSource().getX();
-			int ty = (int) v.getTileSource().getY();
+			int tx = (int) (popupListener.location.getX() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getX();
+			int ty = (int) (popupListener.location.getY() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getY();
 			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
