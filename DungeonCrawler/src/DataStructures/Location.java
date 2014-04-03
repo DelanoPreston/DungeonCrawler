@@ -7,11 +7,11 @@ public class Location {
 	double x;
 	double y;
 
-	public int getMapX() {
+	public int getX() {
 		return (int) x;
 	}
 
-	public int getMapY() {
+	public int getY() {
 		return (int) y;
 	}
 
@@ -60,8 +60,8 @@ public class Location {
 	}
 
 	public Location(Location mapLocation) {
-		x = mapLocation.getMapX();
-		y = mapLocation.getMapY();
+		x = mapLocation.getX();
+		y = mapLocation.getY();
 	}
 
 	public void addMovement(double[] inChange) {

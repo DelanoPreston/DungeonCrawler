@@ -7,7 +7,7 @@ import Settings.Key;
 
 import com.artemis.Component;
 
-public class VisibleComp extends Component {
+public class VisionDataComp extends Component {
 	// public Point2D source;//the positionComp
 	// float radius;//possibly not, a visionComponent
 	// Map mapRef;//use the map comp
@@ -16,11 +16,11 @@ public class VisibleComp extends Component {
 	int resolution;
 	
 
-	public VisibleComp() {
+	public VisionDataComp() {
 		this(Key.rayCastResolution);
 	}
 
-	public VisibleComp(int resolution) {
+	public VisionDataComp(int resolution) {
 		this.resolution = resolution;
 		rays = new Line2D[resolution];
 	}

@@ -1,6 +1,6 @@
 package Spatial;
 
-import java.awt.Graphics;
+import org.newdawn.slick.Graphics;
 
 import com.artemis.Entity;
 import com.artemis.World;

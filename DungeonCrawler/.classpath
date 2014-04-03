@@ -2,6 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Program Files (x86)/Manual Installation/eclipse/lib/artemis-a609b2076aacc0ef5ecf0b390205d01bb88ceae2.jar"/>
+	<classpathentry kind="lib" path="lib/jars/artemis-a609b2076aacc0ef5ecf0b390205d01bb88ceae2.jar"/>
+	<classpathentry kind="lib" path="lib/jars/jinput.jar"/>
+	<classpathentry kind="lib" path="lib/jars/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="DungeonCrawler/lib/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jars/slick.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

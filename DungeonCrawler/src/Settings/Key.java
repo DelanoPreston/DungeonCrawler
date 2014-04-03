@@ -35,6 +35,7 @@ public class Key {
 	public static boolean drawMMFogOfWar = false;
 
 	// debug tools
+	public static boolean runSlickGame = true;
 	public static boolean showDebug = false;
 	public static boolean showHallMapping = false;
 	public static boolean showPathDebug = false;
