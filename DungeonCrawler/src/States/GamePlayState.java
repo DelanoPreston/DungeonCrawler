@@ -10,6 +10,8 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import Settings.DungeonCrawler;
+import Systems.MapDrawSystem;
+import Systems.MapUpdateSystem;
 import Systems.VisionSystem;
 
 import com.artemis.EntitySystem;
@@ -34,6 +36,9 @@ public class GamePlayState extends BasicGameState {
 	private EntitySystem renderSystem;
 	private EntitySystem hudRenderSystem;
 
+	private EntitySystem MapUpdateSystem;
+	private EntitySystem MapDrawSystem;
+
 	public GamePlayState(int stateID) {
 		this.stateID = stateID;
 	}
@@ -48,24 +53,27 @@ public class GamePlayState extends BasicGameState {
 		this.sbg = sbg;
 
 		world = new World();
-		
-		
-		 world.setSystem(new VisionSystem());
-		//
-		// SystemManager systemManager = world.getSystemManager();
-		// controlSystem = systemManager.setSystem(new PlayerShipControlSystem(gc));
-		// movementSystem = systemManager.setSystem(new MovementSystem(gc));
-		// asteroidMovementSystem = systemManager.setSystem(new AsteroidMovementSystem(gc));
-		// playerShipMovementSystem = systemManager.setSystem(new PlayerShipMovementSystem(gc));
-		// collisionSystem = systemManager.setSystem(new CollisionSystem());
-		// expirationSystem = systemManager.setSystem(new ExpirationSystem());
-		// respawnSystem = systemManager.setSystem(new RespawnSystem());
-		// playerLifeSystem = systemManager.setSystem(new PlayerLifeSystem());
-		//
-		// renderSystem = systemManager.setSystem(new RenderSystem(gc));
-		// hudRenderSystem = systemManager.setSystem(new HudRenderSystem(gc));
 
-		// systemManager.initializeAll();
+		world.setSystem(new VisionSystem());
+		//
+//		SystemManager systemManager = world.getSystemManager();
+		// controlSystem = world.setSystem(new PlayerShipControlSystem(gc));
+		// movementSystem = world.setSystem(new MovementSystem(gc));
+		// asteroidMovementSystem = world.setSystem(new AsteroidMovementSystem(gc));
+		// playerShipMovementSystem = world.setSystem(new PlayerShipMovementSystem(gc));
+		// collisionSystem = world.setSystem(new CollisionSystem());
+		// expirationSystem = world.setSystem(new ExpirationSystem());
+		// respawnSystem = world.setSystem(new RespawnSystem());
+		// playerLifeSystem = world.setSystem(new PlayerLifeSystem());
+		//
+		// renderSystem = world.setSystem(new RenderSystem(gc));
+		// hudRenderSystem = world.setSystem(new HudRenderSystem(gc));
+		
+	MapUpdateSystem = world.setSystem(new MapUpdateSystem());
+		MapDrawSystem = world.setSystem(new MapDrawSystem());
+		
+		world.initialize();
+//		systemManager.initializeAll();
 
 		initPlayerShip();
 		initAsteroids();
@@ -106,16 +114,16 @@ public class GamePlayState extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		// world.loopStart();
 		//
-		// world.setDelta(delta);
+		world.setDelta(delta);
 		//
-		// controlSystem.process();
-		// movementSystem.process();
-		// asteroidMovementSystem.process();
-		// playerShipMovementSystem.process();
-		// collisionSystem.process();
-		// expirationSystem.process();
-		// playerLifeSystem.process();
-		// respawnSystem.process();
+		controlSystem.process();
+		movementSystem.process();
+		asteroidMovementSystem.process();
+		playerShipMovementSystem.process();
+		collisionSystem.process();
+		expirationSystem.process();
+		playerLifeSystem.process();
+		respawnSystem.process();
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {

@@ -132,7 +132,7 @@ public class Map implements TileBasedMap {
 					g2D.setColor(transparent);
 				}
 				// does not even draw anything if its out of bounds of the mapkey
-//				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
+				// g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
 				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
 			}
 		}
@@ -201,46 +201,6 @@ public class Map implements TileBasedMap {
 				g2D.drawString(String.valueOf(r), x, y);
 			}
 		}
-	}
-
-	public void createPathMap() {
-		for (int y = 0; y < map.length; y++) {
-			for (int x = 0; x < map[0].length; x++) {
-				if (isCell(x, y, Key.unused) || isCell(x, y, Key.floor)) {
-					map[y][x].setCost(4);
-					// } else if (isCell(x, y, Key.floor)) {
-					// map[y][x].setCost(4);//2
-				} else if (isCell(x, y, Key.door)) {
-					map[y][x].setCost(1);
-				} else if (Key.isWall(checkCell(x, y))) {
-					map[y][x].setCost(calcWallCost(x, y));
-					if (map[y][x].getCost() < 5)
-						map[y][x].setCost(5);
-				}
-			}
-		}
-	}
-
-	private int calcWallCost(int x, int y) {
-		int tempCost = 0;
-		// makes sure its in the bound of the array
-		int startX = Math.min(Math.max(x - 2, 0), map.length - 1);
-		int startY = Math.min(Math.max(y - 2, 0), map[0].length - 1);
-		int endX = Math.min(Math.max(x + 2, 0), map.length - 1);
-		int endY = Math.min(Math.max(y + 2, 0), map[0].length - 1);
-		// the t is for temp
-		for (int ty = startY; ty < endY; ty++) {
-			for (int tx = startX; tx < endX; tx++) {
-				if (isCell(tx, ty, Key.sideWall))
-					// if (Key.isWall(checkCell(x, y)))
-					tempCost++;
-				if (isCell(tx, ty, Key.cornerWall))
-					tempCost += 2;
-				if (isCell(x, y, Key.door))
-					tempCost += 5;
-			}
-		}
-		return tempCost;
 	}
 
 	public boolean isCell(int x, int y, int cellType) {
@@ -500,5 +460,45 @@ public class Map implements TileBasedMap {
 		}
 		// returns false because there is no space for the room
 		return false;
+	}
+
+	public void createPathMap() {
+		for (int y = 0; y < map.length; y++) {
+			for (int x = 0; x < map[0].length; x++) {
+				if (isCell(x, y, Key.unused) || isCell(x, y, Key.floor)) {
+					map[y][x].setCost(4);
+					// } else if (isCell(x, y, Key.floor)) {
+					// map[y][x].setCost(4);//2
+				} else if (isCell(x, y, Key.door)) {
+					map[y][x].setCost(1);
+				} else if (Key.isWall(checkCell(x, y))) {
+					map[y][x].setCost(calcWallCost(x, y));
+					if (map[y][x].getCost() < 5)
+						map[y][x].setCost(5);
+				}
+			}
+		}
+	}
+
+	private int calcWallCost(int x, int y) {
+		int tempCost = 0;
+		// makes sure its in the bound of the array
+		int startX = Math.min(Math.max(x - 2, 0), map.length - 1);
+		int startY = Math.min(Math.max(y - 2, 0), map[0].length - 1);
+		int endX = Math.min(Math.max(x + 2, 0), map.length - 1);
+		int endY = Math.min(Math.max(y + 2, 0), map[0].length - 1);
+		// the t is for temp
+		for (int ty = startY; ty < endY; ty++) {
+			for (int tx = startX; tx < endX; tx++) {
+				if (isCell(tx, ty, Key.sideWall))
+					// if (Key.isWall(checkCell(x, y)))
+					tempCost++;
+				if (isCell(tx, ty, Key.cornerWall))
+					tempCost += 2;
+				if (isCell(x, y, Key.door))
+					tempCost += 5;
+			}
+		}
+		return tempCost;
 	}
 }
