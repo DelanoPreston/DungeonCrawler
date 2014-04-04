@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import Factory.MapFactory;
 import Factory.NPCFactory;
+import Settings.ContentBank;
 import Settings.DungeonCrawler;
 import Systems.MapDrawSystem;
 import Systems.RenderingSystem;
@@ -38,6 +39,7 @@ public class GamePlayState extends BasicGameState {
 	}
 
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		ContentBank.loadImages();
 		this.container = gc;
 		this.sbg = sbg;
 
@@ -57,7 +59,7 @@ public class GamePlayState extends BasicGameState {
 		mapDrawSystem.addMapKey(2, map.getUuid());
 		map.addToWorld();
 
-		Entity red = NPCFactory.createRed(world, 64, 64);
+		Entity red = NPCFactory.createRed(world, 32, 32);
 		red.addToWorld();
 
 		world.process();

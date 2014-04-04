@@ -42,7 +42,7 @@ public class ContentBank {
 
 	public static void ContentLoader() {
 		random = new Random();
-		loadImages();
+//		loadImages();
 		// loadItems();
 		loadNames();
 	}
@@ -72,7 +72,7 @@ public class ContentBank {
 		// WildAnimal bear = new WildAnimal("Bear", 75, 140.0, true);
 	}
 
-	private static void loadImages() {
+	public static void loadImages() {
 		Image bigImg = null;
 
 		try {

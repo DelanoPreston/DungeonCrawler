@@ -1,5 +1,7 @@
 package Components;
 
+import Settings.ContentBank;
+
 import com.artemis.Component;
 
 public class PositionComp extends Component {
@@ -19,8 +21,16 @@ public class PositionComp extends Component {
 		return x;
 	}
 
+	public float getWindowX() {
+		return x * ContentBank.tileSize;
+	}
+
 	public float getY() {
 		return y;
+	}
+
+	public float getWindowY() {
+		return y * ContentBank.tileSize;
 	}
 
 	public void addX(float xVal) {

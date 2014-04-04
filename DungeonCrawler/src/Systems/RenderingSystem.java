@@ -31,7 +31,7 @@ public class RenderingSystem extends EntityProcessingSystem {
 		PositionComp position = pc.get(entity);
 		ImageComp image = ic.get(entity);
 
-		g.drawImage(ContentBank.getImage(image.getImage()), position.getX(), position.getY());
+		g.drawImage(ContentBank.getImage(image.getImage()), position.getWindowX(), position.getWindowY());
 	}
 
 }
