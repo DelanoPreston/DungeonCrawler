@@ -1,21 +1,19 @@
 package Components;
 
-import java.awt.Image;
-
 import com.artemis.Component;
 
 public class ImageComp extends Component {
-	Image image;
+	String image;
 
-	public ImageComp(Image image) {
+	public ImageComp(String image) {
 		this.image = image;
 	}
 
-	public Image getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(Image image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 

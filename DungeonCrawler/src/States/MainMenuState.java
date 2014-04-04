@@ -37,9 +37,9 @@ public class MainMenuState extends BasicGameState {
 		this.gc = gc;
 		this.sbg = sbg;
 
-		backgroundImage = new Image("resource/menu_background.png");
-		playImage = new Image("resource/menu_button_play.png");
-		exitImage = new Image("resource/menu_button_exit.png");
+//		backgroundImage = new Image("resource/menu_background.png");
+//		playImage = new Image("resource/menu_button_play.png");
+//		exitImage = new Image("resource/menu_button_exit.png");
 
 		playX = 50;
 		playY = 200;
@@ -51,9 +51,9 @@ public class MainMenuState extends BasicGameState {
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		backgroundImage.draw(0, 0);
-		playImage.draw(playX, playY);
-		exitImage.draw(exitX, exitY);
+//		backgroundImage.draw(0, 0);
+//		playImage.draw(playX, playY);
+//		exitImage.draw(exitX, exitY);
 	}
 
 	@Override

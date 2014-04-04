@@ -18,7 +18,7 @@ public class DungeonCrawler extends StateBasedGame {
 		super("Dungeon Crawler");
 		this.addState(new MainMenuState(MAINMENUSTATE));
 		this.addState(new GamePlayState(GAMEPLAYSTATE));
-		this.enterState(MAINMENUSTATE);
+		this.enterState(GAMEPLAYSTATE);
 
 		// World world = new World();
 		// world.setSystem(new MovementSystem());
@@ -41,6 +41,7 @@ public class DungeonCrawler extends StateBasedGame {
 	}
 
 	public static void main(String[] args) throws SlickException {
+		ContentBank.ContentLoader();
 		if (Key.runSlickGame) {
 			AppGameContainer app = new AppGameContainer(new DungeonCrawler());
 
@@ -49,7 +50,7 @@ public class DungeonCrawler extends StateBasedGame {
 		} else {
 			try {
 				JFrame frame = new JFrame();
-				ContentBank.ContentLoader();
+				
 				DungeonPanel gamePanel = new DungeonPanel();
 				frame.setSize(900, 600);
 				// frame.setSize(300, 300);

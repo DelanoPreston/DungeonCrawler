@@ -8,10 +8,10 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
 
-public class MapUpdateSystem extends EntitySystem {
+public class AISystem extends EntitySystem  {
 
 	@SuppressWarnings("unchecked")
-	public MapUpdateSystem() {
+	public AISystem() {
 		super(Aspect.getAspectForAll(PositionComp.class, VelocityComp.class));
 		// TODO Auto-generated constructor stub
 	}
@@ -25,7 +25,7 @@ public class MapUpdateSystem extends EntitySystem {
 	@Override
 	protected void processEntities(ImmutableBag<Entity> arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

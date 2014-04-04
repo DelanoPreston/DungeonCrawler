@@ -13,12 +13,15 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
+import DataStructures.Room;
 
 /**
  * GamePanel class that extends JPanel
@@ -30,8 +33,8 @@ public class DungeonPanel extends JPanel {
 	// MapCreator map;
 	Map map;
 	public int[][] level;
-	// List<Vision> v = new ArrayList<>();
-	// VisionManager vm;
+	List<Vision> v = new ArrayList<>();
+	VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
 
@@ -48,10 +51,10 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(64, 64);
-		// v.add(new Vision(map, 360, 75));
-		// for (Room r : map.rooms)
-		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
-		// vm = new VisionManager();
+		v.add(new Vision(map, 360, 75));
+//		for (Room r : map.rooms)
+//			v.add(new Vision(map, 72, 35, r.getMapLocation()));
+		vm = new VisionManager();
 		// v2 = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
@@ -65,17 +68,17 @@ public class DungeonPanel extends JPanel {
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
-		// if (popupListener.location != null) {
-		// v.get(0).source = popupListener.location;
-		// // System.out.println("yes");
-		// }
-		// for (int i = 0; i < v.size(); i++)
-		// v.get(i).update();
+		if (popupListener.location != null) {
+			v.get(0).source = popupListener.location;
+			// System.out.println("yes");
+		}
+		for (int i = 0; i < v.size(); i++)
+			v.get(i).update();
 		//
-		// vm.update(this.getSize(), v);
+		vm.update(this.getSize(), v);
 		//
 		// // v2.update();
-		// map.setVisible(v.get(0).getShape());
+		map.setVisible(v.get(0).getShape());
 	}
 
 	/**
@@ -93,9 +96,9 @@ public class DungeonPanel extends JPanel {
 				map.drawWholeMap(g2D);
 			}
 		}
-		// for (Vision vis : v)
-		// vis.paint(g2D, this.getSize());
-		// vm.paint(g2D);
+		for (Vision vis : v)
+			vis.paint(g2D, this.getSize());
+		vm.paint(g2D);
 
 		if (Key.drawMiniMap) {
 			int tx = (int) (popupListener.location.getX() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getX();

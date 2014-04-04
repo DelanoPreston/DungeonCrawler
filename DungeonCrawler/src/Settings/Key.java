@@ -31,11 +31,11 @@ public class Key {
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;
 
 	// debug tools
-	public static boolean runSlickGame = false;
+	public static boolean runSlickGame = true;
 	public static boolean showDebug = false;
 	public static boolean showHallMapping = false;
 	public static boolean showPathDebug = false;

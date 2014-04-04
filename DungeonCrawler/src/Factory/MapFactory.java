@@ -12,10 +12,13 @@ import Settings.ContentBank;
 import Settings.Key;
 import Settings.MapTile;
 
+import com.artemis.Entity;
+import com.artemis.World;
+
 public class MapFactory {
 	static MapComp mapComp;
 
-	public static MapComp createDungeon(int width, int height, int roomNum) {
+	public static Entity createDungeon(World world, int width, int height, int roomNum) {
 		mapComp = new MapComp(width, height);
 		// ************************************************************************
 		// initialize the map - already initialized
@@ -167,9 +170,16 @@ public class MapFactory {
 		// ************************************************************************
 		createPathMap();
 
-		return mapComp;
+		// ************************************************************************
+		// create the entitiy to return
+		// ************************************************************************
+		Entity e = world.createEntity();
+
+		e.addComponent(mapComp);
+
+		return e;
 	}
-	
+
 	public static boolean createRoom(String roomType, int rx, int ry, int rwidth, int rheight) {
 		Room tempRoom = new Room(roomType, rx, ry, rwidth, rheight);
 		boolean spaceValid = true;
