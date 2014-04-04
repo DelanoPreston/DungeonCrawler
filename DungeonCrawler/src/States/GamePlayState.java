@@ -12,6 +12,7 @@ import Factory.NPCFactory;
 import Settings.ContentBank;
 import Settings.DungeonCrawler;
 import Systems.MapDrawSystem;
+import Systems.MovementSystem;
 import Systems.RenderingSystem;
 
 import com.artemis.Entity;
@@ -28,6 +29,7 @@ public class GamePlayState extends BasicGameState {
 
 	private MapDrawSystem mapDrawSystem;
 	private RenderingSystem renderingSystem;
+	private MovementSystem movementSystem;
 
 	public GamePlayState(int stateID) {
 		this.stateID = stateID;
@@ -47,6 +49,7 @@ public class GamePlayState extends BasicGameState {
 
 		mapDrawSystem = world.setSystem(new MapDrawSystem(gc));
 		renderingSystem = world.setSystem(new RenderingSystem(gc));
+		movementSystem = world.setSystem(new MovementSystem());
 
 		world.initialize();
 		world.setDelta(dt);
@@ -66,7 +69,7 @@ public class GamePlayState extends BasicGameState {
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-
+		movementSystem.process();
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
