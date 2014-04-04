@@ -3,6 +3,7 @@ package Factory;
 import Components.HealthComp;
 import Components.ImageComp;
 import Components.PositionComp;
+import Components.TargetComp;
 import Components.VelocityComp;
 import Components.VisionAreaComp;
 import Components.VisionDataComp;
