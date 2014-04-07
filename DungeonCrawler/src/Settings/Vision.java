@@ -1,8 +1,6 @@
 package Settings;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
@@ -10,6 +8,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
 public class Vision {
 	public Point2D prevSource;
@@ -47,40 +48,41 @@ public class Vision {
 		shape = new GeneralPath();
 	}
 
-	public void paint(Graphics2D g2D, Dimension d) {
+	public void paint(Graphics g2D, Dimension d) {
 		if (Key.drawRays) {
 			for (Line2D l : rays) {
-				g2D.draw(l);
+				// g2D.draw(l);
+				g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float) l.getX2(), (float) l.getY2());
 			}
 		} else if (Key.drawFogOfWar) {
-			g2D.setColor(new Color(0, 0, 0, 255));
-			g2D.fill(createDrawVisionShape(d));
-
-			// Point2D center = source;
-			// Point2D focus = source;
-			float[] dist = { 0.5f, 0.75f, 1.0f };
-			Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
-
-			// RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
-			RadialGradientPaint p = new RadialGradientPaint(source, radius, dist, colors);
-			// g2D.setComposite(AlphaComposite.SrcOut);
-			g2D.setPaint(p);
-			g2D.fill(shape);
+//			g2D.setColor(new Color(0, 0, 0, 255));
+//			g2D.fill(createDrawVisionShape(d));
+//
+//			// - Point2D center = source;
+//			// -Point2D focus = source;
+//			float[] dist = { 0.5f, 0.75f, 1.0f };
+//			Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
+//
+//			// -RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
+//			RadialGradientPaint p = new RadialGradientPaint(source, radius, dist, colors);
+//			// - g2D.setComposite(AlphaComposite.SrcOut);
+//			g2D.setPaint(p);
+//			g2D.fill((org.newdawn.slick.geom.Shape) shape);
 
 		} else {
-			g2D.setColor(Color.BLACK);
-			// Composite defaultComp = g2D.getComposite();
-			// // g2D.setColor(new Color(0, 0, 0, 255));
-			//
-			// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 1f));
-			// g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());// createDrawVisionShape(d));
-			// // System.out.println("good");
-			//
-			// // g2D.setColor(new Color(0, 0, 0, 127));
-			// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
-			g2D.draw(shape);
-			// g2D.setComposite(defaultComp);
-			// // g2D.fill(shape);
+			g2D.setColor(Color.black);
+			// -Composite defaultComp = g2D.getComposite();
+			// -// g2D.setColor(new Color(0, 0, 0, 255));
+			// -
+			// -g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 1f));
+			// -g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());// createDrawVisionShape(d));
+			// -// System.out.println("good");
+			// -
+			// -// g2D.setColor(new Color(0, 0, 0, 127));
+			// -g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
+			g2D.draw((org.newdawn.slick.geom.Shape) shape);
+			// -g2D.setComposite(defaultComp);
+			// -// g2D.fill(shape);
 		}
 
 		// g2D.draw(visShape);
@@ -319,7 +321,7 @@ public class Vision {
 			}
 		}
 		visShape.closePath();
-		shape = visShape;
+		shape = (Shape) visShape;
 	}
 
 	public Shape createDrawVisionShape(Dimension d) {

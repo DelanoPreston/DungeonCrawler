@@ -2,11 +2,11 @@ package Components;
 
 import com.artemis.Component;
 
-public class HealthComp extends Component {
+public class Health extends Component {
 	private float health;
 	private float maximumHealth;
 
-	public HealthComp(float health) {
+	public Health(float health) {
 		this.health = this.maximumHealth = health;
 	}
 

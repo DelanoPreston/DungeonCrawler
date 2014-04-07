@@ -1,5 +1,7 @@
 package States;
 
+import java.util.HashMap;
+
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -7,10 +9,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import Factory.MapFactory;
 import Factory.NPCFactory;
 import Settings.ContentBank;
 import Settings.DungeonCrawler;
+import Settings.Map;
 import Systems.DestinationSystem;
 import Systems.MapDrawSystem;
 import Systems.MovementSystem;
@@ -21,6 +23,9 @@ import com.artemis.World;
 
 public class GamePlayState extends BasicGameState {
 	int stateID = -1;
+
+	public static HashMap<Integer, Map> mapKey = new HashMap<>();
+	public static int currentMap = 0;
 
 	float dt = 1.0f / 45.0f;
 
@@ -57,13 +62,8 @@ public class GamePlayState extends BasicGameState {
 		world.initialize();
 		world.setDelta(dt);
 
-		Entity map = MapFactory.createDungeon(world, 64, 64, 50);
-		mapDrawSystem.addMapKey(1, map.getUuid());
-		map.addToWorld();
-
-		map = MapFactory.createDungeon(world, 64, 64, 50);
-		mapDrawSystem.addMapKey(2, map.getUuid());
-		map.addToWorld();
+		Map map = new Map(64, 64);
+		mapKey.put(0, map);
 
 		Entity red = NPCFactory.createRed(world, 32, 32);
 		red.addToWorld();
@@ -87,12 +87,18 @@ public class GamePlayState extends BasicGameState {
 
 		if (key == Keyboard.KEY_ESCAPE) {
 			sbg.enterState(DungeonCrawler.MAINMENUSTATE);
+		} else if (key == Keyboard.KEY_0) {
+			if (mapKey.containsKey(0))
+				currentMap = 0;
 		} else if (key == Keyboard.KEY_1) {
-			mapDrawSystem.setMap(1);
+			if (mapKey.containsKey(1))
+				currentMap = 1;
 		} else if (key == Keyboard.KEY_2) {
-			mapDrawSystem.setMap(2);
+			if (mapKey.containsKey(2))
+				currentMap = 2;
 		} else if (key == Keyboard.KEY_3) {
-			mapDrawSystem.setMap(3);
+			if (mapKey.containsKey(3))
+				currentMap = 3;
 		}
 	}
 }

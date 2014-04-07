@@ -1,7 +1,7 @@
 package Systems;
 
-import Components.PositionComp;
-import Components.VelocityComp;
+import Components.Position;
+import Components.Velocity;
 
 import com.artemis.Aspect;
 import com.artemis.Entity;
@@ -10,7 +10,7 @@ import com.artemis.systems.EntityProcessingSystem;
 public class RotationSystem extends EntityProcessingSystem{
 
 	public RotationSystem() {
-		super(Aspect.getAspectForAll(PositionComp.class, VelocityComp.class));
+		super(Aspect.getAspectForAll(Position.class, Velocity.class));
 	}
 
 	@Override

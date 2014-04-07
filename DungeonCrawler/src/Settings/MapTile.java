@@ -1,26 +1,25 @@
 package Settings;
 
-
 import java.awt.Rectangle;
 
 public class MapTile {
 	Rectangle positionSize;
 	boolean solid;
-	
-	public int getX(){
-		return positionSize.x;
+
+	public float getX() {
+		return (float) positionSize.x;
 	}
-	
-	public int getY(){
-		return positionSize.y;
+
+	public float getY() {
+		return (float) positionSize.y;
 	}
-	
-	public int getSize(){
-		return positionSize.height;
+
+	public float getSize() {
+		return (float) positionSize.height;
 	}
-	
-	public MapTile(Rectangle positionSize, boolean solid){
-		this.positionSize = positionSize;
+
+	public MapTile(Rectangle rectangle, boolean solid) {
+		this.positionSize = rectangle;
 		this.solid = solid;
 	}
 }

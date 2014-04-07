@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
-import DataStructures.Room;
 
 /**
  * GamePanel class that extends JPanel
@@ -52,8 +51,8 @@ public class DungeonPanel extends JPanel {
 
 		map = new Map(64, 64);
 		v.add(new Vision(map, 360, 75));
-//		for (Room r : map.rooms)
-//			v.add(new Vision(map, 72, 35, r.getMapLocation()));
+		// for (Room r : map.rooms)
+		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
 		vm = new VisionManager();
 		// v2 = new Vision(map);
 		// level = createDungeon(32, 32);
@@ -78,7 +77,7 @@ public class DungeonPanel extends JPanel {
 		vm.update(this.getSize(), v);
 		//
 		// // v2.update();
-		map.setVisible(v.get(0).getShape());
+		// map.setVisible(v.get(0).getShape());
 	}
 
 	/**
@@ -93,17 +92,17 @@ public class DungeonPanel extends JPanel {
 			if (Key.drawGamePlay) {
 				// map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
 			} else {
-				map.drawWholeMap(g2D);
+				// map.drawWholeMap(g2D);
 			}
 		}
-		for (Vision vis : v)
-			vis.paint(g2D, this.getSize());
+		// for (Vision vis : v)
+		// vis.paint(g2D, this.getSize());
 		vm.paint(g2D);
 
 		if (Key.drawMiniMap) {
 			int tx = (int) (popupListener.location.getX() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getX();
 			int ty = (int) (popupListener.location.getY() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getY();
-			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
+			// map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
 		if (level != null) {

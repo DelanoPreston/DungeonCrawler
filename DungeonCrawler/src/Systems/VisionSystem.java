@@ -11,8 +11,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 
-import Components.PositionComp;
-import Components.VisionShapeComp;
+import Components.Position;
+import Components.VisionShape;
 import Settings.Vision;
 
 import com.artemis.Aspect;
@@ -24,13 +24,13 @@ import com.artemis.utils.ImmutableBag;
 
 public class VisionSystem extends EntitySystem {
 	@Mapper
-	ComponentMapper<VisionShapeComp> visionShape;
+	ComponentMapper<VisionShape> visionShape;
 	@Mapper
-	ComponentMapper<PositionComp> position;
+	ComponentMapper<Position> position;
 
 	@SuppressWarnings("unchecked")
 	public VisionSystem() {
-		super(Aspect.getAspectForAll(PositionComp.class, VisionShapeComp.class));
+		super(Aspect.getAspectForAll(Position.class, VisionShape.class));
 	}
 
 	@Override

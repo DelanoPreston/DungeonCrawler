@@ -4,15 +4,15 @@ import Settings.ContentBank;
 
 import com.artemis.Component;
 
-public class PositionComp extends Component {
+public class Position extends Component {
 	float x;
 	float y;
 
-	public PositionComp() {
+	public Position() {
 		this(0, 0);
 	}
 
-	public PositionComp(float x, float y) {
+	public Position(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}

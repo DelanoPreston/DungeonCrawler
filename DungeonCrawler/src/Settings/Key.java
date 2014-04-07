@@ -20,7 +20,7 @@ public class Key {
 
 	// draw settings
 	// vision things
-	public static boolean drawRays = false;
+	public static boolean drawRays = false;//if false, will draw shap for now
 	public static boolean drawClosestIntersect = false;
 	// map things
 	public static boolean drawRoomNumbers = false;
@@ -31,7 +31,7 @@ public class Key {
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;
 	// fog of war things
-	public static boolean drawFogOfWar = true;
+	public static boolean drawFogOfWar = false;//--leave off - no code
 	public static boolean drawMMFogOfWar = false;
 
 	// debug tools

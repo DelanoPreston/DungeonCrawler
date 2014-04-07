@@ -68,7 +68,9 @@ public class DungeonCrawler extends StateBasedGame {
 			}
 		}
 	}
-
+	//javagamexyz
+	//https://code.google.com/p/javagamexyz/source/browse/
+	
 	// http://www-cs-students.stanford.edu/~amitp/gameprog.html#ai
 	// http://intrinsicalgorithm.com/IAonAI/2011/12/getting-more-behavior-out-of-numbers-gdmag-article/
 	// http://web.archive.org/web/20080102112756/http://www.gameai.com/blackandwhite.html

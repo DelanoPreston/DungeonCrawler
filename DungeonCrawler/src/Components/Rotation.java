@@ -2,14 +2,14 @@ package Components;
 
 import com.artemis.Component;
 
-public class RotationComp extends Component {
+public class Rotation extends Component {
 	float rotation;
 
-	public RotationComp() {
+	public Rotation() {
 		this(0f);
 	}
 
-	public RotationComp(float rotation) {
+	public Rotation(float rotation) {
 		this.rotation = rotation;
 	}
 

@@ -2,10 +2,10 @@ package Components;
 
 import com.artemis.Component;
 
-public class ImageComp extends Component {
+public class Image extends Component {
 	String image;
 
-	public ImageComp(String image) {
+	public Image(String image) {
 		this.image = image;
 	}
 

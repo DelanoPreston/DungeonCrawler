@@ -2,17 +2,17 @@ package Components;
 
 import com.artemis.Component;
 
-public class VisionAreaComp extends Component {
+public class VisionArea extends Component {
 	float radius;
 	float fieldOfFocus;
 
 	// Possibly a num from 0 to 1 to describe rear radius of view
 
-	public VisionAreaComp() {
+	public VisionArea() {
 		this(25f, (float) Math.PI);
 	}
 
-	public VisionAreaComp(float radius, float fof) {
+	public VisionArea(float radius, float fof) {
 		this.radius = radius;
 		this.fieldOfFocus = fof;
 	}

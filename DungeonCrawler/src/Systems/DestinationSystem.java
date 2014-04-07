@@ -1,8 +1,8 @@
 package Systems;
 
 import Components.AIComp;
-import Components.PositionComp;
-import Components.VelocityComp;
+import Components.Position;
+import Components.Velocity;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
@@ -14,20 +14,20 @@ public class DestinationSystem extends EntityProcessingSystem {
 	@Mapper
 	ComponentMapper<AIComp> aic;
 	@Mapper
-	ComponentMapper<VelocityComp> vc;
+	ComponentMapper<Velocity> vc;
 	@Mapper
-	ComponentMapper<PositionComp> pc;
+	ComponentMapper<Position> pc;
 
 	@SuppressWarnings("unchecked")
 	public DestinationSystem() {
-		super(Aspect.getAspectForAll(AIComp.class, VelocityComp.class, PositionComp.class));
+		super(Aspect.getAspectForAll(AIComp.class, Velocity.class, Position.class));
 	}
 
 	@Override
 	protected void process(Entity entity) {
 		AIComp aiC = aic.get(entity);
-		VelocityComp vC = vc.get(entity);
-		PositionComp pC = pc.get(entity);
+		Velocity vC = vc.get(entity);
+		Position pC = pc.get(entity);
 
 		float xDiff = pC.getWindowX() - aiC.getWindowXPathAt(aiC.getIndex());
 		float yDiff = pC.getWindowY() - aiC.getWindowYPathAt(aiC.getIndex());

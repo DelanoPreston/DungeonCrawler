@@ -2,7 +2,7 @@ package Components;
 
 import com.artemis.Component;
 
-public class VelocityComp extends Component {
+public class Velocity extends Component {
 	float xVal;
 	float yVal;
 
@@ -13,12 +13,12 @@ public class VelocityComp extends Component {
 	 * @param dir
 	 *        - 0 being the right side of x(right of center)
 	 */
-	public VelocityComp(float mag, double dir) {
+	public Velocity(float mag, double dir) {
 		xVal = (float) Math.cos(dir % (2 * (Math.PI)));
 		yVal = (float) Math.sin(dir % (2 * (Math.PI)));
 	}
 
-	public VelocityComp(float xVal, float yVal) {
+	public Velocity(float xVal, float yVal) {
 		this.xVal = xVal;
 		this.yVal = yVal;
 	}

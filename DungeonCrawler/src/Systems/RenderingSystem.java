@@ -3,8 +3,8 @@ package Systems;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
-import Components.ImageComp;
-import Components.PositionComp;
+import Components.Image;
+import Components.Position;
 import Settings.ContentBank;
 
 import com.artemis.Aspect;
@@ -15,21 +15,21 @@ import com.artemis.systems.EntityProcessingSystem;
 
 public class RenderingSystem extends EntityProcessingSystem {
 	@Mapper
-	ComponentMapper<PositionComp> pc;
+	ComponentMapper<Position> pc;
 	@Mapper
-	ComponentMapper<ImageComp> ic;
+	ComponentMapper<Image> ic;
 	Graphics g;
 
 	@SuppressWarnings("unchecked")
 	public RenderingSystem(GameContainer container) {
-		super(Aspect.getAspectForAll(PositionComp.class, ImageComp.class));
+		super(Aspect.getAspectForAll(Position.class, Image.class));
 		this.g = container.getGraphics();
 	}
 
 	@Override
 	protected void process(Entity entity) {
-		PositionComp position = pc.get(entity);
-		ImageComp image = ic.get(entity);
+		Position position = pc.get(entity);
+		Image image = ic.get(entity);
 
 		g.drawImage(ContentBank.getImage(image.getImage()), position.getWindowX(), position.getWindowY());
 	}
