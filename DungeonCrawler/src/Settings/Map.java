@@ -36,6 +36,17 @@ public class Map implements TileBasedMap {
 		return wallList;
 	}
 
+	public List<Room> getRooms() {
+		return rooms;
+	}
+
+	public Room getRoom(int i) {
+		if (i <= rooms.size() - 1)
+			return rooms.get(i);
+		else
+			return null;
+	}
+
 	public void resetVisited() {
 		for (int y = 0; y < map.length; y++) {
 			for (int x = 0; x < map[0].length; x++) {

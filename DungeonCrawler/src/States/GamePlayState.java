@@ -13,7 +13,6 @@ import Factory.NPCFactory;
 import Settings.ContentBank;
 import Settings.DungeonCrawler;
 import Settings.Map;
-import Systems.DestinationSystem;
 import Systems.MapDrawSystem;
 import Systems.MovementSystem;
 import Systems.RenderingSystem;
@@ -36,7 +35,8 @@ public class GamePlayState extends BasicGameState {
 	private MapDrawSystem mapDrawSystem;
 	private RenderingSystem renderingSystem;
 	private MovementSystem movementSystem;
-	private DestinationSystem destinationSystem;
+
+	// private DestinationSystem destinationSystem;
 
 	public GamePlayState(int stateID) {
 		this.stateID = stateID;
@@ -57,7 +57,7 @@ public class GamePlayState extends BasicGameState {
 		mapDrawSystem = world.setSystem(new MapDrawSystem(gc));
 		renderingSystem = world.setSystem(new RenderingSystem(gc));
 		movementSystem = world.setSystem(new MovementSystem());
-		destinationSystem = world.setSystem(new DestinationSystem());
+		// destinationSystem = world.setSystem(new DestinationSystem());
 
 		world.initialize();
 		world.setDelta(dt);
@@ -65,15 +65,18 @@ public class GamePlayState extends BasicGameState {
 		Map map = new Map(64, 64);
 		mapKey.put(0, map);
 
-		Entity red = NPCFactory.createRed(world, 32, 32);
-		red.addToWorld();
+		Entity red;
+		for (int i = 0; i < 250; i++) {
+			red = NPCFactory.createRed(world, 32, 32);
+			red.addToWorld();
+		}
 
 		world.process();
 	}
 
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		movementSystem.process();
-		destinationSystem.process();
+		// destinationSystem.process();
 	}
 
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
