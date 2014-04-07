@@ -10,10 +10,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import DataStructures.Path;
 import DataStructures.Room;
 import DataStructures.Tile;
 import Pathfinding.AStarPathFinder;
-import Pathfinding.Path;
 import Pathfinding.TileBasedMap;
 
 public class Map implements TileBasedMap {

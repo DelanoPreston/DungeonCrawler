@@ -10,8 +10,10 @@ import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 
 public class MovementSystem extends EntityProcessingSystem {
-	@Mapper ComponentMapper<PositionComp> pm;
-	@Mapper ComponentMapper<VelocityComp> vm;
+	@Mapper
+	ComponentMapper<PositionComp> pm;
+	@Mapper
+	ComponentMapper<VelocityComp> vm;
 	
 	@SuppressWarnings("unchecked")
 	public MovementSystem() {

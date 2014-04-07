@@ -1,31 +1,30 @@
 package Systems;
 
+import Components.AIComp;
 import Components.PositionComp;
 import Components.VelocityComp;
 
 import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
 import com.artemis.Entity;
-import com.artemis.EntitySystem;
+import com.artemis.annotations.Mapper;
+import com.artemis.systems.EntityProcessingSystem;
 import com.artemis.utils.ImmutableBag;
 
-public class AISystem extends EntitySystem  {
+public class AISystem extends EntityProcessingSystem {
+	@Mapper
+	ComponentMapper<AIComp> aic;
+	@Mapper
+	ComponentMapper<PositionComp> pc;
 
 	@SuppressWarnings("unchecked")
 	public AISystem() {
-		super(Aspect.getAspectForAll(PositionComp.class, VelocityComp.class));
-		// TODO Auto-generated constructor stub
+		super(Aspect.getAspectForAll(PositionComp.class, AIComp.class));
 	}
 
 	@Override
-	protected boolean checkProcessing() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	protected void process(Entity entity) {
 
-	@Override
-	protected void processEntities(ImmutableBag<Entity> arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

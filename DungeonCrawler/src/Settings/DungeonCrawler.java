@@ -50,7 +50,7 @@ public class DungeonCrawler extends StateBasedGame {
 		} else {
 			try {
 				JFrame frame = new JFrame();
-				
+
 				DungeonPanel gamePanel = new DungeonPanel();
 				frame.setSize(900, 600);
 				// frame.setSize(300, 300);
@@ -68,6 +68,19 @@ public class DungeonCrawler extends StateBasedGame {
 			}
 		}
 	}
+
+	// http://www-cs-students.stanford.edu/~amitp/gameprog.html#ai
+	// http://intrinsicalgorithm.com/IAonAI/2011/12/getting-more-behavior-out-of-numbers-gdmag-article/
+	// http://web.archive.org/web/20080102112756/http://www.gameai.com/blackandwhite.html
+
+	// game stuff
+	// http://ploobs.com.br/?p=1707
+
+	// FSM
+	// http://www.richardlord.net/blog/finite-state-machines-with-ash
+
+	// hexagon stuff
+	// http://www.sable.mcgill.ca/~clump/Hex/HGAT.html
 
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {

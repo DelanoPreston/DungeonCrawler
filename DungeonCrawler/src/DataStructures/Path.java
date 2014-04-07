@@ -1,10 +1,9 @@
-package Pathfinding;
+package DataStructures;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-import DataStructures.Location;
 import Settings.ContentBank;
 
 public class Path {

@@ -2,6 +2,7 @@ package Pathfinding;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import DataStructures.Path;
 import Settings.Key;
 import Settings.Map;
 
