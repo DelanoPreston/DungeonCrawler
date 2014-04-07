@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class Rotation extends Component {
+public class Rotation extends Component implements Serializable{
+	private static final long serialVersionUID = 6925229444615272336L;
 	float rotation;
 
 	public Rotation() {

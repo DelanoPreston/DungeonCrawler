@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class Image extends Component {
+public class Image extends Component implements Serializable{
+	private static final long serialVersionUID = 5859320395372714349L;
 	String image;
 
 	public Image(String image) {

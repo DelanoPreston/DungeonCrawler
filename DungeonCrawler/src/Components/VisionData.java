@@ -2,12 +2,14 @@ package Components;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 import Settings.Key;
 
 import com.artemis.Component;
 
-public class VisionData extends Component {
+public class VisionData extends Component implements Serializable{
+	private static final long serialVersionUID = -6934937184702167826L;
 	// public Point2D source;//the positionComp
 	// float radius;//possibly not, a visionComponent
 	// Map mapRef;//use the map comp

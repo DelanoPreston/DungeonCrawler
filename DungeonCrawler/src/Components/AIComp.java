@@ -1,12 +1,15 @@
 package Components;
 
+import java.io.Serializable;
+
 import org.newdawn.slick.util.pathfinding.Path;
 
 import Settings.ContentBank;
 
 import com.artemis.Component;
 
-public class AIComp extends Component {
+public class AIComp extends Component implements Serializable{
+	private static final long serialVersionUID = 6989569163578390599L;
 	Path path;
 	int index;
 

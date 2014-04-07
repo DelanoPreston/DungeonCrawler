@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class SpatialFormComp extends Component {
+public class SpatialFormComp extends Component implements Serializable{
+	private static final long serialVersionUID = 644513126300291541L;
 	private String spatialFormFile;
 	private boolean visible;
 

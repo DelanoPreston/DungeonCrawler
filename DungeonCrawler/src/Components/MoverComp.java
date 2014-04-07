@@ -1,5 +1,7 @@
 package Components;
 
+import java.io.Serializable;
+
 import org.newdawn.slick.util.pathfinding.Mover;
 
 import com.artemis.Component;
@@ -8,7 +10,8 @@ import com.artemis.Component;
  * 
  * @author Preston Delano - 0 will be a normal pathfinder 1 will be a tunneler
  */
-public class MoverComp extends Component implements Mover {
+public class MoverComp extends Component implements Mover, Serializable{
+	private static final long serialVersionUID = -3247327940748889451L;
 	int moverKey;
 
 	public MoverComp() {

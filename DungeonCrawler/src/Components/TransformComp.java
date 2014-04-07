@@ -1,9 +1,12 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 import com.artemis.utils.Utils;
 
-public class TransformComp extends Component {
+public class TransformComp extends Component implements Serializable{
+	private static final long serialVersionUID = 5126069985154636240L;
 	private float x;
 	private float y;
 	private float rotation;

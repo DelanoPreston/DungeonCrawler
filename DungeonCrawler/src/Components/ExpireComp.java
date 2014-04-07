@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class ExpireComp extends Component {
+public class ExpireComp extends Component implements Serializable{
+	private static final long serialVersionUID = 4912394325995674813L;
 	int lifeTime;
 
 	public ExpireComp() {

@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class Velocity extends Component {
+public class Velocity extends Component implements Serializable{
+	private static final long serialVersionUID = -4755955322683156700L;
 	float xVal;
 	float yVal;
 

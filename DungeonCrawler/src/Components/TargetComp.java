@@ -1,10 +1,13 @@
 package Components;
 
+import java.io.Serializable;
+
 import Settings.ContentBank;
 
 import com.artemis.Component;
 
-public class TargetComp extends Component {
+public class TargetComp extends Component implements Serializable{
+	private static final long serialVersionUID = 3679878873151179738L;
 	float x;
 	float y;
 

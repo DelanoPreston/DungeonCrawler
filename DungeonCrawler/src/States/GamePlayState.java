@@ -66,7 +66,7 @@ public class GamePlayState extends BasicGameState {
 		mapKey.put(0, map);
 
 		Entity red;
-		for (int i = 0; i < 250; i++) {
+		for (int i = 0; i < 50; i++) {
 			red = NPCFactory.createRed(world, 32, 32);
 			red.addToWorld();
 		}

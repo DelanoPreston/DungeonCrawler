@@ -1,8 +1,11 @@
 package Components;
 
+import java.io.Serializable;
+
 import com.artemis.Component;
 
-public class VisionArea extends Component {
+public class VisionArea extends Component implements Serializable{
+	private static final long serialVersionUID = -5675923558377793004L;
 	float radius;
 	float fieldOfFocus;
 
