@@ -9,6 +9,7 @@ import Components.MoverComp;
 import Components.Position;
 import Components.Velocity;
 import DataStructures.Room;
+import ItemComponents.Armor;
 import Settings.ContentBank;
 import Settings.Key;
 import Settings.Map;

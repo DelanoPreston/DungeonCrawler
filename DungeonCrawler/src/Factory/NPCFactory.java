@@ -21,7 +21,6 @@ public class NPCFactory {
 		red.addComponent(new Position(x, y));
 		red.addComponent(new Velocity(0, 0));
 		red.addComponent(new Image("dude"));
-		// red.addComponent(new TargetComp());
 		red.addComponent(new AIComp());
 		red.addComponent(new VisionArea(25, (float) Math.PI));
 		red.addComponent(new VisionData(36));
