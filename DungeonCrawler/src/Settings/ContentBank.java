@@ -1,14 +1,9 @@
 package Settings;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -42,7 +37,7 @@ public class ContentBank {
 
 	public static void ContentLoader() {
 		random = new Random();
-//		loadImages();
+		// loadImages();
 		// loadItems();
 		loadNames();
 	}
@@ -77,12 +72,13 @@ public class ContentBank {
 
 		try {
 			bigImg = new Image("Images/tempDude.png");
+			images.put("dude", bigImg);
+			bigImg = new Image("Images/item.png");
+			images.put("item", bigImg);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		images.put("dude", bigImg);
 
 	}
 

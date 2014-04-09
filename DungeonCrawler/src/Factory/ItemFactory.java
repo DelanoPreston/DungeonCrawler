@@ -35,8 +35,23 @@ public class ItemFactory {
 		e.addComponent(new Sword());
 
 		e.addComponent(new Position(x, y));
-		e.addComponent(new Image("dude"));
+		e.addComponent(new Image("item"));
 
 		return e;
 	}
+
+	// public static Entity createRed(World world, float x, float y) {
+	// Entity red = world.createEntity();
+	//
+	// red.addComponent(new Health(10));
+	// red.addComponent(new Position(x, y));
+	// red.addComponent(new Velocity(0, 0));
+	// red.addComponent(new Image("dude"));
+	// red.addComponent(new AIComp());
+	// red.addComponent(new VisionArea(25, (float) Math.PI));
+	// red.addComponent(new VisionData(36));
+	// red.addComponent(new VisionShape());
+	//
+	// return red;
+	// }
 }
