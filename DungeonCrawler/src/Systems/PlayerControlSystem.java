@@ -36,66 +36,60 @@ public class PlayerControlSystem extends EntityProcessingSystem implements KeyLi
 		// Position pos = pc.get(entity);
 		Velocity vel = vc.get(entity);
 
+		float xVal = 0f;
+		float yVal = 0f;
+
 		// if 2 direction keys are held, slow the movement in diagonal otherwise diagonal movement speed would be math.sqrt(2,2); ~1.21
 		if (moveDown && moveLeft || moveDown && moveRight || moveUp && moveLeft || moveUp && moveRight) {
-			float value = (float) Math.sin(Math.toRadians(45));
 			if (moveDown) {
-				vel.setYVector(value);
-			} else if (moveUp) {
-				vel.setYVector(-value);
-			} else if (moveLeft) {
-				vel.setXVector(-value);
-			} else if (moveRight) {
-				vel.setXVector(value);
+				yVal = (float) Math.sin(Math.toRadians(45));
+			}
+			if (moveUp) {
+				yVal = -(float) Math.sin(Math.toRadians(45));
+			}
+			if (moveLeft) {
+				xVal = -(float) Math.cos(Math.toRadians(45));
+			}
+			if (moveRight) {
+				xVal = (float) Math.cos(Math.toRadians(45));
 			}
 		} else if (moveDown) {
-			vel.setYVector(1f);
+			yVal = 1f;
 		} else if (moveUp) {
-			vel.setYVector(-1f);
+			yVal = -1f;
 		} else if (moveLeft) {
-			vel.setXVector(-1f);
+			xVal = -1f;
 		} else if (moveRight) {
-			vel.setXVector(1f);
-		} else {
-			vel.setXVector(0f);
-			vel.setYVector(0f);
+			xVal = 1f;
 		}
+		vel.setXVector(xVal);
+		vel.setYVector(yVal);
+
 		entity.changedInWorld();
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
-		if (key == Input.KEY_UP) {
-			moveDown = false;
+		if (key == Input.KEY_UP)
 			moveUp = true;
-		} else if (key == Input.KEY_DOWN) {
-			moveUp = false;
+		if (key == Input.KEY_DOWN)
 			moveDown = true;
-		}
-
-		if (key == Input.KEY_RIGHT) {
-			moveLeft = false;
+		if (key == Input.KEY_RIGHT)
 			moveRight = true;
-		} else if (key == Input.KEY_LEFT) {
-			moveRight = false;
+		if (key == Input.KEY_LEFT)
 			moveLeft = true;
-		}
-
 	}
 
 	@Override
 	public void keyReleased(int key, char c) {
-		if (key == Input.KEY_UP) {
+		if (key == Input.KEY_UP)
 			moveUp = false;
-		} else if (key == Input.KEY_DOWN) {
+		if (key == Input.KEY_DOWN)
 			moveDown = false;
-		}
-
-		if (key == Input.KEY_RIGHT) {
+		if (key == Input.KEY_RIGHT)
 			moveRight = false;
-		} else if (key == Input.KEY_LEFT) {
+		if (key == Input.KEY_LEFT)
 			moveLeft = false;
-		}
 	}
 
 	@Override
