@@ -49,7 +49,7 @@ public class DungeonPanel extends JPanel {
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
 
-		map = new Map(64, 64);
+		map = new Map(Key.width, Key.height);
 		v.add(new Vision(map, 360, 75));
 		// for (Room r : map.rooms)
 		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
@@ -90,9 +90,9 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				// map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
+//				 map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
 			} else {
-				// map.drawWholeMap(g2D);
+				 map.drawWholeMap(g2D);
 			}
 		}
 		// for (Vision vis : v)
@@ -102,7 +102,7 @@ public class DungeonPanel extends JPanel {
 		if (Key.drawMiniMap) {
 			int tx = (int) (popupListener.location.getX() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getX();
 			int ty = (int) (popupListener.location.getY() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getY();
-			// map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
+			 map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
 		if (level != null) {

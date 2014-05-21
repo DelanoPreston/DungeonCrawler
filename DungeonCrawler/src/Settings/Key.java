@@ -18,20 +18,24 @@ public class Key {
 	// resolution of ray casting
 	public static int rayCastResolution = 36;
 
+	//size of map
+	public static int width = 30;
+	public static int height = 80;;
+	
 	// draw settings
 	// vision things
-	public static boolean drawRays = false;//if false, will draw shap for now
+	public static boolean drawRays = false;
 	public static boolean drawClosestIntersect = false;
 	// map things
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawPathMap = false;
-	public static boolean drawGrid = false;
+	public static boolean drawGrid = true;
 	public static boolean drawMap = true;
 	// miniMap things
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;
 	// fog of war things
-	public static boolean drawFogOfWar = false;//--leave off - no code
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;
 
 	// debug tools

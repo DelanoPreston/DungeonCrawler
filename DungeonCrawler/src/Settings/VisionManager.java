@@ -30,7 +30,7 @@ public class VisionManager {
 		BufferedImage tempBImage = new BufferedImage((int) d.getWidth(), (int) d.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2D = (Graphics2D) tempBImage.createGraphics();
 		g2D.setColor(Color.BLACK);
-		g2D.fill(new Rectangle(0, 0, (int) d.getWidth(), (int) d.getHeight()));
+//		g2D.fill(new Rectangle(0, 0, (int) d.getWidth(), (int) d.getHeight()));
 		g2D.dispose();
 
 		for (int y = 0; y < v.size(); y++) {

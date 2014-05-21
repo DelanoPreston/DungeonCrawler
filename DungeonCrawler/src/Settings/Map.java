@@ -1,21 +1,20 @@
 package Settings;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.util.pathfinding.AStarPathFinder;
-import org.newdawn.slick.util.pathfinding.Path;
-import org.newdawn.slick.util.pathfinding.PathFindingContext;
-import org.newdawn.slick.util.pathfinding.TileBasedMap;
-
-import Components.MoverComp;
+import DataStructures.Path;
 import DataStructures.Room;
 import DataStructures.Tile;
+import Pathfinding.AStarPathFinder;
+import Pathfinding.TileBasedMap;
 
 public class Map implements TileBasedMap {
 	Tile[][] map;
@@ -150,12 +149,12 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	// public void drawGameMap(Graphics2D g2D, Dimension d, Shape visible) {
-	// Area screen = new Area(new Rectangle(0, 0, d.height, d.width));
-	// screen.subtract((Area) visible);
-	//
-	// g2D.draw(screen);
-	// }
+//	public void drawGameMap(Graphics2D g2D, Dimension d, Shape visible) {
+//		Area screen = new Area(new Rectangle(0, 0, d.height, d.width));
+//		screen.subtract((Area) visible);
+//
+//		g2D.draw(screen);
+//	}
 
 	public void drawWholeMap(Graphics g2D) {
 		int tS = ContentBank.tileSize;
@@ -313,7 +312,7 @@ public class Map implements TileBasedMap {
 					int sy = (int) rooms.get(r).getCenter().getY();
 					int ex = (int) rooms.get(tr).getCenter().getX();
 					int ey = (int) rooms.get(tr).getCenter().getY();
-					Path pCheck = pf.findPath(new MoverComp(Key.pathFinderRoomCheck), sx, sy, ex, ey);
+					Path pCheck = pf.findPath(Key.pathFinderRoomCheck, sx, sy, ex, ey);
 					// if there was no path from room r to room tr
 					if (pCheck == null) {
 						// tunnel
@@ -321,7 +320,7 @@ public class Map implements TileBasedMap {
 						// redraw the pathmap, so the pathfinder will use already existing halls and rooms
 						createPathMap();
 						AStarPathFinder tpf = new AStarPathFinder(this, (getHeightInTiles() * getWidthInTiles()) / ((rooms.size() * 2)), false);// 4
-						p = tpf.findPath(new MoverComp(Key.pathFinderRoomTunneler), sx, sy, ex, ey);
+						p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 						if (p != null) {
 							if (Key.showDebug && Key.showHallMapping) {
 								System.out.println("from room: " + r + " to " + tr);
@@ -486,8 +485,7 @@ public class Map implements TileBasedMap {
 	}
 
 	@Override
-	public boolean blocked(PathFindingContext moverType, int x, int y) {
-		int type = ((MoverComp) moverType.getMover()).getKey();
+	public boolean blocked(int type, int x, int y) {
 		if (x != 0 || x != map[0].length - 1 || y != 0 || y != map.length) {
 			if (type == Key.pathFinderRoomCheck) {
 				if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
@@ -507,36 +505,11 @@ public class Map implements TileBasedMap {
 	}
 
 	@Override
-	public float getCost(PathFindingContext arg0, int x, int y) {
-		return map[y][x].getCost();
+	public float getCost(int type, int sx, int sy, int tx, int ty) {
+		double tempCost = Math.max(map[ty][tx].getCost(), map[sy][sx].getCost());
+		if (Math.abs(sx - tx) == 1 && Math.abs(sy - ty) == 1)
+			// return (float) Math.sqrt(tempCost + tempCost);
+			return 2;// no diagonal right now anyway
+		return (float) tempCost;
 	}
 }
-
-// @Override
-// public boolean blocked(int type, int x, int y) {
-// if (x != 0 || x != map[0].length - 1 || y != 0 || y != map.length) {
-// if (type == Key.pathFinderRoomCheck) {
-// if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
-// return true;
-// } else if (type == Key.pathFinderRoomTunneler) {
-// if (Key.isWall(checkCell(x, y))) {
-// if (isCell(x, y, Key.cornerWall))
-// return true;
-// else if (x < getWidthInTiles() - 1 && isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall)
-// || y < getHeightInTiles() - 1 && isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall))
-// return true;
-// }
-// }
-// return false;
-// }
-// return true;
-// }
-//
-// @Override
-// public float getCost(int type, int sx, int sy, int tx, int ty) {
-// double tempCost = Math.max(map[ty][tx].getCost(), map[sy][sx].getCost());
-// if (Math.abs(sx - tx) == 1 && Math.abs(sy - ty) == 1)
-// // return (float) Math.sqrt(tempCost + tempCost);
-// return 2;// no diagonal right now anyway
-// return (float) tempCost;
-// }
