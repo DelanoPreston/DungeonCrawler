@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			JFrame frame = new JFrame();
-			ContentBank.ContentLoader();
+//			ContentBank.ContentLoader();
 			DungeonPanel gamePanel = new DungeonPanel();
 			frame.setSize(900, 600);
 //			frame.setSize(300, 300);

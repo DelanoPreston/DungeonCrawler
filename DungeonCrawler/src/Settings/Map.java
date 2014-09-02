@@ -305,7 +305,7 @@ public class Map implements TileBasedMap {
 			for (int tr = r + 1; tr < rooms.size(); tr++) {
 				// redraw the pathmap, so the pathfinder will use already existing halls and rooms
 				createPathMap();
-				AStarPathFinder pf = new AStarPathFinder(this, 10000, false);// 2
+				AStarPathFinder pf = new AStarPathFinder(this, 10000, false);
 				if (r != tr) {
 					// start and end coords
 					int sx = (int) rooms.get(r).getCenter().getX();
