@@ -143,7 +143,7 @@ public class Vision {
 	}
 
 	public Point2D getTileSource() {
-		return new Point2D.Double(source.getX() / ContentBank.tileSize, source.getY() / ContentBank.tileSize);
+		return new Point2D.Double(source.getX() / Key.tileSize, source.getY() / Key.tileSize);
 	}
 
 	public Point2D[] getIntersectionPoint(Line2D l, Rectangle2D rec) {

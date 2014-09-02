@@ -1,6 +1,10 @@
 package Settings;
 
+import java.util.Random;
+
 public class Key {
+	public static Random random = new Random();
+
 	// pathfinder types
 	public static int pathFinderRoomCheck = -100;
 	public static int pathFinderRoomTunneler = -101;
@@ -18,10 +22,14 @@ public class Key {
 	// resolution of ray casting
 	public static int rayCastResolution = 36;
 
-	//size of map
-	public static int width = 30;
-	public static int height = 80;;
+	// size of map
+	public static int width = 64;
+	public static int height = 64;
+	public static int tileSize = 10;
 	
+	// map settings
+	public static int numOfRooms = 32;
+
 	// draw settings
 	// vision things
 	public static boolean drawRays = false;
@@ -29,7 +37,7 @@ public class Key {
 	// map things
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawPathMap = false;
-	public static boolean drawGrid = true;
+	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 	// miniMap things
 	public static boolean drawMiniMap = true;

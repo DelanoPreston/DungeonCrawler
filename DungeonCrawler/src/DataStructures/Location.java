@@ -1,7 +1,6 @@
 package DataStructures;
 
-import Settings.ContentBank;
-
+import Settings.Key;
 
 public class Location {
 	double x;
@@ -17,38 +16,38 @@ public class Location {
 
 	public int getTileX() {
 		double temp = 0;
-		if (x % ContentBank.tileSize > ContentBank.tileSize / 2)
-			temp = x - ContentBank.tileSize / 2;
+		if (x % Key.tileSize > Key.tileSize / 2)
+			temp = x - Key.tileSize / 2;
 
-		temp = x / ContentBank.tileSize;
+		temp = x / Key.tileSize;
 
 		return (int) temp;
 	}
 
 	public int getTileY() {
 		double temp = 0;
-		if (y % ContentBank.tileSize > ContentBank.tileSize / 2)
-			temp = y - ContentBank.tileSize / 2;
+		if (y % Key.tileSize > Key.tileSize / 2)
+			temp = y - Key.tileSize / 2;
 
-		temp = y / ContentBank.tileSize;
+		temp = y / Key.tileSize;
 
 		return (int) temp;
 	}
-	
-	public void setLocationAtTile(){
-		x = getTileX() * ContentBank.tileSize + (ContentBank.tileSize / 2);
-		y = getTileY() * ContentBank.tileSize + (ContentBank.tileSize / 2);
+
+	public void setLocationAtTile() {
+		x = getTileX() * Key.tileSize + (Key.tileSize / 2);
+		y = getTileY() * Key.tileSize + (Key.tileSize / 2);
 		int i = 0;
-		if (i ==0){
-			
+		if (i == 0) {
+
 		}
 	}
-	
-	public Location(){
+
+	public Location() {
 		this.x = 0;
 		this.y = 0;
 	}
-	
+
 	public Location(double inX, double inY) {
 		x = inX;
 		y = inY;

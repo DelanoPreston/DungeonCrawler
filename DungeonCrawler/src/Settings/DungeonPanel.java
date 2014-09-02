@@ -100,8 +100,8 @@ public class DungeonPanel extends JPanel {
 		vm.paint(g2D);
 
 		if (Key.drawMiniMap) {
-			int tx = (int) (popupListener.location.getX() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getX();
-			int ty = (int) (popupListener.location.getY() / ContentBank.tileSize);// (int) v.get(0).getTileSource().getY();
+			int tx = (int) (popupListener.location.getX() / Key.tileSize);// (int) v.get(0).getTileSource().getX();
+			int ty = (int) (popupListener.location.getY() / Key.tileSize);// (int) v.get(0).getTileSource().getY();
 			 map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
@@ -117,8 +117,8 @@ public class DungeonPanel extends JPanel {
 				}
 			}
 		}
-		int x = (int) (popupListener.location.getX() / ContentBank.tileSize);
-		int y = (int) (popupListener.location.getY() / ContentBank.tileSize);
+		int x = (int) (popupListener.location.getX() / Key.tileSize);
+		int y = (int) (popupListener.location.getY() / Key.tileSize);
 		g2D.drawString("Mouse is at: " + x + ", " + y, 15, 560);
 	}
 

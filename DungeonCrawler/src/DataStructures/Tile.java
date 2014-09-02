@@ -51,6 +51,10 @@ public class Tile {
 		this.key = key;
 	}
 
+	public boolean isKey(int key) {
+		return this.key == key;
+	}
+
 	public void setCost(int cost) {
 		this.cost = cost;
 	}

@@ -2,7 +2,7 @@ package DataStructures;
 
 import java.awt.geom.Point2D;
 
-import Settings.ContentBank;
+import Settings.Key;
 
 public class Room {
 	public String roomType;
@@ -53,8 +53,8 @@ public class Room {
 	}
 
 	public Point2D getWindowLocation() {
-		int x1 = (width / 2 + x) * ContentBank.tileSize;
-		int y1 = (height / 2 + y) * ContentBank.tileSize;
+		int x1 = (width / 2 + x) * Key.tileSize;
+		int y1 = (height / 2 + y) * Key.tileSize;
 		// System.out.println("\t\t" + x1 + ", " + y1);
 		return new Point2D.Double(x1, y1);
 	}

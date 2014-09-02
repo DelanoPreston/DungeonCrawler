@@ -66,9 +66,9 @@ public class AStarPathFinder {
 		this.maxSearchDistance = maxSearchDistance;
 		this.allowDiagMovement = allowDiagMovement;
 
-		nodes = new Node[map.getHeightInTiles()][map.getWidthInTiles()];
-		for (int x = 0; x < map.getHeightInTiles(); x++) {
-			for (int y = 0; y < map.getWidthInTiles(); y++) {
+		nodes = new Node[map.getWidthInTiles()][map.getHeightInTiles()];
+		for (int x = 0; x < map.getWidthInTiles(); x++) {
+			for (int y = 0; y < map.getHeightInTiles(); y++) {
 				nodes[x][y] = new Node(x, y);
 			}
 		}
