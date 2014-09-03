@@ -27,7 +27,8 @@ import DataStructures.Location;
  */
 @SuppressWarnings("serial")
 public class DungeonPanel extends JPanel {
-	int timer = 0;// if I load a game, this will be reset to 0 causing problems with crops and other timed things
+	int timer = 0;// if I load a game, this will be reset to 0 causing problems
+					// with crops and other timed things
 	Timer mainTimer;
 	// MapCreator map;
 	Map map;
@@ -69,7 +70,7 @@ public class DungeonPanel extends JPanel {
 	public void Update() {
 		if (popupListener.location != null) {
 			v.get(0).source = popupListener.location;
-			// System.out.println("yes");
+//			System.out.println("yes");
 		}
 		for (int i = 0; i < v.size(); i++)
 			v.get(i).update();
@@ -90,19 +91,22 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-//				 map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
+				// map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
 			} else {
-				 map.drawWholeMap(g2D);
+				map.drawWholeMap(g2D);
 			}
 		}
 		// for (Vision vis : v)
 		// vis.paint(g2D, this.getSize());
-		vm.paint(g2D);
+		if (Key.drawFogOfWar)
+			vm.paint(g2D);
 
 		if (Key.drawMiniMap) {
-			int tx = (int) (popupListener.location.getX() / Key.tileSize);// (int) v.get(0).getTileSource().getX();
-			int ty = (int) (popupListener.location.getY() / Key.tileSize);// (int) v.get(0).getTileSource().getY();
-			 map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
+			int tx = (int) (popupListener.location.getX() / Key.tileSize);// (int)
+																			// v.get(0).getTileSource().getX();
+			int ty = (int) (popupListener.location.getY() / Key.tileSize);// (int)
+																			// v.get(0).getTileSource().getY();
+			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
 		if (level != null) {
@@ -123,7 +127,8 @@ public class DungeonPanel extends JPanel {
 	}
 
 	/**
-	 * TimerListener class, implements ActionListener, this class only calls the update methods that run for every cycle/scene of the game
+	 * TimerListener class, implements ActionListener, this class only calls the
+	 * update methods that run for every cycle/scene of the game
 	 * 
 	 * @author Preston Delano
 	 */
@@ -141,7 +146,8 @@ public class DungeonPanel extends JPanel {
 	}
 
 	/**
-	 * KeyboardListener class, implements ActionListener, this class is used when there is a key press, release, or type
+	 * KeyboardListener class, implements ActionListener, this class is used
+	 * when there is a key press, release, or type
 	 * 
 	 * @author Preston Delano
 	 * 
@@ -177,13 +183,15 @@ public class DungeonPanel extends JPanel {
 	}
 
 	/**
-	 * PopupListener class, implements ActionListener, this is called when the user clicks anywhere, this is only used for right click for the popup at the
-	 * momment
+	 * PopupListener class, implements ActionListener, this is called when the
+	 * user clicks anywhere, this is only used for right click for the popup at
+	 * the momment
 	 * 
 	 * @author Preston Delano
 	 * 
 	 */
-	class PopupListener implements MouseListener, MouseWheelListener, MouseMotionListener {
+	class PopupListener implements MouseListener, MouseWheelListener,
+			MouseMotionListener {
 		DungeonPanel reference;
 		// private int lastOffsetX;
 		// private int lastOffsetY;
@@ -203,7 +211,8 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public Point2D GetPopupLocation() {
-			// System.out.println("PopupLocation:" + location.getX() + "," + location.getY());
+			// System.out.println("PopupLocation:" + location.getX() + "," +
+			// location.getY());
 			return location;
 		}
 
@@ -266,7 +275,8 @@ public class DungeonPanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			// // this is clicking with no movement
 			// // System.out.println("mouse clicked");
-			// // double[] loc = { popupListener.GetPopupLocation().getX(), popupListener.GetPopupLocation().getY() };
+			// // double[] loc = { popupListener.GetPopupLocation().getX(),
+			// popupListener.GetPopupLocation().getY() };
 			// System.out.println("something");
 			// if (level.placingEntity()) {
 			// ConstructionEntity temp = level.getConstructionEntity();
@@ -276,10 +286,12 @@ public class DungeonPanel extends JPanel {
 			//
 			// } else {
 			// // Location loc = new Location(e.getX(), e.getY());
-			// Human temp = new Human("mouse", getMouseLocation(), 0.0, false, reference.source);
+			// Human temp = new Human("mouse", getMouseLocation(), 0.0, false,
+			// reference.source);
 			// Entity tempSel = reference.level.getSelectedEntity();
 			// tempSel = reference.source.findEntityEvent(temp, "humans");
-			// if (tempSel != null && bgf.getDistance(getMouseLocation(), tempSel.getMapLocation()) < 25)
+			// if (tempSel != null && bgf.getDistance(getMouseLocation(),
+			// tempSel.getMapLocation()) < 25)
 			// System.out.println("you found: " + tempSel.name);
 			// else
 			// System.out.println("no one is there");
@@ -309,9 +321,12 @@ public class DungeonPanel extends JPanel {
 
 		public void getMousePosition(MouseEvent e) {
 			location = new Point2D.Double(e.getX(), e.getY());
-			// // this gets the position on the map of the mouse, given the translation, and scale
-			// double x = ((reference.getWidth() / 2) - reference.translateX) - (((reference.getWidth() / 2) - e.getX()) / reference.scale);
-			// double y = ((reference.getHeight() / 2) - reference.translateY) - (((reference.getHeight() / 2) - e.getY()) / reference.scale);
+			// // this gets the position on the map of the mouse, given the
+			// translation, and scale
+			// double x = ((reference.getWidth() / 2) - reference.translateX) -
+			// (((reference.getWidth() / 2) - e.getX()) / reference.scale);
+			// double y = ((reference.getHeight() / 2) - reference.translateY) -
+			// (((reference.getHeight() / 2) - e.getY()) / reference.scale);
 			// location = new Point2D.Double(x, y);
 			// // System.out.println(location.getX() + ", " + location.getY());
 		}
