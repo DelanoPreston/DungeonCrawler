@@ -16,6 +16,7 @@ public class Key {
 	public static int floor = 1;
 	public static int sideWall = 4;
 	public static int cornerWall = 5;
+	public static int lockedWall = 6;//for map making pathfinding purposes - a wall that cannot become a door
 	public static int door = 12;
 	public static int stone = 20;
 
@@ -23,12 +24,12 @@ public class Key {
 	public static int rayCastResolution = 36;
 
 	// size of map
-	public static int width = 50;
-	public static int height = 25;
-	public static int tileSize = 10;
+	public static int width = 64;
+	public static int height = 64;
+	public static int tileSize = 6;
 	
 	// map settings
-	public static int numOfRooms = 12;
+	public static int numOfRooms = 35;
 
 	// draw settings
 	// vision things
@@ -43,13 +44,13 @@ public class Key {
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = false;//when true map does not work for now
 	// fog of war things
-	public static boolean drawFogOfWar = true;//not working as of now
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;//true makes minimap not work for now
 
 	// debug tools
 //	public static boolean runSlickGame = true;
 	public static boolean showDebug = false;
-	public static boolean showHallMapping = false;//seems to do nothing
+	public static boolean showHallMapping = false;//seems to do nothing - i think it just prints to the console, info about making halls
 	public static boolean showPathDebug = false;//seems to do nothing
 	public static boolean showErrors = false;
 
@@ -59,7 +60,7 @@ public class Key {
 	public static int logComponentManagement = 3002;
 
 	public static boolean isWall(int key) {
-		if (key == sideWall || key == cornerWall)
+		if (key == sideWall || key == cornerWall || key == lockedWall)
 			return true;
 		else
 			return false;

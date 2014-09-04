@@ -10,8 +10,10 @@ public class Room {
 	public int y;
 	public int height;
 	public int width;
+	public int numOfDoors = 0;
+
 	// 0 is N, 1 is E, 2 is S, 3 is W
-	boolean[] sideAvail;
+	// boolean[] sideAvail;
 
 	public int getRoomX1() {
 		return x;
@@ -52,6 +54,12 @@ public class Room {
 		return new Point2D.Double(x1, y1);
 	}
 
+	public boolean containsCoords(int inX, int inY) {
+		if (x <= inX && inX <= x + width && y <= inY && inY <= y + height)
+			return true;
+		return false;
+	}
+
 	public Point2D getWindowLocation() {
 		int x1 = (width / 2 + x) * Key.tileSize;
 		int y1 = (height / 2 + y) * Key.tileSize;
@@ -68,8 +76,10 @@ public class Room {
 	}
 
 	public boolean spaceAvailable(int side, Room toBePlacedRoom, int[][] mapKey) {
-		for (int y = toBePlacedRoom.y; y < toBePlacedRoom.y + toBePlacedRoom.height; y++) {
-			for (int x = toBePlacedRoom.x; x < toBePlacedRoom.x + toBePlacedRoom.width; x++) {
+		for (int y = toBePlacedRoom.y; y < toBePlacedRoom.y
+				+ toBePlacedRoom.height; y++) {
+			for (int x = toBePlacedRoom.x; x < toBePlacedRoom.x
+					+ toBePlacedRoom.width; x++) {
 				if (mapKey[y][x] == 1 || mapKey[y][x] == 2)
 					return false;
 			}
@@ -79,5 +89,17 @@ public class Room {
 
 	public Point2D locForDoor(int side) {
 		return new Point2D.Double(1, 1);
+	}
+
+	public void addDoor() {
+		numOfDoors += 1;
+	}
+
+	public int getDoors() {
+		return numOfDoors;
+	}
+
+	public void setDoors(int num) {
+		numOfDoors = num;
 	}
 }

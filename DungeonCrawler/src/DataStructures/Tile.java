@@ -47,6 +47,10 @@ public class Tile {
 		return wall;
 	}
 
+	public void addCost(int i) {
+		cost += i;
+	}
+
 	public void setKey(int key) {
 		this.key = key;
 	}
