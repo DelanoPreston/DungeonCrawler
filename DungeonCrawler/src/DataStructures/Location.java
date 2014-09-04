@@ -67,4 +67,14 @@ public class Location {
 		x -= inChange[0];
 		y -= inChange[1];
 	}
+
+	public void addMovement(float inX, float inY) {
+		x -= inX;
+		y -= inY;
+	}
+
+	public void addMovement(double speed, double rotation) {
+		x += speed * Math.cosh(rotation);
+		y += speed * Math.sinh(rotation);
+	}
 }
