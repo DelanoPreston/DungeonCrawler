@@ -28,7 +28,7 @@ public class Key {
 	// size of map
 	public static int width = 64;
 	public static int height = 64;
-	public static int tileSize = 6;
+	public static int tileSize = 10;
 
 	// map settings
 	public static int numOfRooms = 32;
@@ -39,6 +39,8 @@ public class Key {
 	public static boolean drawClosestIntersect = true;
 	// map things
 	public static boolean drawRoomNumbers = true;
+	public static boolean drawRoomCenters = false;
+	public static boolean drawTunnelingPaths = false;
 	public static boolean drawPathMap = false;// throws error when true
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;

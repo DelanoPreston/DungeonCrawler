@@ -18,6 +18,8 @@ public class Map implements TileBasedMap {
 	Tile[][] map;
 	List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
+	// for testing only
+	List<Path> paths = new ArrayList<>();
 
 	public Map(int width, int height) {
 
@@ -222,6 +224,24 @@ public class Map implements TileBasedMap {
 				g2D.drawString(String.valueOf(r), x, y);
 			}
 		}
+		if (Key.drawRoomCenters) {
+			g2D.setColor(new Color(32, 63, 95, 255));
+			for (int r = 0; r < rooms.size(); r++) {
+				int x = (int) rooms.get(r).getCenter().getX();
+				int y = (int) rooms.get(r).getCenter().getY();
+				g2D.fillRect(x * tS, y * tS, tS, tS);
+			}
+		}
+		if (Key.drawTunnelingPaths) {
+			
+			for (Path p : paths) {
+				for (int i = 0; i < p.getLength() - 1; i++) {
+					g2D.setColor(new Color(i * 3 + 45, 0, 0, 255));
+					g2D.drawLine(p.getX(i) * Key.tileSize + (Key.tileSize / 2), p.getY(i) * Key.tileSize + (Key.tileSize / 2), p.getX(i + 1) * Key.tileSize
+							+ (Key.tileSize / 2), p.getY(i + 1) * Key.tileSize + (Key.tileSize / 2));
+				}
+			}
+		}
 	}
 
 	public boolean isCell(int x, int y, int cellType) {
@@ -335,6 +355,7 @@ public class Map implements TileBasedMap {
 						AStarPathFinder tpf = new AStarPathFinder(this, Math.max(Key.width, Key.height), false);
 						p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 						if (p != null) {
+							paths.add(p);
 							if (Key.showDebug && Key.showHallMapping) {
 								System.out.println("from room: " + r + " to " + tr + " was mapped");
 							}
@@ -356,9 +377,10 @@ public class Map implements TileBasedMap {
 												}
 											}
 										}
-									} else {
-										setCell(x, y, Key.hallwayFloor);
 									}
+									 else {
+									 setCell(x, y, Key.hallwayFloor);
+									 }
 
 								} else if (isCell(x, y, Key.unused)) {
 									setCell(x, y, Key.hallwayFloor);
@@ -525,7 +547,7 @@ public class Map implements TileBasedMap {
 		} else if (isCell(x, y, Key.hallwayFloor)) {
 			map[y][x].setCost(2);// 2
 		} else if (isCell(x, y, Key.door)) {
-			map[x][y].setCost(1);
+			map[x][y].setCost(-1);
 		} else if (isWall(checkCell(x, y))) {
 			map[x][y].setCost(10);
 		}
@@ -553,11 +575,14 @@ public class Map implements TileBasedMap {
 				if (isWall(type, checkCell(x, y))) {
 					if (isCell(x, y, Key.cornerWall))
 						return true;
-					else if (x < getWidthInTiles() - 1 && isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall)
-							|| y < getHeightInTiles() - 1 && isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall))
+					else if (x < getWidthInTiles() - 1 && (isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall))
+							|| y < getHeightInTiles() - 1 && (isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall)))
 						return true;
 					else if (isCell(x, y, Key.lockedWall))
 						return true;
+//					else if (isCell(x, y, Key.sideWall))
+//						if (isCell(x + 1, y, Key.door) || isCell(x - 1, y, Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y - 1, Key.door))
+//							return true;
 				}
 			}
 			return false;
