@@ -318,7 +318,7 @@ public class Map implements TileBasedMap {
 				// redraw the pathmap, so the pathfinder will use already
 				// existing halls and rooms
 				createPathMap();
-				AStarPathFinder pf = new AStarPathFinder(this, 4 * Math.max(Key.width / 4, Key.height / 4), false);
+				AStarPathFinder pf = new AStarPathFinder(this, Math.max(Key.width, Key.height), false);
 				if (r != tr) {
 					// start and end coords
 					int sx = (int) rooms.get(r).getCenter().getX();
@@ -332,7 +332,7 @@ public class Map implements TileBasedMap {
 						Path p = null;
 						// redraw the pathmap, so the pathfinder will use
 						// already existing halls and rooms
-						AStarPathFinder tpf = new AStarPathFinder(this, 3 * Math.max(Key.width / 3, Key.height / 3), false);
+						AStarPathFinder tpf = new AStarPathFinder(this, Math.max(Key.width, Key.height), false);
 						p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 						if (p != null) {
 							if (Key.showDebug && Key.showHallMapping) {
@@ -519,41 +519,16 @@ public class Map implements TileBasedMap {
 
 	public void updateTileCost(int x, int y) {
 		if (isCell(x, y, Key.unused)) {
-			map[x][y].setCost(4);// 8
+			map[x][y].setCost(5);// 8
 		} else if (isCell(x, y, Key.floor)) {
-			map[y][x].setCost(2);// 7
+			map[y][x].setCost(3);// 7
 		} else if (isCell(x, y, Key.hallwayFloor)) {
 			map[y][x].setCost(2);// 2
 		} else if (isCell(x, y, Key.door)) {
 			map[x][y].setCost(1);
 		} else if (isWall(checkCell(x, y))) {
 			map[x][y].setCost(10);
-			// map[x][y].setCost(calcWallCost(x, y));
-			// if (map[x][y].getCost() < 5)
-			// map[x][y].setCost(5);
 		}
-	}
-
-	private int calcWallCost(int x, int y) {
-		int tempCost = 0;
-		// makes sure its in the bound of the array
-		int startX = Math.min(Math.max(x - 2, 0), getWidthInTiles() - 1);
-		int startY = Math.min(Math.max(y - 2, 0), getHeightInTiles() - 1);
-		int endX = Math.min(Math.max(x + 2, 0), getWidthInTiles() - 1);
-		int endY = Math.min(Math.max(y + 2, 0), getHeightInTiles() - 1);
-		// the t is for temp
-		for (int tx = startX; tx < endX; tx++) {
-			for (int ty = startY; ty < endY; ty++) {
-				if (isCell(tx, ty, Key.sideWall))
-					// if (Key.isWall(checkCell(x, y)))
-					tempCost++;
-				if (isCell(tx, ty, Key.cornerWall))
-					tempCost += 2;
-				if (isCell(x, y, Key.door))
-					tempCost += 5;
-			}
-		}
-		return tempCost;
 	}
 
 	public boolean isWall(int key) {
