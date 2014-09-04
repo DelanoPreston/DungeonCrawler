@@ -79,7 +79,8 @@ public class Map implements TileBasedMap {
 							for (int ty = y - 1; ty <= y + 1; ty++) {
 
 								if (tx >= 0 && ty >= 0 && tx < getWidthInTiles() && ty < getHeightInTiles()) {
-									if (Key.isWall(checkCell(tx, ty)))
+
+									if (isWall(checkCell(tx, ty)))
 										map[tx][ty].setVisible(true);
 								}
 							}
@@ -130,7 +131,7 @@ public class Map implements TileBasedMap {
 							g2D.setColor(yellow);
 						} else if (isCell(x, y, Key.floor)) {
 							g2D.setColor(green);
-						} else if (Key.isWall(checkCell(x, y))) {
+						} else if (isWall(checkCell(x, y))) {
 							g2D.setColor(gray);
 						} else if (isCell(x, y, Key.door)) {
 							g2D.setColor(brown);
@@ -363,7 +364,7 @@ public class Map implements TileBasedMap {
 									setCell(x, y, Key.hallwayFloor);
 								}
 							}
-						}else{
+						} else {
 							if (Key.showDebug && Key.showHallMapping) {
 								System.out.println("path from room: " + r + " to " + tr + " was not completed");
 							}
@@ -435,8 +436,13 @@ public class Map implements TileBasedMap {
 		int tS = Key.tileSize;
 		for (int x = 0; x < getWidthInTiles(); x++) {
 			for (int y = 0; y < getHeightInTiles(); y++) {
-				if (Key.isWall(checkCell(x, y))) {// || tempKey[y][x] == 1 ||
-													// tempKey[y][x] == 2) {
+				// the pathFinderRoomTunneler key returns all walls
+				if (isWall(Key.pathFinderRoomTunneler, checkCell(x, y))) {// ||
+																			// tempKey[y][x]
+																			// ==
+																			// 1
+																			// ||
+					// tempKey[y][x] == 2) {
 					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), true));
 				} else if (map[x][y].isKey(Key.door)) {
 					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), false));
@@ -520,7 +526,7 @@ public class Map implements TileBasedMap {
 			map[y][x].setCost(2);// 2
 		} else if (isCell(x, y, Key.door)) {
 			map[x][y].setCost(1);
-		} else if (Key.isWall(checkCell(x, y))) {
+		} else if (isWall(checkCell(x, y))) {
 			map[x][y].setCost(10);
 			// map[x][y].setCost(calcWallCost(x, y));
 			// if (map[x][y].getCost() < 5)
@@ -550,15 +556,26 @@ public class Map implements TileBasedMap {
 		return tempCost;
 	}
 
+	public boolean isWall(int key) {
+		return isWall(Key.pathFinderRoomCheck, key);
+	}
+
+	public boolean isWall(int type, int key) {
+		if (key == Key.sideWall || key == Key.cornerWall || key == Key.lockedWall)
+			return true;
+		else
+			return false;
+	}
+
 	@Override
 	public boolean blocked(int type, int x, int y) {
 		if (x != 0 || x != getWidthInTiles() - 1 || y != 0 || y != getHeightInTiles()) {
 			if (type == Key.pathFinderRoomCheck) {
-				if (Key.isWall(checkCell(x, y)) || isCell(x, y, Key.unused))
+				if (isWall(type, checkCell(x, y)) || isCell(x, y, Key.unused))
 					return true;
 			} else if (type == Key.pathFinderRoomTunneler) {
 
-				if (Key.isWall(checkCell(x, y))) {
+				if (isWall(type, checkCell(x, y))) {
 					if (isCell(x, y, Key.cornerWall))
 						return true;
 					else if (x < getWidthInTiles() - 1 && isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall)

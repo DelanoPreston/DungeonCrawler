@@ -66,10 +66,10 @@ public class Key {
 	public static int logEntityManagement = 3001;
 	public static int logComponentManagement = 3002;
 
-	public static boolean isWall(int key) {
-		if (key == sideWall || key == cornerWall || key == lockedWall)
-			return true;
-		else
-			return false;
-	}
+//	public static boolean isWall(int key) {
+//		if (key == sideWall || key == cornerWall || key == lockedWall)
+//			return true;
+//		else
+//			return false;
+//	}
 }
