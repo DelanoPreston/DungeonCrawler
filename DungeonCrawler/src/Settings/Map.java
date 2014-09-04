@@ -194,7 +194,7 @@ public class Map implements TileBasedMap {
 				for (int y = 0; y < getHeightInTiles(); y++) {
 
 					g2D.setColor(new Color(110, 110, 110, 255));
-					if (isCell(x, y, Key.floor)) {
+					if (isCell(x, y, Key.floor) || isCell(x, y, Key.hallwayFloor)) {
 						g2D.setColor(new Color(32, 127, 32, 255));
 					} else if (isCell(x, y, Key.sideWall) || isCell(x, y, Key.lockedWall)) {
 						g2D.setColor(new Color(127, 127, 127, 255));
@@ -317,9 +317,7 @@ public class Map implements TileBasedMap {
 				// redraw the pathmap, so the pathfinder will use already
 				// existing halls and rooms
 				createPathMap();
-				AStarPathFinder pf = new AStarPathFinder(this, 3 * Math.max(Key.width / 2, Key.height / 2), false);
-				// AStarPathFinder pf = new AStarPathFinder(this, 10000,
-				// false);//replaced with above line
+				AStarPathFinder pf = new AStarPathFinder(this, 4 * Math.max(Key.width / 4, Key.height / 4), false);
 				if (r != tr) {
 					// start and end coords
 					int sx = (int) rooms.get(r).getCenter().getX();
@@ -333,76 +331,42 @@ public class Map implements TileBasedMap {
 						Path p = null;
 						// redraw the pathmap, so the pathfinder will use
 						// already existing halls and rooms
-						// createPathMap();//the path map is already redrawn
-						// about 15 lines above
-						// AStarPathFinder tpf = new AStarPathFinder(this, 3 *
-						// Math.max(Key.width / 2, Key.height / 2), false);
-						AStarPathFinder tpf = new AStarPathFinder(this, 3 * Math.max(Key.width / 2, Key.height / 2), false);// 4
-						// AStarPathFinder tpf = new AStarPathFinder(this,
-						// (getHeightInTiles() * getWidthInTiles()) /
-						// ((rooms.size() * 2)), false);// 4
-						// TODO fix the dead end hallways
+						AStarPathFinder tpf = new AStarPathFinder(this, 3 * Math.max(Key.width / 3, Key.height / 3), false);
 						p = tpf.findPath(Key.pathFinderRoomTunneler, sx, sy, ex, ey);
 						if (p != null) {
 							if (Key.showDebug && Key.showHallMapping) {
-								System.out.println("from room: " + r + " to " + tr);
+								System.out.println("from room: " + r + " to " + tr + " was mapped");
 							}
 							// follow the path to get to the room, creating a
 							// hall as you go
 							for (int pathKey = 0; pathKey < p.getLength(); pathKey++) {
-								if (isCell(p.getX(pathKey), p.getY(pathKey), Key.sideWall)) {
-									setCell(p.getX(pathKey), p.getY(pathKey), Key.door);
-									Room tempR = getRoomAt(p.getX(pathKey), p.getY(pathKey));
-									tempR.addDoor();
-									if (tempR.getDoors() >= 3) {
-										for (int roomX = tempR.getRoomX1(); roomX <= tempR.getRoomX2(); roomX++) {
-											for (int roomY = tempR.getRoomY1(); roomY <= tempR.getRoomY2(); roomY++) {
-												if (isCell(roomX, roomY, Key.sideWall))
-													setCell(roomX, roomY, Key.lockedWall);
+								int x = p.getX(pathKey);
+								int y = p.getY(pathKey);
+								if (isCell(x, y, Key.sideWall)) {
+									if (!(isCell(x + 1, y, Key.door) || isCell(x - 1, y, Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y - 1, Key.door))) {
+										setCell(x, y, Key.door);
+										Room tempR = getRoomAt(x, y);
+										tempR.addDoor();
+										if (tempR.getDoors() >= 3) {
+											for (int roomX = tempR.getRoomX1(); roomX <= tempR.getRoomX2(); roomX++) {
+												for (int roomY = tempR.getRoomY1(); roomY <= tempR.getRoomY2(); roomY++) {
+													if (isCell(roomX, roomY, Key.sideWall))
+														setCell(roomX, roomY, Key.lockedWall);
+												}
 											}
 										}
+									} else {
+										setCell(x, y, Key.hallwayFloor);
 									}
-								} else if (isCell(p.getX(pathKey), p.getY(pathKey), Key.unused)) {
-									setCell(p.getX(pathKey), p.getY(pathKey), Key.floor);
+
+								} else if (isCell(x, y, Key.unused)) {
+									setCell(x, y, Key.hallwayFloor);
 								}
 							}
-
-							// for (int pathKey = 0; pathKey < p.getLength();
-							// pathKey++) {
-							// if (isCell(p.getX(pathKey + 1), p.getY(pathKey),
-							// Key.unused))
-							// setCell(p.getX(pathKey + 1), p.getY(pathKey),
-							// Key.sideWall);
-							// if (isCell(p.getX(pathKey - 1), p.getY(pathKey),
-							// Key.unused))
-							// setCell(p.getX(pathKey - 1), p.getY(pathKey),
-							// Key.sideWall);
-							// if (isCell(p.getX(pathKey), p.getY(pathKey + 1),
-							// Key.unused))
-							// setCell(p.getX(pathKey), p.getY(pathKey + 1),
-							// Key.sideWall);
-							// if (isCell(p.getX(pathKey), p.getY(pathKey - 1),
-							// Key.unused))
-							// setCell(p.getX(pathKey), p.getY(pathKey - 1),
-							// Key.sideWall);
-							// }
-
-							// // this wraps the path in walls if needed
-							// int x = 0;
-							// int y = 0;
-							// for (int tile = 0; tile < p.getLength(); tile++)
-							// {
-							// x = p.getX(tile);
-							// y = p.getY(tile);
-							// // if (isCell(x, y, Key.unused) ||
-							// // Key.isWall(this.checkCell(x, y))) {
-							// if (isCell(x + 1, y, Key.floor) || isCell(x - 1,
-							// y, Key.floor) || isCell(x, y + 1, Key.floor) ||
-							// isCell(x, y - 1, Key.floor)) {
-							// setCell(x, y, Key.sideWall);
-							// }
-							// // }
-							// }
+						}else{
+							if (Key.showDebug && Key.showHallMapping) {
+								System.out.println("path from room: " + r + " to " + tr + " was not completed");
+							}
 						}
 					} else {
 						// awesome...
@@ -423,7 +387,8 @@ public class Map implements TileBasedMap {
 			for (int y = 1; y < getHeightInTiles() - 1; y++) {
 
 				if (isCell(x, y, Key.unused)) {
-					if (isCell(x + 1, y, Key.floor) || isCell(x - 1, y, Key.floor) || isCell(x, y + 1, Key.floor) || isCell(x, y - 1, Key.floor)) {
+					if (isCell(x + 1, y, Key.hallwayFloor) || isCell(x - 1, y, Key.hallwayFloor) || isCell(x, y + 1, Key.hallwayFloor)
+							|| isCell(x, y - 1, Key.hallwayFloor)) {
 						setCell(x, y, Key.sideWall);
 					}
 				}
@@ -548,9 +513,11 @@ public class Map implements TileBasedMap {
 
 	public void updateTileCost(int x, int y) {
 		if (isCell(x, y, Key.unused)) {
-			map[x][y].setCost(8);
+			map[x][y].setCost(4);// 8
 		} else if (isCell(x, y, Key.floor)) {
-			map[y][x].setCost(5);// 2
+			map[y][x].setCost(2);// 7
+		} else if (isCell(x, y, Key.hallwayFloor)) {
+			map[y][x].setCost(2);// 2
 		} else if (isCell(x, y, Key.door)) {
 			map[x][y].setCost(1);
 		} else if (Key.isWall(checkCell(x, y))) {
@@ -558,9 +525,6 @@ public class Map implements TileBasedMap {
 			// map[x][y].setCost(calcWallCost(x, y));
 			// if (map[x][y].getCost() < 5)
 			// map[x][y].setCost(5);
-		} else if (isCell(x, y, Key.lockedWall)) {
-			// TODO - make sure cost is working right
-			map[x][y].setCost(50);
 		}
 	}
 
@@ -600,7 +564,7 @@ public class Map implements TileBasedMap {
 					else if (x < getWidthInTiles() - 1 && isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall)
 							|| y < getHeightInTiles() - 1 && isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall))
 						return true;
-					else if(isCell(x,y,Key.lockedWall))
+					else if (isCell(x, y, Key.lockedWall))
 						return true;
 				}
 			}
