@@ -233,7 +233,7 @@ public class Map implements TileBasedMap {
 			}
 		}
 		if (Key.drawTunnelingPaths) {
-			
+
 			for (Path p : paths) {
 				for (int i = 0; i < p.getLength() - 1; i++) {
 					g2D.setColor(new Color(i * 3 + 45, 0, 0, 255));
@@ -377,10 +377,9 @@ public class Map implements TileBasedMap {
 												}
 											}
 										}
+									} else {
+										setCell(x, y, Key.hallwayFloor);
 									}
-									 else {
-									 setCell(x, y, Key.hallwayFloor);
-									 }
 
 								} else if (isCell(x, y, Key.unused)) {
 									setCell(x, y, Key.hallwayFloor);
@@ -499,6 +498,10 @@ public class Map implements TileBasedMap {
 			}
 		}
 		// if the space is valid then it creates the room
+//		rx++;
+//		ry++;
+//		rwidth--;
+//		rheight--;
 		if (spaceValid) {
 			for (int x = rx; x < rx + rwidth; x++) {
 				for (int y = ry; y < ry + rheight; y++) {
@@ -507,8 +510,8 @@ public class Map implements TileBasedMap {
 					if (y == ry || y == ry + rheight - 1 || x == rx || x == rx + rwidth - 1) {
 						// this gets the corners of the walls and sets them to
 						// corner walls
-						if (y <= ry && x <= rx || y <= ry && x >= rx + rwidth - 1 || y >= ry + rheight - 1 && x <= rx || y >= ry + rheight - 1
-								&& x >= rx + rwidth - 1)
+						if (y <= ry + 1 && x <= rx + 1 || y <= ry + 1 && x >= rx + rwidth - 2 || y >= ry + rheight - 2 && x <= rx + 1 || y >= ry + rheight - 2
+								&& x >= rx + rwidth - 2)
 							setCell(x, y, Key.cornerWall);
 						// this makes sure if its a corner wall it leaves it
 						// alone
@@ -543,9 +546,9 @@ public class Map implements TileBasedMap {
 		if (isCell(x, y, Key.unused)) {
 			map[x][y].setCost(5);// 8
 		} else if (isCell(x, y, Key.floor)) {
-			map[y][x].setCost(3);// 7
+			map[y][x].setCost(2);// 7
 		} else if (isCell(x, y, Key.hallwayFloor)) {
-			map[y][x].setCost(2);// 2
+			map[y][x].setCost(1);// 2
 		} else if (isCell(x, y, Key.door)) {
 			map[x][y].setCost(-1);
 		} else if (isWall(checkCell(x, y))) {
@@ -575,14 +578,25 @@ public class Map implements TileBasedMap {
 				if (isWall(type, checkCell(x, y))) {
 					if (isCell(x, y, Key.cornerWall))
 						return true;
-					else if (x < getWidthInTiles() - 1 && (isCell(x + 1, y, Key.cornerWall) || x >= 1 && isCell(x - 1, y, Key.cornerWall))
-							|| y < getHeightInTiles() - 1 && (isCell(x, y + 1, Key.cornerWall) || y >= 1 && isCell(x, y - 1, Key.cornerWall)))
-						return true;
+					// else if (x < getWidthInTiles() - 1 && (isCell(x + 1, y,
+					// Key.cornerWall) || x >= 1 && isCell(x - 1, y,
+					// Key.cornerWall))
+					// || y < getHeightInTiles() - 1 && (isCell(x, y + 1,
+					// Key.cornerWall) || y >= 1 && isCell(x, y - 1,
+					// Key.cornerWall)))
+					// return true;
 					else if (isCell(x, y, Key.lockedWall))
 						return true;
-//					else if (isCell(x, y, Key.sideWall))
-//						if (isCell(x + 1, y, Key.door) || isCell(x - 1, y, Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y - 1, Key.door))
-//							return true;
+					else if (isCell(x, y, Key.sideWall)) {
+						if (x >= 1 && x < Key.width-1 && y >= 1 && y < Key.height-1)
+							if (isCell(x + 1, y, Key.lockedWall) || isCell(x - 1, y, Key.lockedWall) || isCell(x, y + 1, Key.lockedWall)
+									|| isCell(x, y - 1, Key.lockedWall))
+								return true;
+					}
+					// if (isCell(x + 1, y, Key.door) || isCell(x - 1, y,
+					// Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y -
+					// 1, Key.door))
+					// return true;
 				}
 			}
 			return false;

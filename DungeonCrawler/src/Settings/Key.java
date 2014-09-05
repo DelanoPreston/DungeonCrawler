@@ -40,7 +40,7 @@ public class Key {
 	// map things
 	public static boolean drawRoomNumbers = true;
 	public static boolean drawRoomCenters = false;
-	public static boolean drawTunnelingPaths = false;
+	public static boolean drawTunnelingPaths = true;
 	public static boolean drawPathMap = false;// throws error when true
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
