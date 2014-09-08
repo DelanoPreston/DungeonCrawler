@@ -12,15 +12,16 @@ public class Key {
 	public static int monster1 = 1500;
 
 	// tile keys
-	public static int unused = 0;
-	public static int floor = 1;
-	public static int hallwayFloor = 2;
-	public static int sideWall = 4;
-	public static int cornerWall = 5;
-	public static int lockedWall = 6;// for map making pathfinding purposes - a
-										// wall that cannot become a door
-	public static int door = 12;
-	public static int stone = 20;
+	public static final int unused = 0;
+	public static final int floor = 1;
+	public static final int hallwayFloor = 2;
+	public static final int sideWall = 4;
+//	public static final int cornerWall = 5;
+	public static final int lockedWall = 5;// for map making pathfinding
+											// purposes - a
+	// wall that cannot become a door
+	public static final int door = 12;
+	public static final int stone = 20;
 
 	// resolution of ray casting
 	public static int rayCastResolution = 36;
@@ -49,7 +50,7 @@ public class Key {
 	public static boolean drawGamePlay = false;// when true map does not work
 												// for now
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 
@@ -60,7 +61,7 @@ public class Key {
 													// think it just prints to
 													// the console, info about
 													// making halls
-	public static boolean showPathDebug = false;// seems to do nothing
+	public static boolean showPathDebug = false;
 	public static boolean showErrors = false;
 
 	// log enables
@@ -68,10 +69,10 @@ public class Key {
 	public static int logEntityManagement = 3001;
 	public static int logComponentManagement = 3002;
 
-//	public static boolean isWall(int key) {
-//		if (key == sideWall || key == cornerWall || key == lockedWall)
-//			return true;
-//		else
-//			return false;
-//	}
+	// public static boolean isWall(int key) {
+	// if (key == sideWall || key == cornerWall || key == lockedWall)
+	// return true;
+	// else
+	// return false;
+	// }
 }

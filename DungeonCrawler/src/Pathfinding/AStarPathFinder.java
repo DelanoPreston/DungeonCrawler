@@ -36,11 +36,11 @@ public class AStarPathFinder {
 	 * Create a path finder with the default heuristic - closest to target.
 	 * 
 	 * @param map
-	 *        The map to be searched
+	 *            The map to be searched
 	 * @param maxSearchDistance
-	 *        The maximum depth we'll search before giving up
+	 *            The maximum depth we'll search before giving up
 	 * @param allowDiagMovement
-	 *        True if the search should try diaganol movement
+	 *            True if the search should try diaganol movement
 	 */
 	public AStarPathFinder(Map map, int maxSearchDistance, boolean allowDiagMovement) {
 		this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
@@ -52,13 +52,13 @@ public class AStarPathFinder {
 	 * Create a path finder
 	 * 
 	 * @param heuristic
-	 *        The heuristic used to determine the search order of the map
+	 *            The heuristic used to determine the search order of the map
 	 * @param map
-	 *        The map to be searched
+	 *            The map to be searched
 	 * @param maxSearchDistance
-	 *        The maximum depth we'll search before giving up
+	 *            The maximum depth we'll search before giving up
 	 * @param allowDiagMovement
-	 *        True if the search should try diaganol movement
+	 *            True if the search should try diaganol movement
 	 */
 	public AStarPathFinder(Map map, int maxSearchDistance, boolean allowDiagMovement, AStarHeuristic heuristic) {
 		this.heuristic = heuristic;
@@ -218,7 +218,8 @@ public class AStarPathFinder {
 	}
 
 	/**
-	 * Get the first element from the open list. This is the next one to be searched.
+	 * Get the first element from the open list. This is the next one to be
+	 * searched.
 	 * 
 	 * @return The first element in the open list
 	 */
@@ -230,7 +231,7 @@ public class AStarPathFinder {
 	 * Add a node to the open list
 	 * 
 	 * @param node
-	 *        The node to be added to the open list
+	 *            The node to be added to the open list
 	 */
 	protected void addToOpen(Node node) {
 		open.add(node);
@@ -240,7 +241,7 @@ public class AStarPathFinder {
 	 * Check if a node is in the open list
 	 * 
 	 * @param node
-	 *        The node to check for
+	 *            The node to check for
 	 * @return True if the node given is in the open list
 	 */
 	protected boolean inOpenList(Node node) {
@@ -251,7 +252,7 @@ public class AStarPathFinder {
 	 * Remove a node from the open list
 	 * 
 	 * @param node
-	 *        The node to remove from the open list
+	 *            The node to remove from the open list
 	 */
 	protected void removeFromOpen(Node node) {
 		open.remove(node);
@@ -261,7 +262,7 @@ public class AStarPathFinder {
 	 * Add a node to the closed list
 	 * 
 	 * @param node
-	 *        The node to add to the closed list
+	 *            The node to add to the closed list
 	 */
 	protected void addToClosed(Node node) {
 		closed.add(node);
@@ -271,7 +272,7 @@ public class AStarPathFinder {
 	 * Check if the node supplied is in the closed list
 	 * 
 	 * @param node
-	 *        The node to search for
+	 *            The node to search for
 	 * @return True if the node specified is in the closed list
 	 */
 	protected boolean inClosedList(Node node) {
@@ -282,7 +283,7 @@ public class AStarPathFinder {
 	 * Remove a node from the closed list
 	 * 
 	 * @param node
-	 *        The node to remove from the closed list
+	 *            The node to remove from the closed list
 	 */
 	protected void removeFromClosed(Node node) {
 		closed.remove(node);
@@ -292,15 +293,15 @@ public class AStarPathFinder {
 	 * Check if a given location is valid for the supplied mover
 	 * 
 	 * @param entity
-	 *        The mover that would hold a given location
+	 *            The mover that would hold a given location
 	 * @param sx
-	 *        The starting x coordinate
+	 *            The starting x coordinate
 	 * @param sy
-	 *        The starting y coordinate
+	 *            The starting y coordinate
 	 * @param x
-	 *        The x coordinate of the location to check
+	 *            The x coordinate of the location to check
 	 * @param y
-	 *        The y coordinate of the location to check
+	 *            The y coordinate of the location to check
 	 * @return True if the location is valid for the given mover
 	 */
 	protected boolean isValidLocation(int type, int sx, int sy, int x, int y) {
@@ -317,15 +318,15 @@ public class AStarPathFinder {
 	 * Get the cost to move through a given location
 	 * 
 	 * @param entity
-	 *        The entity that is being moved
+	 *            The entity that is being moved
 	 * @param sx
-	 *        The x coordinate of the tile whose cost is being determined
+	 *            The x coordinate of the tile whose cost is being determined
 	 * @param sy
-	 *        The y coordiante of the tile whose cost is being determined
+	 *            The y coordiante of the tile whose cost is being determined
 	 * @param tx
-	 *        The x coordinate of the target location
+	 *            The x coordinate of the target location
 	 * @param ty
-	 *        The y coordinate of the target location
+	 *            The y coordinate of the target location
 	 * @return The cost of movement through the given tile
 	 */
 	public float getMovementCost(int type, int sx, int sy, int tx, int ty) {
@@ -333,18 +334,19 @@ public class AStarPathFinder {
 	}
 
 	/**
-	 * Get the heuristic cost for the given location. This determines in which order the locations are processed.
+	 * Get the heuristic cost for the given location. This determines in which
+	 * order the locations are processed.
 	 * 
 	 * @param mover
-	 *        The entity that is being moved
+	 *            The entity that is being moved
 	 * @param x
-	 *        The x coordinate of the tile whose cost is being determined
+	 *            The x coordinate of the tile whose cost is being determined
 	 * @param y
-	 *        The y coordiante of the tile whose cost is being determined
+	 *            The y coordiante of the tile whose cost is being determined
 	 * @param tx
-	 *        The x coordinate of the target location
+	 *            The x coordinate of the target location
 	 * @param ty
-	 *        The y coordinate of the target location
+	 *            The y coordinate of the target location
 	 * @return The heuristic cost assigned to the tile
 	 */
 	public float getHeuristicCost(int type, int x, int y, int tx, int ty) {
@@ -380,7 +382,7 @@ public class AStarPathFinder {
 		 * Add an element to the list - causes sorting
 		 * 
 		 * @param o
-		 *        The element to add
+		 *            The element to add
 		 */
 		public void add(Object o) {
 			list.add((Node) o);
@@ -391,7 +393,7 @@ public class AStarPathFinder {
 		 * Remove an element from the list
 		 * 
 		 * @param o
-		 *        The element to remove
+		 *            The element to remove
 		 */
 		public void remove(Object o) {
 			list.remove(o);
@@ -410,7 +412,7 @@ public class AStarPathFinder {
 		 * Check if an element is in the list
 		 * 
 		 * @param o
-		 *        The element to search for
+		 *            The element to search for
 		 * @return True if the element is in the list
 		 */
 		public boolean contains(Object o) {
@@ -439,9 +441,9 @@ public class AStarPathFinder {
 		 * Create a new node
 		 * 
 		 * @param x
-		 *        The x coordinate of the node
+		 *            The x coordinate of the node
 		 * @param y
-		 *        The y coordinate of the node
+		 *            The y coordinate of the node
 		 */
 		public Node(int x, int y) {
 			this.x = x;
@@ -452,7 +454,7 @@ public class AStarPathFinder {
 		 * Set the parent of this node
 		 * 
 		 * @param parent
-		 *        The parent node which lead us to this node
+		 *            The parent node which lead us to this node
 		 * @return The depth we have no reached in searching
 		 */
 		public int setParent(Node parent) {

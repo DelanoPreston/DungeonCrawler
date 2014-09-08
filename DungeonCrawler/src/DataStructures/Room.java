@@ -24,11 +24,11 @@ public class Room {
 	}
 
 	public int getRoomX2() {
-		return x + width;
+		return x + width-1;
 	}
 
 	public int getRoomY2() {
-		return y + height;
+		return y + height-1;
 	}
 
 	public int getFloorX1() {
