@@ -44,8 +44,6 @@ public class AStarPathFinder {
 	 */
 	public AStarPathFinder(Map map, int maxSearchDistance, boolean allowDiagMovement) {
 		this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
-		// this(map, maxSearchDistance, false, new ClosestHeuristic());
-
 	}
 
 	/**

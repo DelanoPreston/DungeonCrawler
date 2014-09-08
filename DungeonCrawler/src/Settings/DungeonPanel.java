@@ -27,8 +27,7 @@ import DataStructures.Location;
  */
 @SuppressWarnings("serial")
 public class DungeonPanel extends JPanel {
-	int timer = 0;// if I load a game, this will be reset to 0 causing problems
-					// with crops and other timed things
+	int timer = 0;
 	Timer mainTimer;
 	// MapCreator map;
 	Map map;
@@ -37,10 +36,10 @@ public class DungeonPanel extends JPanel {
 	VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
+	double translateX = 0;
+	double translateY = 0;
+	double scale = 1.0;
 
-	// double translateX = -3200;
-	// double translateY = -3200;
-	// double scale = 1.0;
 	// JPanel cards;
 
 	/**
@@ -51,7 +50,7 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(Key.width, Key.height);
-		v.add(new Vision(map, 360, 75));
+		v.add(new Vision(map, 360, Key.rayCastingDistance));
 		// for (Room r : map.rooms)
 		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
 		vm = new VisionManager();
@@ -70,7 +69,7 @@ public class DungeonPanel extends JPanel {
 	public void Update() {
 		if (popupListener.location != null) {
 			v.get(0).source = popupListener.location;
-//			System.out.println("yes");
+			// System.out.println("yes");
 		}
 		for (int i = 0; i < v.size(); i++)
 			v.get(i).update();
@@ -87,11 +86,10 @@ public class DungeonPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2D = (Graphics2D) g;
-		int tileSize = 8;
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				// map.drawGameMap(g2D, this.getSize(), v.get(0).getShape());
+				map.drawGameMap(g2D, this.getSize(), translateX, translateY, scale);
 			} else {
 				map.drawWholeMap(g2D);
 			}
@@ -101,26 +99,14 @@ public class DungeonPanel extends JPanel {
 		if (Key.drawFogOfWar)
 			vm.paint(g2D);
 
+		// this tells the minimap to be drawn
 		if (Key.drawMiniMap) {
-			int tx = (int) (popupListener.location.getX() / Key.tileSize);// (int)
-																			// v.get(0).getTileSource().getX();
-			int ty = (int) (popupListener.location.getY() / Key.tileSize);// (int)
-																			// v.get(0).getTileSource().getY();
+			int tx = (int) (popupListener.location.getX() / Key.tileSize);
+			int ty = (int) (popupListener.location.getY() / Key.tileSize);
 			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
-		if (level != null) {
-			for (int y = 0; y < level.length; y++) {
-				for (int x = 0; x < level[0].length; x++) {
-					if (level[y][x] == 0)
-						g.setColor(new Color(255, 255, 255, 255));
-					else
-						g.setColor(new Color(0, 0, 0, 255));
-
-					g.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-				}
-			}
-		}
+		// this draws the mouse's tile location under the map
 		int x = (int) (popupListener.location.getX() / Key.tileSize);
 		int y = (int) (popupListener.location.getY() / Key.tileSize);
 		g.setColor(new Color(0, 0, 0, 255));
@@ -162,6 +148,14 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing");
 			}
+			if(key == KeyEvent.VK_UP)
+				translateY--;
+			if(key == KeyEvent.VK_DOWN)
+				translateY++;
+			if(key == KeyEvent.VK_LEFT)
+				translateX--;
+			if(key == KeyEvent.VK_RIGHT)
+				translateX++;
 		}
 
 		@Override
@@ -191,8 +185,7 @@ public class DungeonPanel extends JPanel {
 	 * @author Preston Delano
 	 * 
 	 */
-	class PopupListener implements MouseListener, MouseWheelListener,
-			MouseMotionListener {
+	class PopupListener implements MouseListener, MouseWheelListener, MouseMotionListener {
 		DungeonPanel reference;
 		// private int lastOffsetX;
 		// private int lastOffsetY;
@@ -331,50 +324,5 @@ public class DungeonPanel extends JPanel {
 			// location = new Point2D.Double(x, y);
 			// // System.out.println(location.getX() + ", " + location.getY());
 		}
-	}
-
-	public int[][] createDungeon(int width, int height) {
-		int[][] temp = setArray(height, width);
-		Random rand = new Random();
-		int rooms = rand.nextInt(4) + ((width + height) / 2) / 16;
-
-		for (int i = 0; i < rooms; i++) {
-			boolean roomSuccess = true;
-			int roomWidth = rand.nextInt(8) + 8;
-			int roomHeight = rand.nextInt(8) + 8;
-			int roomX = rand.nextInt(width - roomWidth);
-			int roomY = rand.nextInt(height - roomHeight);
-
-			for (int y = roomY; y < roomY + roomHeight; y++) {
-				for (int x = roomX; x < roomX + roomWidth; x++) {
-					if (temp[y][x] == 1) {
-						roomSuccess = false;
-					}
-				}
-			}
-
-			if (roomSuccess) {
-				for (int y = roomY; y < roomY + roomHeight; y++) {
-					for (int x = roomX; x < roomX + roomWidth; x++) {
-						temp[y][x] = 1;
-					}
-				}
-			}
-
-			if (!roomSuccess)
-				i--;
-		}
-
-		return temp;
-	}
-
-	private int[][] setArray(int height, int width) {
-		int[][] temp = new int[height][width];
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				temp[i][j] = 0;
-			}
-		}
-		return temp;
 	}
 }

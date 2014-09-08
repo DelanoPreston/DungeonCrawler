@@ -25,7 +25,8 @@ public class Key {
 
 	// resolution of ray casting
 	public static int rayCastResolution = 36;
-
+	public static int rayCastingDistance = 400;
+	
 	// size of map
 	public static int width = 64;
 	public static int height = 64;
@@ -39,16 +40,16 @@ public class Key {
 	public static boolean drawRays = true;
 	public static boolean drawClosestIntersect = true;
 	// map things
-	public static boolean drawRoomNumbers = true;
+	public static boolean drawRoomNumbers = false;
 	public static boolean drawRoomCenters = false;
-	public static boolean drawTunnelingPaths = true;
+	public static boolean drawTunnelingPaths = false;
 	public static boolean drawPathMap = false;// throws error when true
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 	// miniMap things
 	public static boolean drawMiniMap = true;
-	public static boolean drawGamePlay = false;// when true map does not work
-												// for now
+	public static boolean drawGamePlay = true;
+	
 	// fog of war things
 	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
