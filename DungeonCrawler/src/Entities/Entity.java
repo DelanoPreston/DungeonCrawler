@@ -8,7 +8,7 @@ public class Entity implements Serializable {
 	private static final long serialVersionUID = -1152523368523661488L;
 
 	private String name;
-	private Location location;
+	protected Location location;
 
 	public Entity() {
 		name = "None";

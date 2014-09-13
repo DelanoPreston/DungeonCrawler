@@ -50,10 +50,10 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(Key.width, Key.height);
-		v.add(new Vision(map, 360, Key.rayCastingDistance));
+		v.add(new Vision(map, Key.rayCastResolution, Key.rayCastingDistance));
 		// for (Room r : map.rooms)
 		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
-		vm = new VisionManager();
+		// vm = new VisionManager();
 		// v2 = new Vision(map);
 		// level = createDungeon(32, 32);
 		popupListener = new PopupListener(this);
@@ -74,7 +74,7 @@ public class DungeonPanel extends JPanel {
 		for (int i = 0; i < v.size(); i++)
 			v.get(i).update();
 		//
-		vm.update(this.getSize(), v);
+		// vm.update(this.getSize(), v);
 		//
 		// // v2.update();
 		// map.setVisible(v.get(0).getShape());
@@ -96,8 +96,10 @@ public class DungeonPanel extends JPanel {
 		}
 		// for (Vision vis : v)
 		// vis.paint(g2D, this.getSize());
-		if (Key.drawFogOfWar)
-			vm.paint(g2D);
+		// if (Key.drawFogOfWar)
+		// vm.paint(g2D);
+
+		v.get(0).paint(g2D, this.getSize());
 
 		// this tells the minimap to be drawn
 		if (Key.drawMiniMap) {
@@ -148,13 +150,13 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing");
 			}
-			if(key == KeyEvent.VK_UP)
+			if (key == KeyEvent.VK_UP)
 				translateY--;
-			if(key == KeyEvent.VK_DOWN)
+			if (key == KeyEvent.VK_DOWN)
 				translateY++;
-			if(key == KeyEvent.VK_LEFT)
+			if (key == KeyEvent.VK_LEFT)
 				translateX--;
-			if(key == KeyEvent.VK_RIGHT)
+			if (key == KeyEvent.VK_RIGHT)
 				translateX++;
 		}
 
@@ -189,7 +191,7 @@ public class DungeonPanel extends JPanel {
 		DungeonPanel reference;
 		// private int lastOffsetX;
 		// private int lastOffsetY;
-		Point2D location = new Point2D.Double(0, 0);
+		Location location = new Location(0, 0);
 		boolean showPopup;
 
 		PopupListener(DungeonPanel inGamePanel) {
@@ -204,7 +206,7 @@ public class DungeonPanel extends JPanel {
 				return new Location(0, 0);
 		}
 
-		public Point2D GetPopupLocation() {
+		public Location GetPopupLocation() {
 			// System.out.println("PopupLocation:" + location.getX() + "," +
 			// location.getY());
 			return location;
@@ -314,7 +316,7 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public void getMousePosition(MouseEvent e) {
-			location = new Point2D.Double(e.getX(), e.getY());
+			location = new Location(e.getX(), e.getY());
 			// // this gets the position on the map of the mouse, given the
 			// translation, and scale
 			// double x = ((reference.getWidth() / 2) - reference.translateX) -

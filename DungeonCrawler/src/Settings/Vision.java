@@ -13,9 +13,11 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import DataStructures.Location;
+
 public class Vision {
-	public Point2D prevSource;
-	public Point2D source;
+	public Location prevSource;
+	public Location source;
 	float radius;
 	Line2D[] rays;
 	Map mapRef;
@@ -24,7 +26,7 @@ public class Vision {
 
 	Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
-		source = new Point2D.Float(64, 64);
+		source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[360];
 		// update();
@@ -33,14 +35,14 @@ public class Vision {
 
 	Vision(Map mapRef, int resolution, int radius) {
 		this.mapRef = mapRef;
-		source = new Point2D.Float(64, 64);
+		source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[resolution];
 		// update();
 		shape = new GeneralPath();
 	}
 
-	Vision(Map mapRef, int resolution, int radius, Point2D source) {
+	Vision(Map mapRef, int resolution, int radius, Location source) {
 		this.mapRef = mapRef;
 		this.source = source;
 		this.radius = radius;
@@ -53,7 +55,8 @@ public class Vision {
 		if (Key.drawRays) {
 			for (Line2D l : rays) {
 				// g2D.draw(l);
-				// g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float) l.getX2(), (float) l.getY2());
+				// g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float)
+				// l.getX2(), (float) l.getY2());
 				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
 			}
 		} else if (Key.drawFogOfWar) {
@@ -65,8 +68,9 @@ public class Vision {
 			float[] dist = { 0.5f, 0.75f, 1.0f };
 			Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
 
-			// -RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
-			RadialGradientPaint p = new RadialGradientPaint(source, radius, dist, colors);
+			// -RadialGradientPaint p = new RadialGradientPaint(center, radius,
+			// focus, dist, colors, CycleMethod.NO_CYCLE);
+			RadialGradientPaint p = new RadialGradientPaint(source.getPoint(), radius, dist, colors);
 			// - g2D.setComposite(AlphaComposite.SrcOut);
 			g2D.setPaint(p);
 			g2D.fill(shape);
@@ -100,14 +104,17 @@ public class Vision {
 			// calculates values for each ray in the cast
 			for (int i = 0; i < rays.length; i++) {
 				double angle = Math.toRadians(i * (360 / rays.length));
-				rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
+				rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
+						+ source.getY()));
 				Point2D[] intersects = new Point2D[0];
 				// checks if it intersects with each wall in the list
 				for (int j = 0; j < walls.size(); j++) {
 					if (walls.get(j).solid) {
-						// this uses the generic collision to check if there is a collision
+						// this uses the generic collision to check if there is
+						// a collision
 						if (rays[i].intersects(walls.get(j).positionSize)) {
-							// then this checks the close walls that seem to have an intersection, and gets the points
+							// then this checks the close walls that seem to
+							// have an intersection, and gets the points
 							Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
 							intersects = concatenateArrays(intersects, temp);
 						}
@@ -117,7 +124,7 @@ public class Vision {
 				if (intersects.length >= 1) {
 					Point2D lineEnd = null;
 					// if (Key.drawClosestIntersect)
-					lineEnd = findClosestPoint(source, intersects);
+					lineEnd = findClosestPoint(source.getPoint(), intersects);
 					// else
 					// lineEnd = findSecondClosestPoint(source, intersects);
 
@@ -126,7 +133,7 @@ public class Vision {
 						Point2D temp = lineEnd;
 						lineEnd = temp;
 					}
-					rays[i] = new Line2D.Double(source, lineEnd);
+					rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
 				}
 			}
 			createVisionShape();
@@ -135,7 +142,7 @@ public class Vision {
 	}
 
 	public Point2D getSource() {
-		return source;
+		return source.getPoint();
 	}
 
 	public Shape getShape() {
@@ -152,18 +159,22 @@ public class Vision {
 
 		// if (source.getX() > rec.getCenterX()) {
 		// // Left side...
-		// p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
+		// p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(),
+		// rec.getMinX(), rec.getMaxY()));
 		// } else if (source.getX() < rec.getCenterX()) {
 		// // Right side
-		// p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
+		// p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(),
+		// rec.getMaxX(), rec.getMaxY()));
 		// }
 		//
 		// if (source.getY() > rec.getCenterY()) {
 		// // Top line
-		// p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
+		// p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(),
+		// rec.getMaxX(), rec.getMinY()));
 		// } else if (source.getY() < rec.getCenterY()) {
 		// // Bottom line
-		// p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
+		// p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(),
+		// rec.getMaxX(), rec.getMaxY()));
 		// }
 
 		// Top line
@@ -175,7 +186,8 @@ public class Vision {
 		// Left side...
 		p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
 
-		// until the end of this method, add this does is remove nulls from the list
+		// until the end of this method, add this does is remove nulls from the
+		// list
 		for (Point2D po : p) {
 			if (po != null) {
 				count++;
@@ -207,7 +219,8 @@ public class Vision {
 		double yi = ((y3 - y4) * (x1 * y2 - y1 * x2) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
 
 		Point2D p = new Point2D.Double(xi, yi);
-		// these if statements say there is no intersection if the lines are too short
+		// these if statements say there is no intersection if the lines are too
+		// short
 		if (xi < Math.min(x1, x2) || xi > Math.max(x1, x2))
 			return null;
 		if (xi < Math.min(x3, x4) || xi > Math.max(x3, x4))
@@ -227,7 +240,8 @@ public class Vision {
 		double xD1, yD1, xD2, yD2, xD3, yD3;
 		double dot, deg, len1, len2;
 		double segmentLen1, segmentLen2;
-		double ua, div;// , ub;//I did not write this method, though ub does not seemed to be used anywhere
+		double ua, div;// , ub;//I did not write this method, though ub does not
+						// seemed to be used anywhere
 
 		// calculate differences
 		xD1 = p2.getX() - p1.getX();
@@ -327,7 +341,8 @@ public class Vision {
 	}
 
 	public Shape createDrawVisionShape(Dimension d) {
-		// Rectangle screenSize = new Rectangle(0, 0, (int) d.getWidth(), (int) d.getHeight());
+		// Rectangle screenSize = new Rectangle(0, 0, (int) d.getWidth(), (int)
+		// d.getHeight());
 		//
 		// Area tempS = new Area(screenSize);
 		// tempS.subtract(new Area(shape));

@@ -24,26 +24,26 @@ public class Key {
 	public static final int stone = 20;
 
 	// resolution of ray casting
-	public static int rayCastResolution = 36;
-	public static int rayCastingDistance = 400;
+	public static int rayCastResolution = 360;
+	public static int rayCastingDistance = 75;
 	
 	// size of map
 	public static int width = 64;
 	public static int height = 64;
-	public static int tileSize = 10;
+	public static int tileSize = 6;
 
 	// map settings
-	public static int numOfRooms = 32;
+	public static int numOfRooms = 320;
 
 	// draw settings
 	// vision things
-	public static boolean drawRays = true;
+	public static boolean drawRays = false;
 	public static boolean drawClosestIntersect = true;
 	// map things
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawRoomCenters = false;
 	public static boolean drawTunnelingPaths = false;
-	public static boolean drawPathMap = false;// throws error when true
+	public static boolean drawPathMap = true;// throws error when true
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 	// miniMap things
