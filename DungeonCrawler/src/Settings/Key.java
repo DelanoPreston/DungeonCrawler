@@ -16,9 +16,8 @@ public class Key {
 	public static final int floor = 1;
 	public static final int hallwayFloor = 2;
 	public static final int sideWall = 4;
-//	public static final int cornerWall = 5;
-	public static final int lockedWall = 5;// for map making pathfinding
-											// purposes - a
+	public static final int lockedWall = 5;
+	
 	// wall that cannot become a door
 	public static final int door = 12;
 	public static final int stone = 20;
@@ -30,7 +29,7 @@ public class Key {
 	// size of map
 	public static int width = 64;
 	public static int height = 64;
-	public static int tileSize = 6;
+	public static int tileSize = 10;
 
 	// map settings
 	public static int numOfRooms = 320;
@@ -39,29 +38,27 @@ public class Key {
 	// vision things
 	public static boolean drawRays = false;
 	public static boolean drawClosestIntersect = true;
+	
 	// map things
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawRoomCenters = false;
 	public static boolean drawTunnelingPaths = false;
-	public static boolean drawPathMap = true;// throws error when true
+	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
+	
 	// miniMap things
 	public static boolean drawMiniMap = true;
 	public static boolean drawGamePlay = true;
 	
 	// fog of war things
-	public static boolean drawFogOfWar = true;
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 
 	// debug tools
-	// public static boolean runSlickGame = true;
 	public static boolean showDebug = true;
-	public static boolean showHallMapping = true;// seems to do nothing - i
-													// think it just prints to
-													// the console, info about
-													// making halls
+	public static boolean showHallMapping = true;
 	public static boolean showPathDebug = false;
 	public static boolean showErrors = false;
 
@@ -69,11 +66,4 @@ public class Key {
 	public static int logSystemManagement = 3000;
 	public static int logEntityManagement = 3001;
 	public static int logComponentManagement = 3002;
-
-	// public static boolean isWall(int key) {
-	// if (key == sideWall || key == cornerWall || key == lockedWall)
-	// return true;
-	// else
-	// return false;
-	// }
 }

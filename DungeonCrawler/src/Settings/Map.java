@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import Pathfinding.TileBasedMap;
 
 public class Map implements TileBasedMap {
 	Tile[][] map;
+	List<Line2D> wallList2 = new ArrayList<>();
 	List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
@@ -155,7 +157,7 @@ public class Map implements TileBasedMap {
 					if (map[x][y].getVisible() || !Key.drawMMFogOfWar) {
 						if (x == px && y == py) {
 							g2D.setColor(yellow);
-						} else if (isCell(x, y, Key.floor) || isCell(x,y,Key.hallwayFloor)) {
+						} else if (isCell(x, y, Key.floor) || isCell(x, y, Key.hallwayFloor)) {
 							g2D.setColor(green);
 						} else if (isWall(checkCell(x, y))) {
 							g2D.setColor(gray);
@@ -312,6 +314,8 @@ public class Map implements TileBasedMap {
 	}
 
 	public boolean isCell(int x, int y, int cellType) {
+		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
+			return false;
 		return map[x][y].getKey() == cellType;
 	}
 
@@ -320,8 +324,11 @@ public class Map implements TileBasedMap {
 	}
 
 	public void setCell(int x, int y, int cellType) {
-		map[x][y].setKey(cellType);
-		updateTileCost(x, y);
+		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height) {
+		} else {
+			map[x][y].setKey(cellType);
+			updateTileCost(x, y);
+		}
 	}
 
 	public void resetVisitedMap() {
@@ -463,9 +470,13 @@ public class Map implements TileBasedMap {
 		for (int x = 1; x < getWidthInTiles() - 1; x++) {
 			for (int y = 1; y < getHeightInTiles() - 1; y++) {
 				if (isCell(x, y, Key.unused)) {
-					if (isCell(x + 1, y, Key.hallwayFloor) || isCell(x - 1, y, Key.hallwayFloor) || isCell(x, y + 1, Key.hallwayFloor)
-							|| isCell(x, y - 1, Key.hallwayFloor)) {
-						setCell(x, y, Key.sideWall);
+					for (int x2 = x - 1; x2 <= x + 1; x2++) {
+						for (int y2 = y - 1; y2 <= y + 1; y2++) {
+							if (isCell(x2, y2, Key.hallwayFloor)) {
+								setCell(x, y, Key.sideWall);
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -490,6 +501,64 @@ public class Map implements TileBasedMap {
 				}
 			}
 		}
+		// ************************************************************************
+		// testing more line creation
+		// ************************************************************************
+		// set all walls to side walls
+		for (int x = 0; x < Key.width; x++) {
+			for (int y = 0; y < Key.height; y++) {
+				if (isCell(x, y, Key.lockedWall))
+					setCell(x, y, Key.sideWall);
+			}
+		}
+//		for(int r = 0; r<rooms.size();r++){
+//			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
+//			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
+//			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
+//			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
+//		}
+		
+//		for (int x = 0; x < Key.width; x++) {
+//			for (int y = 0; y < Key.height; y++) {
+//				if (isCell(x, y, Key.sideWall)) {
+//					
+//				}
+//			}
+//		}
+
+		// ************************************************************************
+		// testing line creation for vision interrupts instead of walls
+		// ************************************************************************
+
+		// boolean firstWall = true;
+		// int startX = -1;
+		// int startY = -1;
+		// // for vertical lines
+		// for (int x = 0; x < Key.width; x++) {
+		// for (int y = 0; y < Key.height; y++) {
+		// if (isWall(x, y)) {
+		// if (firstWall) {
+		// startX = x;
+		// startY = y;
+		// firstWall = false;
+		// }
+		// } else if (!firstWall) {
+		// if (startX != -1 && startY != -1 && startX != x && startY != y - 1) {
+		// wallList2.add(new Line2D.Double(startX, startY, x, y - 1));
+		// startX = -1;
+		// startY = -1;
+		// firstWall = true;
+		// }
+		// }
+		// }
+		// firstWall = true;
+		// }
+		// // for creating the horizontal lines
+		// for (int y = 0; y < Key.height; y++) {
+		// for (int x = 0; x < Key.width; x++) {
+		//
+		// }
+		// }
 
 		// ************************************************************************
 		// for debugging purposes
@@ -503,6 +572,12 @@ public class Map implements TileBasedMap {
 				return r;
 		}
 		return null;
+	}
+
+	public boolean isCornerWall(int x, int y) {
+		int[][] cornerCheck = new int[3][3];
+
+		return false;
 	}
 
 	public boolean createRoom(String roomType, int rx, int ry, int rwidth, int rheight) {
@@ -582,6 +657,10 @@ public class Map implements TileBasedMap {
 		default:
 			map[x][y].setCost(1);
 		}
+	}
+
+	public boolean isWall(int x, int y) {
+		return isWall(checkCell(x, y));
 	}
 
 	public boolean isWall(int key) {

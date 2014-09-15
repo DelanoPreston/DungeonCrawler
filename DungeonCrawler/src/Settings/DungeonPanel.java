@@ -111,8 +111,9 @@ public class DungeonPanel extends JPanel {
 		// this draws the mouse's tile location under the map
 		int x = (int) (popupListener.location.getX() / Key.tileSize);
 		int y = (int) (popupListener.location.getY() / Key.tileSize);
-		g.setColor(new Color(0, 0, 0, 255));
+		g2D.setColor(new Color(0, 0, 0, 255));
 		g2D.drawString("Mouse is at: " + x + ", " + y, 15, 16 + (Key.tileSize * Key.height));
+		g2D.drawString("you are awesome", 15, 32 + (Key.tileSize * Key.height));
 	}
 
 	/**
