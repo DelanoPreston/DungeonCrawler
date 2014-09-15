@@ -1,8 +1,10 @@
 package Settings;
+
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.MultipleGradientPaint.CycleMethod;
 import java.awt.RadialGradientPaint;
 import java.awt.Shape;
 import java.awt.geom.GeneralPath;
@@ -11,19 +13,40 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import DataStructures.Location;
+
 public class Vision {
-	public Point2D source;
+	public Location prevSource;
+	public Location source;
 	float radius;
 	Line2D[] rays;
 	Map mapRef;
 	Point2D[] allIntersects;
 	Shape shape;
 
-	Vision(Map mapRef) {
+	Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
-		source = new Point2D.Float(0, 0);
-		radius = 45;
-		rays = new Line2D[180];
+		source = new Location(64, 64);
+		this.radius = radius;
+		rays = new Line2D[360];
+		// update();
+		shape = new GeneralPath();
+	}
+
+	Vision(Map mapRef, int resolution, int radius) {
+		this.mapRef = mapRef;
+		source = new Location(64, 64);
+		this.radius = radius;
+		rays = new Line2D[resolution];
+		// update();
+		shape = new GeneralPath();
+	}
+
+	Vision(Map mapRef, int resolution, int radius, Location source) {
+		this.mapRef = mapRef;
+		this.source = source;
+		this.radius = radius;
+		rays = new Line2D[resolution];
 		// update();
 		shape = new GeneralPath();
 	}
@@ -31,91 +54,95 @@ public class Vision {
 	public void paint(Graphics2D g2D, Dimension d) {
 		if (Key.drawRays) {
 			for (Line2D l : rays) {
-				g2D.draw(l);
+				// g2D.draw(l);
+				// g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float)
+				// l.getX2(), (float) l.getY2());
+				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
 			}
+		} else if (Key.drawFogOfWar) {
+			g2D.setColor(new Color(0, 0, 0, 255));
+			g2D.fill(createDrawVisionShape(d));
+
+			// - Point2D center = source;
+			// -Point2D focus = source;
+			float[] dist = { 0.5f, 0.75f, 1.0f };
+			Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
+
+			// -RadialGradientPaint p = new RadialGradientPaint(center, radius,
+			// focus, dist, colors, CycleMethod.NO_CYCLE);
+			RadialGradientPaint p = new RadialGradientPaint(source.getPoint(), radius, dist, colors);
+			// - g2D.setComposite(AlphaComposite.SrcOut);
+			g2D.setPaint(p);
+			g2D.fill(shape);
+
 		} else {
-			g2D.setColor(new Color(0, 0, 0, 64));
-			if (Key.drawInverseVisionShape) {
-				Point2D center = source;
-				// float radius = 25;
-				Point2D focus = source;
-				// this second number describes how dark the transition is depending on the color list
-				float[] dist = { 0.0f, 0.1f, 1.0f };
-				Color[] colors = { new Color(0, 0, 0, 64), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
-				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
-				g2D.setPaint(p);
-				g2D.fill(createDrawVisionShape(d));
-			} else if (Key.drawVisionScreenV2) {
-				g2D.setColor(Color.BLACK);
-				Point2D center = source;
-				// float radius = 25;
-				Point2D focus = source;
-				// this second number describes how dark the transition is depending on the color list
-				float[] dist = { 0.0f, 0.05f, 1.0f };
-				Color[] colors = { new Color(0, 0, 0, 64), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
-				RadialGradientPaint p = new RadialGradientPaint(center, radius, focus, dist, colors, CycleMethod.NO_CYCLE);
-				g2D.setPaint(p);
-				g2D.fill(createDrawVisionShape(d));
+			g2D.setColor(Color.black);
+			Composite defaultComp = g2D.getComposite();
+			// g2D.setColor(new Color(0, 0, 0, 255));
 
-				Point2D center2 = source;
-				// float radius = 25;
-				Point2D focus2 = source;
-				// this second number describes how dark the transition is depending on the color list
-				float[] dist2 = { 0.0f, 0.8f, 1.0f };
-				Color[] colors2 = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 128), new Color(0, 0, 0, 255) };
-				RadialGradientPaint p2 = new RadialGradientPaint(center2, radius, focus2, dist2, colors2, CycleMethod.NO_CYCLE);
-				g2D.setPaint(p2);
-				g2D.fill(shape);
-			} else {
-				g2D.fill(shape);
-			}
+			g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 1f));
+			g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());// createDrawVisionShape(d));
+			// System.out.println("good");
 
-			// g2D.draw(visShape);
+			// g2D.setColor(new Color(0, 0, 0, 127));
+			g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
+			g2D.draw(shape);
+			g2D.setComposite(defaultComp);
+			// g2D.fill(shape);
 		}
+
+		// g2D.draw(visShape);
+
 	}
 
 	public void update() {
-		// recreates the intersect array, for new position
-		allIntersects = new Point2D[0];
-		// re grabs the list of walls from the map
-		List<MapTile> walls = mapRef.getWalls();
-		// calculates values for each ray in the cast
-		for (int i = 0; i < rays.length; i++) {
-			double angle = Math.toRadians(i * (360 / rays.length));
-			rays[i] = new Line2D.Double(source, new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius) + source.getY()));
-			Point2D[] intersects = new Point2D[0];
-			// checks if it intersects with each wall in the list
-			for (int j = 0; j < walls.size(); j++) {
-				if (walls.get(j).solid) {
-					// this uses the generic collision to check if there is a collision
-					if (rays[i].intersects(walls.get(j).positionSize)) {
-						// then this checks the close walls that seem to have an intersection, and gets the points
-						Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
-						intersects = concatenateArrays(intersects, temp);
+		if (source != prevSource) {
+			// recreates the intersect array, for new position
+			allIntersects = new Point2D[0];
+			// re grabs the list of walls from the map
+			List<MapTile> walls = mapRef.getWalls();
+			// calculates values for each ray in the cast
+			for (int i = 0; i < rays.length; i++) {
+				double angle = Math.toRadians(i * (360 / rays.length));
+				rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
+						+ source.getY()));
+				Point2D[] intersects = new Point2D[0];
+				// checks if it intersects with each wall in the list
+				for (int j = 0; j < walls.size(); j++) {
+					if (walls.get(j).solid) {
+						// this uses the generic collision to check if there is
+						// a collision
+						if (rays[i].intersects(walls.get(j).positionSize)) {
+							// then this checks the close walls that seem to
+							// have an intersection, and gets the points
+							Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
+							intersects = concatenateArrays(intersects, temp);
+						}
 					}
 				}
-			}
-			allIntersects = concatenateArrays(intersects, allIntersects);
-			if (intersects.length >= 1) {
-				Point2D lineEnd = null;
-				// if (Key.drawClosestIntersect)
-				lineEnd = findClosestPoint(source, intersects);
-				// else
-				// lineEnd = findSecondClosestPoint(source, intersects);
+				allIntersects = concatenateArrays(intersects, allIntersects);
+				if (intersects.length >= 1) {
+					Point2D lineEnd = null;
+					// if (Key.drawClosestIntersect)
+					lineEnd = findClosestPoint(source.getPoint(), intersects);
+					// else
+					// lineEnd = findSecondClosestPoint(source, intersects);
 
-				// catch for the bad values
-				if (lineEnd.getY() > 240) {
-					Point2D temp = lineEnd;
-					lineEnd = temp;
+					// catch for the bad values
+					if (lineEnd.getY() > 240) {
+						Point2D temp = lineEnd;
+						lineEnd = temp;
+					}
+					rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
 				}
-				rays[i] = new Line2D.Double(source, lineEnd);
 			}
+			createVisionShape();
+			prevSource = source;
 		}
-		createVisionShape();
 	}
 
 	public Point2D getSource() {
-		return source;
+		return source.getPoint();
 	}
 
 	public Shape getShape() {
@@ -123,28 +150,32 @@ public class Vision {
 	}
 
 	public Point2D getTileSource() {
-		return new Point2D.Double(source.getX() / ContentBank.tileSize, source.getY() / ContentBank.tileSize);
+		return new Point2D.Double(source.getX() / Key.tileSize, source.getY() / Key.tileSize);
 	}
 
 	public Point2D[] getIntersectionPoint(Line2D l, Rectangle2D rec) {
 		int count = 0;
 		Point2D[] p = new Point2D[4];
 
-//		if (source.getX() > rec.getCenterX()) {
-//			// Left side...
-//			p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
-//		} else if (source.getX() < rec.getCenterX()) {
-//			// Right side
-//			p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(), rec.getMaxX(), rec.getMaxY()));
-//		}
-//
-//		if (source.getY() > rec.getCenterY()) {
-//			// Top line
-//			p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
-//		} else if (source.getY() < rec.getCenterY()) {
-//			// Bottom line
-//			p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(), rec.getMaxX(), rec.getMaxY()));
-//		}
+		// if (source.getX() > rec.getCenterX()) {
+		// // Left side...
+		// p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(),
+		// rec.getMinX(), rec.getMaxY()));
+		// } else if (source.getX() < rec.getCenterX()) {
+		// // Right side
+		// p[1] = useFindInt(l, new Line2D.Double(rec.getMaxX(), rec.getMinY(),
+		// rec.getMaxX(), rec.getMaxY()));
+		// }
+		//
+		// if (source.getY() > rec.getCenterY()) {
+		// // Top line
+		// p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(),
+		// rec.getMaxX(), rec.getMinY()));
+		// } else if (source.getY() < rec.getCenterY()) {
+		// // Bottom line
+		// p[2] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMaxY(),
+		// rec.getMaxX(), rec.getMaxY()));
+		// }
 
 		// Top line
 		p[0] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMaxX(), rec.getMinY()));
@@ -155,7 +186,8 @@ public class Vision {
 		// Left side...
 		p[3] = useFindInt(l, new Line2D.Double(rec.getMinX(), rec.getMinY(), rec.getMinX(), rec.getMaxY()));
 
-		// until the end of this method, add this does is remove nulls from the list
+		// until the end of this method, add this does is remove nulls from the
+		// list
 		for (Point2D po : p) {
 			if (po != null) {
 				count++;
@@ -187,7 +219,8 @@ public class Vision {
 		double yi = ((y3 - y4) * (x1 * y2 - y1 * x2) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
 
 		Point2D p = new Point2D.Double(xi, yi);
-		// these if statements say there is no intersection if the lines are too short
+		// these if statements say there is no intersection if the lines are too
+		// short
 		if (xi < Math.min(x1, x2) || xi > Math.max(x1, x2))
 			return null;
 		if (xi < Math.min(x3, x4) || xi > Math.max(x3, x4))
@@ -207,7 +240,8 @@ public class Vision {
 		double xD1, yD1, xD2, yD2, xD3, yD3;
 		double dot, deg, len1, len2;
 		double segmentLen1, segmentLen2;
-		double ua, div;// , ub;//I did not write this method, though ub does not seemed to be used anywhere
+		double ua, div;// , ub;//I did not write this method, though ub does not
+						// seemed to be used anywhere
 
 		// calculate differences
 		xD1 = p2.getX() - p1.getX();
@@ -293,32 +327,6 @@ public class Vision {
 		return temp;
 	}
 
-	// public Point2D findSecondClosestPoint(Point2D source, Point2D[] intersects) {
-	// Point2D temp = null;
-	// double closeDist = radius + 1;
-	// double secDist = radius + 1;
-	//
-	// for (Point2D p : intersects) {
-	// if (p != null) {// && Math.abs(source.distance(p)) < closeDist) {
-	// if (temp != null) {
-	// if(Math.abs(source.distance(p)) < closeDist){
-	// secDist = closeDist;
-	// closeDist = Math.abs(source.distance(p));
-	// }else if(Math.abs(source.distance(p)) < secDist && closeDist < secDist- ContentBank.tileSize){
-	// secDist = Math.abs(source.distance(p));
-	// temp = p;
-	// }
-	// }else{
-	// // if any intersection, set the return point to it, then if there is another, that is not as close, then choose that
-	// temp = p;
-	// closeDist = Math.abs(source.distance(p));
-	// }
-	// }
-	// }
-	//
-	// return temp;
-	// }
-
 	public void createVisionShape() {
 		GeneralPath visShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
 		for (int i = 0; i < rays.length; i++) {
@@ -329,11 +337,20 @@ public class Vision {
 			}
 		}
 		visShape.closePath();
-		shape = visShape;
+		shape = (Shape) visShape;
 	}
 
 	public Shape createDrawVisionShape(Dimension d) {
-		GeneralPath tempShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+		// Rectangle screenSize = new Rectangle(0, 0, (int) d.getWidth(), (int)
+		// d.getHeight());
+		//
+		// Area tempS = new Area(screenSize);
+		// tempS.subtract(new Area(shape));
+		// return tempS;
+
+		GeneralPath tempShape = new GeneralPath();
+		// tempShape.lineTo(0, 0);
+
 		for (int i = 0; i < rays.length; i++) {
 			if (i == 0) {
 				tempShape.moveTo(rays[i].getX2(), rays[i].getY2());
@@ -341,15 +358,13 @@ public class Vision {
 				tempShape.lineTo(rays[i].getX2(), rays[i].getY2());
 			}
 		}
-		if (Key.drawInverseVisionShape || Key.drawVisionScreenV2) {
-			tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
-			tempShape.lineTo(d.getWidth(), rays[0].getY2());
-			tempShape.lineTo(d.getWidth(), 0);
-			tempShape.lineTo(0, 0);
-			tempShape.lineTo(0, d.getHeight());
-			tempShape.lineTo(d.getWidth(), d.getHeight());
-			tempShape.lineTo(d.getWidth(), rays[0].getY2());
-		}
+		tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
+		tempShape.lineTo(d.getWidth(), rays[0].getY2());
+		tempShape.lineTo(d.getWidth(), 0);
+		tempShape.lineTo(0, 0);
+		tempShape.lineTo(0, d.getHeight());
+		tempShape.lineTo(d.getWidth(), d.getHeight());
+		tempShape.lineTo(d.getWidth(), rays[0].getY2());
 		tempShape.closePath();
 		return tempShape;
 	}

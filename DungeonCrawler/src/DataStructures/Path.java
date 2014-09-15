@@ -1,11 +1,9 @@
-package Pathfinding;
-
+package DataStructures;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Settings.ContentBank;
-import Settings.Location;
+import Settings.Key;
 
 public class Path {
 	/** The list of steps building up this path */
@@ -43,7 +41,8 @@ public class Path {
 	 * Get the step at a given index in the path
 	 * 
 	 * @param index
-	 *        The index of the step to retrieve. Note this should be >= 0 and < getLength();
+	 *            The index of the step to retrieve. Note this should be >= 0
+	 *            and < getLength();
 	 * @return The step information, the position on the map.
 	 */
 	public Step getStep(int index) {
@@ -54,7 +53,7 @@ public class Path {
 	 * Get the x coordinate for the step at the given index
 	 * 
 	 * @param index
-	 *        The index of the step whose x coordinate should be retrieved
+	 *            The index of the step whose x coordinate should be retrieved
 	 * @return The x coordinate at the step
 	 */
 	public int getX(int index) {
@@ -65,7 +64,7 @@ public class Path {
 	 * Get the y coordinate for the step at the given index
 	 * 
 	 * @param index
-	 *        The index of the step whose y coordinate should be retrieved
+	 *            The index of the step whose y coordinate should be retrieved
 	 * @return The y coordinate at the step
 	 */
 	public int getY(int index) {
@@ -76,9 +75,9 @@ public class Path {
 	 * Append a step to the path.
 	 * 
 	 * @param x
-	 *        The x coordinate of the new step
+	 *            The x coordinate of the new step
 	 * @param y
-	 *        The y coordinate of the new step
+	 *            The y coordinate of the new step
 	 */
 	public void appendStep(int x, int y) {
 		steps.add(new Step(x, y));
@@ -88,9 +87,9 @@ public class Path {
 	 * Prepend a step to the path.
 	 * 
 	 * @param x
-	 *        The x coordinate of the new step
+	 *            The x coordinate of the new step
 	 * @param y
-	 *        The y coordinate of the new step
+	 *            The y coordinate of the new step
 	 */
 	public void prependStep(int x, int y) {
 		steps.add(0, new Step(x, y));
@@ -100,9 +99,9 @@ public class Path {
 	 * Check if this path contains the given step
 	 * 
 	 * @param x
-	 *        The x coordinate of the step to check for
+	 *            The x coordinate of the step to check for
 	 * @param y
-	 *        The y coordinate of the step to check for
+	 *            The y coordinate of the step to check for
 	 * @return True if the path contains the given step
 	 */
 	public boolean contains(int x, int y) {
@@ -112,8 +111,7 @@ public class Path {
 	public List<Location> changePathToDoubleList() {
 		List<Location> temp = new ArrayList<>();
 		for (int i = 0; i < steps.size(); i++) {
-			Location tempLoc = new Location(steps.get(i).getX() * ContentBank.tileSize + (ContentBank.tileSize / 2), steps.get(i).getY() * ContentBank.tileSize
-					+ (ContentBank.tileSize / 2));
+			Location tempLoc = new Location(steps.get(i).getX() * Key.tileSize + (Key.tileSize / 2), steps.get(i).getY() * Key.tileSize + (Key.tileSize / 2));
 			// tempdoub[0] = steps.get(i).getX() * 16 + 8;
 			// tempdoub[1] = steps.get(i).getY() * 16 + 8;
 			temp.add(tempLoc);
@@ -136,9 +134,9 @@ public class Path {
 		 * Create a new step
 		 * 
 		 * @param x
-		 *        The x coordinate of the new step
+		 *            The x coordinate of the new step
 		 * @param y
-		 *        The y coordinate of the new step
+		 *            The y coordinate of the new step
 		 */
 		public Step(int x, int y) {
 			this.x = x;
