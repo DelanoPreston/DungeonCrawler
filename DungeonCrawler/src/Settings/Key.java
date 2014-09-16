@@ -27,9 +27,9 @@ public class Key {
 	public static int rayCastingDistance = 75;
 	
 	// size of map
-	public static int width = 64;
-	public static int height = 64;
-	public static int tileSize = 10;
+	public static int width = 90;
+	public static int height = 70;
+	public static int tileSize = 12;
 
 	// map settings
 	public static int numOfRooms = 320;
@@ -56,7 +56,7 @@ public class Key {
 	public static boolean drawGamePlay = false;
 	
 	// fog of war things
-	public static boolean drawFogOfWar = true;
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 

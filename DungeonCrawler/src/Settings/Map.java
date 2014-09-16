@@ -312,9 +312,10 @@ public class Map implements TileBasedMap {
 			}
 		}
 		if (Key.drawWallLines) {
-			g2D.setColor(new Color(0, 0, 0, 255));
+			g2D.setColor(new Color(195, 0, 0, 255));
 			for (Line2D l : wallList2) {
 				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
+//				g2D.drawRect((int) l.getX1(), (int) l.getY1(), 5, 5);
 				// TODO working on drawing
 			}
 		}
@@ -567,17 +568,30 @@ public class Map implements TileBasedMap {
 		// for vertical lines
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
-				if (isWall(x, y)) {
+				if (isWall(x, y)) {// || isCell(x, y, Key.door)) {
 					if (isCell(x, y, Key.lockedWall)) {
 						if (wallStart) {
 							startX = x;
 							startY = y;
 							wallStart = false;
 						} else {
-							int ts = Key.tileSize;
-							wallList2.add(new Line2D.Double((startX * ts) + (ts / 2), (startY * ts) + (ts / 2), (x * ts) + (ts / 2), (y * ts) + (ts / 2)));
+							wallList2.add(new Line2D.Double((startX * tS) + (tS / 2), (startY * tS) + (tS / 2), (x * tS) + (tS / 2), (y * tS) + (tS / 2)));
+							startX = x;
+							startY = y;
+							
 							// TODO working on this
 						}
+					}
+				} else if (isCell(x, y, Key.door)) {
+					if (wallStart) {
+						startX = x;
+						startY = y + tS;
+						wallStart = false;
+					} else {
+						wallList2.add(new Line2D.Double((startX * tS) + (tS / 2), (startY * tS) + (tS / 2), (x * tS) + (tS / 2), (y * tS)));
+						startX = x;
+						startY = y;// + (tS/2);
+						// TODO working on this
 					}
 				} else {
 					startX = -1;
@@ -592,7 +606,7 @@ public class Map implements TileBasedMap {
 		// for creating the horizontal lines
 		for (int y = 0; y < Key.height; y++) {
 			for (int x = 0; x < Key.width; x++) {
-				if (isWall(x, y)) {
+				if (isWall(x, y) || isCell(x, y, Key.door)) {
 					if (isCell(x, y, Key.lockedWall)) {
 						if (wallStart) {
 							startX = x;
@@ -609,11 +623,11 @@ public class Map implements TileBasedMap {
 					startY = -1;
 					wallStart = true;
 				}
-				
+
 			}
-				startX = -1;
-				startY = -1;
-				wallStart = true;
+			startX = -1;
+			startY = -1;
+			wallStart = true;
 		}
 
 		// ************************************************************************
