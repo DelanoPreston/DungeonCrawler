@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import Settings.Key;
 
 public class Tile {
-	int key;
+	ID key;
 	int cost;
 	boolean visible;
 	boolean visited;
@@ -19,7 +19,7 @@ public class Tile {
 		this.wall = null;
 	}
 
-	public Tile(int key, int cost, boolean visible, Rectangle wall) {
+	public Tile(ID key, int cost, boolean visible, Rectangle wall) {
 		this.key = key;
 		this.cost = cost;
 		this.visible = visible;
@@ -27,7 +27,7 @@ public class Tile {
 		this.wall = wall;
 	}
 
-	public int getKey() {
+	public ID getID() {
 		return key;
 	}
 
@@ -51,12 +51,12 @@ public class Tile {
 		cost += i;
 	}
 
-	public void setKey(int key) {
+	public void setKey(ID key) {
 		this.key = key;
 	}
 
-	public boolean isKey(int key) {
-		return this.key == key;
+	public boolean isKey(ID key) {
+		return this.key.equals(key);
 	}
 
 	public void setCost(int cost) {

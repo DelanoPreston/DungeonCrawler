@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import DataStructures.ID;
 import DataStructures.Path;
 import DataStructures.Room;
 import DataStructures.Tile;
@@ -200,21 +200,32 @@ public class Map implements TileBasedMap {
 					int xLoc = x * Key.tileSize;
 					int yLoc = y * Key.tileSize;
 					g2D.setColor(new Color(110, 110, 110, 255));
-					switch (checkCell(x, y)) {
-					case Key.floor:
-					case Key.hallwayFloor:
+					
+					int key = checkCell(x, y).getID();
+					//any floor
+					if(key == Key.floor.getID())
 						g2D.setColor(new Color(32, 127, 32, 255));
-						break;
-					case Key.sideWall:
+					else if(key == Key.hallwayFloor.getID())
 						g2D.setColor(new Color(127, 127, 127, 255));
-						break;
-					case Key.lockedWall:
+					else if(key == Key.lockedWall.getID())
 						g2D.setColor(new Color(137, 137, 137, 255));
-						break;
-					case Key.door:
+					else if(key == Key.door.getID())
 						g2D.setColor(new Color(32, 32, 32, 255));
-						break;
-					}
+//					switch (checkCell(x, y)) {
+//					case Key.floor:
+//					case Key.hallwayFloor:
+//						g2D.setColor(new Color(32, 127, 32, 255));
+//						break;
+//					case Key.sideWall:
+//						g2D.setColor(new Color(127, 127, 127, 255));
+//						break;
+//					case Key.lockedWall:
+//						g2D.setColor(new Color(137, 137, 137, 255));
+//						break;
+//					case Key.door:
+//						g2D.setColor(new Color(32, 32, 32, 255));
+//						break;
+//					}
 					g2D.fillRect(xLoc, yLoc, Key.tileSize, Key.tileSize);
 
 					if (Key.drawGrid) {
@@ -321,20 +332,26 @@ public class Map implements TileBasedMap {
 		}
 	}
 
+	public boolean isCell(int x, int y, ID cellType) {
+		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
+			return false;
+		return map[x][y].getID().equals(cellType);
+	}
+	
 	public boolean isCell(int x, int y, int cellType) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
 			return false;
-		return map[x][y].getKey() == cellType;
+		return map[x][y].getID().getID()==cellType;
 	}
 
-	public int checkCell(int x, int y) {
+	public ID checkCell(int x, int y) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
-			return -1;
+			return Key.nullID;
 		else
-			return map[x][y].getKey();
+			return map[x][y].getID();
 	}
 
-	public void setCell(int x, int y, int cellType) {
+	public void setCell(int x, int y, ID cellType) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height) {
 		} else {
 			map[x][y].setKey(cellType);
@@ -515,8 +532,10 @@ public class Map implements TileBasedMap {
 		// }
 		// }
 		// ************************************************************************
-		// testing more line creation - sets 'corner' points for where the lines
+		// testing more line creation - sets 'corner' points for where the
+		// lines
 		// are supposed to be(start and stop) ---Working very well
+		//
 		// ************************************************************************
 		// set all walls to side walls
 		for (int x = 0; x < Key.width; x++) {
@@ -524,6 +543,12 @@ public class Map implements TileBasedMap {
 				if (isCell(x, y, Key.lockedWall))
 					setCell(x, y, Key.sideWall);
 			}
+		}
+		for (int r = 0; r < rooms.size(); r++) {
+			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
+			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
+			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
+			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
 		}
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
@@ -548,16 +573,56 @@ public class Map implements TileBasedMap {
 					}
 				}
 			}
+			// before the x changes, I am going to check all the vertical locked
+			// walls'for vision walls'
+			for (int y = 0; y < Key.height; y++) {
+				// TODO if you find a locked wall, make sure there is one above
+				// and or below it
+				if (isCell(x, y, Key.lockedWall)/* &&false// */) {
+					// check above
+					boolean temp = false;
+					int tempY = y;
+					do {
+						tempY++;
+
+						// if (isWall(x, tempY)) {
+						if (isCell(x, tempY, Key.lockedWall)) {
+							temp = true;
+						} else if (isCell(x, tempY, Key.door) || isCell(x, tempY, Key.floor.getID()) || isCell(x, tempY, Key.unused) || checkCell(x, tempY) == Key.nullID) {
+							if (!(y == tempY - 1)) {
+								setCell(x, tempY - 1, Key.lockedWall);
+							}
+							temp = true;
+						}
+					} while (!temp);
+					temp = false;
+					tempY = y;
+					do {
+						tempY--;
+						if (x == 35 && y == 14)
+							temp = false;
+						// if (isWall(x, tempY)) {
+						if (isCell(x, tempY, Key.lockedWall)) {
+
+							temp = true;
+						} else if (isCell(x, tempY, Key.door) || isCell(x, tempY, Key.floor.getID()) || isCell(x, tempY, Key.unused) || checkCell(x, tempY) == Key.nullID) {
+							if (!(y == tempY + 1)) {
+								// if ((x == 35 && tempY + 1 == 12))
+								setCell(x, tempY + 1, Key.lockedWall);
+							}
+							temp = true;
+						}
+					} while (!temp);
+
+				}
+			}
 		}
-		for (int r = 0; r < rooms.size(); r++) {
-			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
-			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
-			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
-			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
-		}
+
+		//
 		// ************************************************************************
 		// testing line creation for vision interrupts instead of walls -
 		// working very well
+		//
 		// ************************************************************************
 		int tS = Key.tileSize;
 		boolean wallStart = true;
@@ -594,9 +659,9 @@ public class Map implements TileBasedMap {
 
 			}
 			// changing row, so resetting starting variables
-			startXLoc = -1;
-			startYLoc = -1;
-			wallStart = true;
+			// startXLoc = -1;
+			// startYLoc = -1;
+			// wallStart = true;
 		}
 		// for creating the horizontal lines
 		for (int y = 0; y < Key.height; y++) {
@@ -707,38 +772,52 @@ public class Map implements TileBasedMap {
 	}
 
 	public void updateTileCost(int x, int y) {
-		int key = checkCell(x, y);
-		switch (key) {
-		case Key.unused:
+		int key = checkCell(x, y).getID();
+		if (Key.unused.getID() == key)
 			map[x][y].setCost(5);
-			break;
-		case Key.floor:
+		else if (Key.floor.getID() == key)
 			map[x][y].setCost(2);
-			break;
-		case Key.hallwayFloor:
+		else if (Key.hallwayFloor.getID() == key)
 			map[x][y].setCost(1);
-			break;
-		case Key.door:
+		else if (Key.door.getID() == key)
 			map[x][y].setCost(1);
-			break;
-		case Key.sideWall:
+		else if (Key.sideWall.getID() == key)
 			map[x][y].setCost(10);
-			break;
-		case Key.lockedWall:
-			// case Key.cornerWall:
+		else if (Key.lockedWall.getID() == key)
 			map[x][y].setCost(100);
-			break;
-		default:
-			map[x][y].setCost(1);
-		}
+		else
+			map[x][y].setCost(100);
+//		switch (key) {
+//		case Key.unused.getID():
+//			map[x][y].setCost(5);
+//			break;
+//		case Key.floor.getID():
+//			map[x][y].setCost(2);
+//			break;
+//		case Key.hallwayFloor.getID():
+//			map[x][y].setCost(1);
+//			break;
+//		case Key.door.getID():
+//			map[x][y].setCost(1);
+//			break;
+//		case Key.sideWall.getID():
+//			map[x][y].setCost(10);
+//			break;
+//		case Key.lockedWall.getID():
+//			// case Key.cornerWall:
+//			map[x][y].setCost(100);
+//			break;
+//		default:
+//			map[x][y].setCost(1);
+//		}
 	}
 
 	public boolean isWall(int x, int y) {
 		return isWall(checkCell(x, y));
 	}
 
-	public boolean isWall(int key) {
-		if (key == Key.sideWall || key == Key.lockedWall)
+	public boolean isWall(ID key) {
+		if (key.equals(Key.sideWall) || key.equals(Key.lockedWall))
 			return true;
 		else
 			return false;
