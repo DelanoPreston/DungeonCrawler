@@ -57,7 +57,7 @@ public class Key {
 	
 	// fog of war things
 	public static boolean drawFogOfWar = false;
-	public static boolean drawMMFogOfWar = false;// true makes minimap not work
+	public static boolean drawMMFogOfWar = true;// true makes minimap not work
 													// for now
 
 	// debug tools

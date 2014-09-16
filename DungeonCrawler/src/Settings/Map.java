@@ -19,8 +19,8 @@ import Pathfinding.TileBasedMap;
 
 public class Map implements TileBasedMap {
 	Tile[][] map;
-	List<Line2D> wallList2 = new ArrayList<>();
-	List<MapTile> wallList = new ArrayList<>();
+	List<Line2D> visWallList = new ArrayList<>();
+	// List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
 	List<Path> paths = new ArrayList<>();
@@ -58,8 +58,8 @@ public class Map implements TileBasedMap {
 		// g2D.setTransform(at);
 	}
 
-	public List<MapTile> getWalls() {
-		return wallList;
+	public List<Line2D> getWalls() {
+		return visWallList;
 	}
 
 	public List<Room> getRooms() {
@@ -313,9 +313,9 @@ public class Map implements TileBasedMap {
 		}
 		if (Key.drawWallLines) {
 			g2D.setColor(new Color(195, 0, 0, 255));
-			for (Line2D l : wallList2) {
+			for (Line2D l : visWallList) {
 				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
-//				g2D.drawRect((int) l.getX1(), (int) l.getY1(), 5, 5);
+				// g2D.drawRect((int) l.getX1(), (int) l.getY1(), 5, 5);
 				// TODO working on drawing
 			}
 		}
@@ -496,25 +496,27 @@ public class Map implements TileBasedMap {
 		// ************************************************************************
 		// this adds the walls to the walllist
 		// ************************************************************************
-		int tS = Key.tileSize;
-		for (int x = 0; x < getWidthInTiles(); x++) {
-			for (int y = 0; y < getHeightInTiles(); y++) {
-				// the pathFinderRoomTunneler key returns all walls
-				if (isWall(checkCell(x, y))) {// ||
-												// tempKey[y][x]
-												// ==
-												// 1
-												// ||
-					// tempKey[y][x] == 2) {
-					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), true));
-				} else if (map[x][y].isKey(Key.door)) {
-					wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS), false));
-				}
-			}
-		}
+		// int tS = Key.tileSize;
+		// for (int x = 0; x < getWidthInTiles(); x++) {
+		// for (int y = 0; y < getHeightInTiles(); y++) {
+		// // the pathFinderRoomTunneler key returns all walls
+		// if (isWall(checkCell(x, y))) {// ||
+		// // tempKey[y][x]
+		// // ==
+		// // 1
+		// // ||
+		// // tempKey[y][x] == 2) {
+		// wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS),
+		// true));
+		// } else if (map[x][y].isKey(Key.door)) {
+		// wallList.add(new MapTile(new Rectangle(x * tS, y * tS, tS, tS),
+		// false));
+		// }
+		// }
+		// }
 		// ************************************************************************
 		// testing more line creation - sets 'corner' points for where the lines
-		// are supposed to be
+		// are supposed to be(start and stop) ---Working very well
 		// ************************************************************************
 		// set all walls to side walls
 		for (int x = 0; x < Key.width; x++) {
@@ -538,8 +540,12 @@ public class Map implements TileBasedMap {
 					if (isWall(x - 1, y))
 						horiz++;
 
-					if (horiz + verti == 1 || (horiz + verti <= 3 && horiz != 0 && verti != 0))
+					if (horiz + verti == 1 || (horiz + verti == 2 && horiz != 0 && verti != 0))
 						setCell(x, y, Key.lockedWall);
+					else if (horiz + verti == 3 && horiz != 0 && verti != 0) {
+						if (isCell(x + 1, y, Key.unused) || isCell(x - 1, y, Key.unused) || isCell(x, y + 1, Key.unused) || isCell(x, y - 1, Key.unused))
+							setCell(x, y, Key.lockedWall);
+					}
 				}
 			}
 		}
@@ -549,58 +555,47 @@ public class Map implements TileBasedMap {
 			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
 			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
 		}
-
-		// for (int x = 0; x < Key.width; x++) {
-		// for (int y = 0; y < Key.height; y++) {
-		// if (isCell(x, y, Key.sideWall)) {
-		//
-		// }
-		// }
-		// }
-
 		// ************************************************************************
-		// testing line creation for vision interrupts instead of walls
+		// testing line creation for vision interrupts instead of walls -
+		// working very well
 		// ************************************************************************
-
+		int tS = Key.tileSize;
 		boolean wallStart = true;
-		int startX = -1;
-		int startY = -1;
+		int startXLoc = -1;
+		int startYLoc = -1;
 		// for vertical lines
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
-				if (isWall(x, y)) {// || isCell(x, y, Key.door)) {
+				if (isWall(x, y) || isCell(x, y, Key.door)) {
 					if (isCell(x, y, Key.lockedWall)) {
-						if (wallStart) {
-							startX = x;
-							startY = y;
-							wallStart = false;
-						} else {
-							wallList2.add(new Line2D.Double((startX * tS) + (tS / 2), (startY * tS) + (tS / 2), (x * tS) + (tS / 2), (y * tS) + (tS / 2)));
-							startX = x;
-							startY = y;
-							
-							// TODO working on this
+						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
+							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS) + (tS / 2), (y * tS) + (tS / 2)));
+							wallStart = true;
 						}
-					}
-				} else if (isCell(x, y, Key.door)) {
-					if (wallStart) {
-						startX = x;
-						startY = y + tS;
+						startXLoc = (x * tS) + (tS / 2);
+						startYLoc = (y * tS) + (tS / 2);
 						wallStart = false;
-					} else {
-						wallList2.add(new Line2D.Double((startX * tS) + (tS / 2), (startY * tS) + (tS / 2), (x * tS) + (tS / 2), (y * tS)));
-						startX = x;
-						startY = y;// + (tS/2);
-						// TODO working on this
+					} else if (isCell(x, y, Key.door)) {
+						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
+							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS) + (tS / 2), (y * tS)));
+							wallStart = true;
+						}
+						startXLoc = (x * tS) + (tS / 2);
+						startYLoc = (y * tS) + tS;
+						wallStart = false;
+
 					}
 				} else {
-					startX = -1;
-					startY = -1;
+					// end of wall/door 'chain' so resetting variables
+					startXLoc = -1;
+					startYLoc = -1;
 					wallStart = true;
 				}
+
 			}
-			startX = -1;
-			startY = -1;
+			// changing row, so resetting starting variables
+			startXLoc = -1;
+			startYLoc = -1;
 			wallStart = true;
 		}
 		// for creating the horizontal lines
@@ -608,25 +603,34 @@ public class Map implements TileBasedMap {
 			for (int x = 0; x < Key.width; x++) {
 				if (isWall(x, y) || isCell(x, y, Key.door)) {
 					if (isCell(x, y, Key.lockedWall)) {
-						if (wallStart) {
-							startX = x;
-							startY = y;
-							wallStart = false;
-						} else {
-							int ts = Key.tileSize;
-							wallList2.add(new Line2D.Double((startX * ts) + (ts / 2), (startY * ts) + (ts / 2), (x * ts) + (ts / 2), (y * ts) + (ts / 2)));
-							// TODO working on this
+						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
+							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS) + (tS / 2), (y * tS) + (tS / 2)));
+							wallStart = true;
 						}
+						startXLoc = (x * tS) + (tS / 2);
+						startYLoc = (y * tS) + (tS / 2);
+						wallStart = false;
+					} else if (isCell(x, y, Key.door)) {
+						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
+							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS), (y * tS) + (tS / 2)));
+							wallStart = true;
+						}
+						startXLoc = (x * tS) + tS;
+						startYLoc = (y * tS) + (tS / 2);
+						wallStart = false;
+
 					}
 				} else {
-					startX = -1;
-					startY = -1;
+					// end of wall/door 'chain' so resetting variables
+					startXLoc = -1;
+					startYLoc = -1;
 					wallStart = true;
 				}
 
 			}
-			startX = -1;
-			startY = -1;
+			// changing row, so resetting starting variables
+			startXLoc = -1;
+			startYLoc = -1;
 			wallStart = true;
 		}
 
