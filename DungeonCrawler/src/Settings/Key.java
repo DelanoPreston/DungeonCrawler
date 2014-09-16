@@ -43,16 +43,20 @@ public class Key {
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawRoomCenters = false;
 	public static boolean drawTunnelingPaths = false;
+	public static boolean drawWallLines = true;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 	
+	//Vision things
+	public static boolean useWallRectangles = false;
+	
 	// miniMap things
 	public static boolean drawMiniMap = true;
-	public static boolean drawGamePlay = true;
+	public static boolean drawGamePlay = false;
 	
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 

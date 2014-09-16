@@ -311,6 +311,13 @@ public class Map implements TileBasedMap {
 				}
 			}
 		}
+		if (Key.drawWallLines) {
+			g2D.setColor(new Color(0, 0, 0, 255));
+			for (Line2D l : wallList2) {
+				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
+				// TODO working on drawing
+			}
+		}
 	}
 
 	public boolean isCell(int x, int y, int cellType) {
@@ -320,7 +327,10 @@ public class Map implements TileBasedMap {
 	}
 
 	public int checkCell(int x, int y) {
-		return map[x][y].getKey();
+		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
+			return -1;
+		else
+			return map[x][y].getKey();
 	}
 
 	public void setCell(int x, int y, int cellType) {
@@ -502,7 +512,8 @@ public class Map implements TileBasedMap {
 			}
 		}
 		// ************************************************************************
-		// testing more line creation
+		// testing more line creation - sets 'corner' points for where the lines
+		// are supposed to be
 		// ************************************************************************
 		// set all walls to side walls
 		for (int x = 0; x < Key.width; x++) {
@@ -511,54 +522,99 @@ public class Map implements TileBasedMap {
 					setCell(x, y, Key.sideWall);
 			}
 		}
-//		for(int r = 0; r<rooms.size();r++){
-//			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
-//			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
-//			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
-//			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
-//		}
-		
-//		for (int x = 0; x < Key.width; x++) {
-//			for (int y = 0; y < Key.height; y++) {
-//				if (isCell(x, y, Key.sideWall)) {
-//					
-//				}
-//			}
-//		}
+		for (int x = 0; x < Key.width; x++) {
+			for (int y = 0; y < Key.height; y++) {
+				if (isCell(x, y, Key.sideWall)) {
+					int horiz = 0;
+					int verti = 0;
+
+					if (isWall(x, y + 1))
+						verti++;
+					if (isWall(x, y - 1))
+						verti++;
+					if (isWall(x + 1, y))
+						horiz++;
+					if (isWall(x - 1, y))
+						horiz++;
+
+					if (horiz + verti == 1 || (horiz + verti <= 3 && horiz != 0 && verti != 0))
+						setCell(x, y, Key.lockedWall);
+				}
+			}
+		}
+		for (int r = 0; r < rooms.size(); r++) {
+			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
+			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
+			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
+			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
+		}
+
+		// for (int x = 0; x < Key.width; x++) {
+		// for (int y = 0; y < Key.height; y++) {
+		// if (isCell(x, y, Key.sideWall)) {
+		//
+		// }
+		// }
+		// }
 
 		// ************************************************************************
 		// testing line creation for vision interrupts instead of walls
 		// ************************************************************************
 
-		// boolean firstWall = true;
-		// int startX = -1;
-		// int startY = -1;
-		// // for vertical lines
-		// for (int x = 0; x < Key.width; x++) {
-		// for (int y = 0; y < Key.height; y++) {
-		// if (isWall(x, y)) {
-		// if (firstWall) {
-		// startX = x;
-		// startY = y;
-		// firstWall = false;
-		// }
-		// } else if (!firstWall) {
-		// if (startX != -1 && startY != -1 && startX != x && startY != y - 1) {
-		// wallList2.add(new Line2D.Double(startX, startY, x, y - 1));
-		// startX = -1;
-		// startY = -1;
-		// firstWall = true;
-		// }
-		// }
-		// }
-		// firstWall = true;
-		// }
-		// // for creating the horizontal lines
-		// for (int y = 0; y < Key.height; y++) {
-		// for (int x = 0; x < Key.width; x++) {
-		//
-		// }
-		// }
+		boolean wallStart = true;
+		int startX = -1;
+		int startY = -1;
+		// for vertical lines
+		for (int x = 0; x < Key.width; x++) {
+			for (int y = 0; y < Key.height; y++) {
+				if (isWall(x, y)) {
+					if (isCell(x, y, Key.lockedWall)) {
+						if (wallStart) {
+							startX = x;
+							startY = y;
+							wallStart = false;
+						} else {
+							int ts = Key.tileSize;
+							wallList2.add(new Line2D.Double((startX * ts) + (ts / 2), (startY * ts) + (ts / 2), (x * ts) + (ts / 2), (y * ts) + (ts / 2)));
+							// TODO working on this
+						}
+					}
+				} else {
+					startX = -1;
+					startY = -1;
+					wallStart = true;
+				}
+			}
+			startX = -1;
+			startY = -1;
+			wallStart = true;
+		}
+		// for creating the horizontal lines
+		for (int y = 0; y < Key.height; y++) {
+			for (int x = 0; x < Key.width; x++) {
+				if (isWall(x, y)) {
+					if (isCell(x, y, Key.lockedWall)) {
+						if (wallStart) {
+							startX = x;
+							startY = y;
+							wallStart = false;
+						} else {
+							int ts = Key.tileSize;
+							wallList2.add(new Line2D.Double((startX * ts) + (ts / 2), (startY * ts) + (ts / 2), (x * ts) + (ts / 2), (y * ts) + (ts / 2)));
+							// TODO working on this
+						}
+					}
+				} else {
+					startX = -1;
+					startY = -1;
+					wallStart = true;
+				}
+				
+			}
+				startX = -1;
+				startY = -1;
+				wallStart = true;
+		}
 
 		// ************************************************************************
 		// for debugging purposes
