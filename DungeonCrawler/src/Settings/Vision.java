@@ -100,7 +100,9 @@ public class Vision {
 			// recreates the intersect array, for new position
 			allIntersects = new Point2D[0];
 			// re grabs the list of walls from the map
-			List<MapTile> walls = mapRef.getWalls();
+			if(Key.useWallRectangles){}
+//			List<MapTile> walls = mapRef.getWalls();
+				List<Line2D> walls = mapRef.wallList2;
 			// calculates values for each ray in the cast
 			for (int i = 0; i < rays.length; i++) {
 				double angle = Math.toRadians(i * (360 / rays.length));
@@ -109,16 +111,18 @@ public class Vision {
 				Point2D[] intersects = new Point2D[0];
 				// checks if it intersects with each wall in the list
 				for (int j = 0; j < walls.size(); j++) {
-					if (walls.get(j).solid) {
+//					if (walls.get(j)) {
 						// this uses the generic collision to check if there is
 						// a collision
-						if (rays[i].intersects(walls.get(j).positionSize)) {
+//						if (rays[i].intersects(walls.get(j).positionSize)) {
+						if (rays[i].intersectsLine(walls.get(j))) {
 							// then this checks the close walls that seem to
 							// have an intersection, and gets the points
-							Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j).positionSize);
+//							Point2D[] temp = getIntersectionPoint(rays[i], walls.get(j));
+							Point2D[] temp = {findIntersection(rays[i].getP1(), rays[i].getP2(), walls.get(j).getP1(), walls.get(j).getP2())};
 							intersects = concatenateArrays(intersects, temp);
 						}
-					}
+//					}
 				}
 				allIntersects = concatenateArrays(intersects, allIntersects);
 				if (intersects.length >= 1) {
