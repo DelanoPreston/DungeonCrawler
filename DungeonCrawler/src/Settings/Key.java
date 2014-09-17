@@ -5,7 +5,7 @@ import java.util.Random;
 import DataStructures.ID;
 
 public class Key {
-	public static Random random = new Random(10);
+	public static Random random = new Random();
 
 	// pathfinder types
 	public static int pathFinderRoomCheck = -100;
@@ -13,15 +13,6 @@ public class Key {
 	public static int player = 1000;
 	public static int monster1 = 1500;
 
-	// tile keys
-//	public static final int unused = 0;
-//	public static final int floor = 1;
-//	public static final int hallwayFloor = 2;
-//	public static final int sideWall = 4;
-//	public static final int lockedWall = 5;
-	// wall that cannot become a door
-//		public static final int door = 12;
-//		public static final int stone = 20;
 	// tile keys
 	public static final ID nullID = new ID();
 	public static final ID unused = new ID(0);
@@ -53,7 +44,7 @@ public class Key {
 	// draw settings
 	// vision things
 	public static boolean drawRays = false;
-	public static boolean drawClosestIntersect = true;
+	public static boolean drawClosestIntersect = false;
 
 	// map things
 	public static boolean drawRoomNumbers = false;
@@ -69,11 +60,11 @@ public class Key {
 
 	// miniMap things
 	public static boolean drawMiniMap = true;
-	public static boolean drawGamePlay = false;
+	public static boolean drawGamePlay = true;
 
 	// fog of war things
-	public static boolean drawFogOfWar = false;
-	public static boolean drawMMFogOfWar = true;// true makes minimap not work
+	public static boolean drawFogOfWar = true;
+	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 												// for now
 
 	// debug tools

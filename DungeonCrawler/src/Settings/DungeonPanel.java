@@ -36,9 +36,7 @@ public class DungeonPanel extends JPanel {
 	VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
-	double translateX = 0;
-	double translateY = 0;
-	double scale = 1.0;
+	
 
 	// JPanel cards;
 
@@ -89,7 +87,7 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				map.drawGameMap(g2D, this.getSize(), translateX, translateY, scale);
+				map.drawGameMap(g2D, this.getSize());//, translateX, translateY, scale);
 			} else {
 				map.drawWholeMap(g2D);
 			}
@@ -152,13 +150,13 @@ public class DungeonPanel extends JPanel {
 				System.out.println("nothing");
 			}
 			if (key == KeyEvent.VK_UP)
-				translateY--;
+				map.translateY--;
 			if (key == KeyEvent.VK_DOWN)
-				translateY++;
+				map.translateY++;
 			if (key == KeyEvent.VK_LEFT)
-				translateX--;
+				map.translateX--;
 			if (key == KeyEvent.VK_RIGHT)
-				translateX++;
+				map.translateX++;
 		}
 
 		@Override

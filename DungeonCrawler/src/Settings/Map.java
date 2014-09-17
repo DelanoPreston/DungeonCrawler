@@ -24,6 +24,9 @@ public class Map implements TileBasedMap {
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
 	List<Path> paths = new ArrayList<>();
+	float translateX = 0;
+	float translateY = 0;
+	float scale = 1.0f;
 
 	public Map(int width, int height) {
 
@@ -184,7 +187,7 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	public void drawGameMap(Graphics2D g2D, Dimension screen, double translateX, double translateY, double scale) {
+	public void drawGameMap(Graphics2D g2D, Dimension screen){//, double translateX, double translateY, double scale) {
 		AffineTransform holder = new AffineTransform();
 
 		holder.translate(screen.getWidth() / 2, screen.getHeight() / 2);

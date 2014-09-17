@@ -11,6 +11,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 import DataStructures.Location;
@@ -23,6 +24,9 @@ public class Vision {
 	Map mapRef;
 	Point2D[] allIntersects;
 	Shape shape;
+	float prevTranslateX = 0;
+	float prevTranslateY = 0;
+	float prevScale = 1.0f;
 
 	Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
@@ -96,14 +100,12 @@ public class Vision {
 	}
 
 	public void update() {
-		if (source != prevSource) {
+		if (source != prevSource || mapRef.translateX != prevTranslateX || mapRef.translateY != prevTranslateY || mapRef.scale != prevScale) {
 			// recreates the intersect array, for new position
 			allIntersects = new Point2D[0];
 			// re grabs the list of walls from the map
-			if (Key.useWallRectangles) {
-			}
 			// List<MapTile> walls = mapRef.getWalls();
-			List<Line2D> walls = mapRef.visWallList;
+			List<Line2D> walls = resizeWalls(mapRef.visWallList);
 			// calculates values for each ray in the cast
 			for (int i = 0; i < rays.length; i++) {
 				double angle = Math.toRadians(i * (360 / rays.length));
@@ -145,6 +147,20 @@ public class Vision {
 			createVisionShape();
 			prevSource = source;
 		}
+	}
+
+	private List<Line2D> resizeWalls(List<Line2D> walls) {
+		List<Line2D> temp = new ArrayList<>();
+
+		for (int i = 0; i < walls.size(); i++) {
+			double x1 = walls.get(i).getX1() + mapRef.translateX;
+			double x2 = walls.get(i).getX2() + mapRef.translateX;
+			double y1 = walls.get(i).getY1() + mapRef.translateY;
+			double y2 = walls.get(i).getY2() + mapRef.translateY;
+			temp.add(new Line2D.Double(x1, y1, x2, y2));
+		}
+
+		return temp;
 	}
 
 	public Point2D getSource() {
@@ -319,7 +335,8 @@ public class Vision {
 	}
 
 	public Point2D findClosestPoint(Point2D source, Point2D[] intersects) {
-		Point2D temp = null;
+		// TODO - ummm this might have been the fix...
+		Point2D temp = source;
 		double dist = radius + 1;
 
 		for (Point2D p : intersects) {
