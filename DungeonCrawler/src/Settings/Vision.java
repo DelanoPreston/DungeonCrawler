@@ -131,16 +131,8 @@ public class Vision {
 				allIntersects = concatenateArrays(intersects, allIntersects);
 				if (intersects.length >= 1) {
 					Point2D lineEnd = null;
-					// if (Key.drawClosestIntersect)
 					lineEnd = findClosestPoint(source.getPoint(), intersects);
-					// else
-					// lineEnd = findSecondClosestPoint(source, intersects);
 
-					// catch for the bad values
-					if (lineEnd.getY() > 240) {
-						Point2D temp = lineEnd;
-						lineEnd = temp;
-					}
 					rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
 				}
 			}

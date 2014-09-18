@@ -35,8 +35,8 @@ public class Key {
 
 	// size of map
 	public static int width = 90;
-	public static int height = 70;
-	public static int tileSize = 12;
+	public static int height = 75;
+	public static int tileSize = 8;
 
 	// map settings
 	public static int numOfRooms = 320;
@@ -44,7 +44,6 @@ public class Key {
 	// draw settings
 	// vision things
 	public static boolean drawRays = false;
-	public static boolean drawClosestIntersect = false;
 
 	// map things
 	public static boolean drawRoomNumbers = false;
@@ -63,7 +62,7 @@ public class Key {
 	public static boolean drawGamePlay = true;
 
 	// fog of war things
-	public static boolean drawFogOfWar = true;
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 												// for now
 
