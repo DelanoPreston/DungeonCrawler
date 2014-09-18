@@ -52,7 +52,7 @@ public class Key {
 	public static boolean drawGamePlay = true;
 	
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 
