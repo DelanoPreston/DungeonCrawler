@@ -1,8 +1,6 @@
 package Settings;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
@@ -15,14 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DataStructures.Location;
+import Entities.Entity;
 
 public class Vision {
 	public Location prevSource;
 	public Location source;
+	public Entity entity;
 	float radius;
 	Line2D[] rays;
 	Map mapRef;
-	Point2D[] allIntersects;
 	Shape shape;
 	float prevTranslateX = 0;
 	float prevTranslateY = 0;
@@ -30,7 +29,7 @@ public class Vision {
 
 	Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
-		source = new Location(64, 64);
+		// source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[360];
 		// update();
@@ -39,16 +38,17 @@ public class Vision {
 
 	Vision(Map mapRef, int resolution, int radius) {
 		this.mapRef = mapRef;
-		source = new Location(64, 64);
+		// source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[resolution];
 		// update();
 		shape = new GeneralPath();
 	}
 
-	Vision(Map mapRef, int resolution, int radius, Location source) {
+	Vision(Map mapRef, int resolution, int radius, Entity source) {
 		this.mapRef = mapRef;
-		this.source = source;
+		this.entity = source;
+		this.source = entity.getLoc();
 		this.radius = radius;
 		rays = new Line2D[resolution];
 		// update();
@@ -56,53 +56,66 @@ public class Vision {
 	}
 
 	public void paint(Graphics2D g2D, Dimension d) {
-		if (Key.drawRays) {
-			for (Line2D l : rays) {
-				// g2D.draw(l);
-				// g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float)
-				// l.getX2(), (float) l.getY2());
-				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
-			}
-		} else if (Key.drawFogOfWar) {
-			g2D.setColor(new Color(0, 0, 0, 255));
-			g2D.fill(createDrawVisionShape(d));
+		// if (Key.drawRays) {
+		// for (Line2D l : rays) {
+		// // g2D.draw(l);
+		// // g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float)
+		// // l.getX2(), (float) l.getY2());
+		// g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int)
+		// l.getY2());
+		// }
+		// } else if (Key.drawFogOfWar) {
+		g2D.setColor(new Color(0, 0, 0, 255));
+		g2D.fill(createDrawVisionShape(d));
 
-			// - Point2D center = source;
-			// -Point2D focus = source;
-			float[] dist = { 0.5f, 0.75f, 1.0f };
-			Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
+		// - Point2D center = source;
+		// -Point2D focus = source;
+		float[] dist = { 0.5f, 0.75f, 1.0f };
+		Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
 
-			// -RadialGradientPaint p = new RadialGradientPaint(center, radius,
-			// focus, dist, colors, CycleMethod.NO_CYCLE);
-			RadialGradientPaint p = new RadialGradientPaint(source.getPoint(), radius, dist, colors);
-			// - g2D.setComposite(AlphaComposite.SrcOut);
-			g2D.setPaint(p);
-			g2D.fill(shape);
+		// -RadialGradientPaint p = new RadialGradientPaint(center, radius,
+		// focus, dist, colors, CycleMethod.NO_CYCLE);
+		RadialGradientPaint p = new RadialGradientPaint(source.getPoint(), radius, dist, colors);
+		// - g2D.setComposite(AlphaComposite.SrcOut);
+		g2D.setPaint(p);
+		g2D.fill(shape);
 
-		} else {
-			g2D.setColor(Color.black);
-			Composite defaultComp = g2D.getComposite();
-			// g2D.setColor(new Color(0, 0, 0, 255));
+		// g2D.setColor(new Color(255, 255, 255, 255));
+		// g2D.draw(createDrawVisionShape(d));
 
-			g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP, 1f));
-			g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());// createDrawVisionShape(d));
-			// System.out.println("good");
+		// } else {
+		// g2D.setColor(Color.black);
+		// Composite defaultComp = g2D.getComposite();
+		// // g2D.setColor(new Color(0, 0, 0, 255));
+		//
+		// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP,
+		// 1f));
+		// g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());//
+		// createDrawVisionShape(d));
+		// // System.out.println("good");
+		//
+		// // g2D.setColor(new Color(0, 0, 0, 127));
+		// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+		// 0f));
+		// g2D.draw(shape);
+		// g2D.setComposite(defaultComp);
+		// // g2D.fill(shape);
+		// }
 
-			// g2D.setColor(new Color(0, 0, 0, 127));
-			g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0f));
-			g2D.draw(shape);
-			g2D.setComposite(defaultComp);
-			// g2D.fill(shape);
-		}
-
-		// g2D.draw(visShape);
+		// g2D.draw(shape);
 
 	}
 
 	public void update() {
-		if (source != prevSource || mapRef.translateX != prevTranslateX || mapRef.translateY != prevTranslateY || mapRef.scale != prevScale) {
+		if (entity != null){
+			source = entity.getLoc();
+//			
+		}
+//		if (source != prevSource) {// || mapRef.translateX != prevTranslateX ||
+//			prevSource = source;		// mapRef.translateY != prevTranslateY ||
+									// mapRef.scale != prevScale) {
 			// recreates the intersect array, for new position
-			allIntersects = new Point2D[0];
+			Point2D[] allIntersects = new Point2D[0];
 			// re grabs the list of walls from the map
 			// List<MapTile> walls = mapRef.getWalls();
 			List<Line2D> walls = resizeWalls(mapRef.visWallList);
@@ -137,8 +150,9 @@ public class Vision {
 				}
 			}
 			createVisionShape();
-			prevSource = source;
-		}
+
+//		}
+		
 	}
 
 	private List<Line2D> resizeWalls(List<Line2D> walls) {
@@ -344,14 +358,12 @@ public class Vision {
 
 	public void createVisionShape() {
 		GeneralPath visShape = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-		for (int i = 0; i < rays.length; i++) {
-			if (i == 0) {
-				visShape.moveTo(rays[i].getX2(), rays[i].getY2());
-			} else {
-				visShape.lineTo(rays[i].getX2(), rays[i].getY2());
-			}
+		visShape.moveTo(rays[0].getX2(), rays[0].getY2());
+		for (int i = 1; i < rays.length; i++) {
+			visShape.lineTo(rays[i].getX2(), rays[i].getY2());
 		}
 		visShape.closePath();
+//		System.out.println("vis shape....................................");
 		shape = (Shape) visShape;
 	}
 
@@ -362,24 +374,27 @@ public class Vision {
 		// Area tempS = new Area(screenSize);
 		// tempS.subtract(new Area(shape));
 		// return tempS;
-
-		GeneralPath tempShape = new GeneralPath();
-		// tempShape.lineTo(0, 0);
-		for (int i = 0; i < rays.length; i++) {
-			if (i == 0) {
-				tempShape.moveTo(rays[i].getX2(), rays[i].getY2());
-			} else {
+		try {
+			GeneralPath tempShape = new GeneralPath();
+			// tempShape.lineTo(0, 0);
+			tempShape.moveTo(rays[0].getX2(), rays[0].getY2());
+			for (int i = 1; i < rays.length; i++) {
 				tempShape.lineTo(rays[i].getX2(), rays[i].getY2());
+
 			}
+			tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
+			tempShape.lineTo(d.getWidth(), rays[0].getY2());
+			tempShape.lineTo(d.getWidth(), 0);
+			tempShape.lineTo(0, 0);
+			tempShape.lineTo(0, d.getHeight());
+			tempShape.lineTo(d.getWidth(), d.getHeight());
+			tempShape.lineTo(d.getWidth(), rays[0].getY2());
+			tempShape.closePath();
+			// System.out.println("update dark shape");
+			return tempShape;
+
+		} catch (Exception e) {
+			return null;
 		}
-		tempShape.lineTo(rays[0].getX2(), rays[0].getY2());
-		tempShape.lineTo(d.getWidth(), rays[0].getY2());
-		tempShape.lineTo(d.getWidth(), 0);
-		tempShape.lineTo(0, 0);
-		tempShape.lineTo(0, d.getHeight());
-		tempShape.lineTo(d.getWidth(), d.getHeight());
-		tempShape.lineTo(d.getWidth(), rays[0].getY2());
-		tempShape.closePath();
-		return tempShape;
 	}
 }

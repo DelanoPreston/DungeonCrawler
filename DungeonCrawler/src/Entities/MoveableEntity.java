@@ -19,7 +19,7 @@ public class MoveableEntity extends Entity {
 	public void update() {
 		rotation = Math.min(rotation + rotAccel, 360);
 		speed = Math.min(speed + accel, maxSpeed);
-		location.addMovement(speed, rotation);
+//		location.addMovement(speed, rotation);
 	}
 
 	public float getRot() {

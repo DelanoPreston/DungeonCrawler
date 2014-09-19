@@ -8,6 +8,31 @@ public class Location {
 	float x;
 	float y;
 
+	public Location() {
+		this.x = 0;
+		this.y = 0;
+	}
+
+	public Location(float inX, float inY) {
+		x = inX;
+		y = inY;
+	}
+
+	public Location(int inX, int inY) {
+		x = inX;
+		y = inY;
+	}
+
+	public Location(Location mapLocation) {
+		x = mapLocation.getX();
+		y = mapLocation.getY();
+	}
+
+	public Location(Point2D mapLocation) {
+		x = (float) mapLocation.getX();
+		y = (float) mapLocation.getY();
+	}
+
 	public float getX() {
 		return x;
 	}
@@ -45,26 +70,6 @@ public class Location {
 		}
 	}
 
-	public Location() {
-		this.x = 0;
-		this.y = 0;
-	}
-
-	public Location(float inX, float inY) {
-		x = inX;
-		y = inY;
-	}
-
-	public Location(int inX, int inY) {
-		x = inX;
-		y = inY;
-	}
-
-	public Location(Location mapLocation) {
-		x = mapLocation.getX();
-		y = mapLocation.getY();
-	}
-
 	public Point2D getPoint() {
 		return new Point2D.Float(x, y);
 	}
@@ -74,7 +79,7 @@ public class Location {
 		y += inChange[1];
 	}
 
-	public void addMovement(float inX, float inY) {
+	public void addLinearMovement(float inX, float inY) {
 		x += inX;
 		y += inY;
 	}
@@ -89,5 +94,10 @@ public class Location {
 		float b = y - loc.getY();
 
 		return (float) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+	}
+
+	@Override
+	public String toString() {
+		return "location: " + x + ", " + y;
 	}
 }

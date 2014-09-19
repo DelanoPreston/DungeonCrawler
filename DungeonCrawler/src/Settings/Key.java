@@ -25,10 +25,6 @@ public class Key {
 	//doors
 	public static final ID door = new ID(12,0);
 
-	// wall that cannot become a door
-	
-//	public static final ID stone = new ID(20);
-
 	// resolution of ray casting
 	public static int rayCastResolution = 360;
 	public static int rayCastingDistance = 75;
@@ -62,7 +58,7 @@ public class Key {
 	public static boolean drawGamePlay = true;
 
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 												// for now
 

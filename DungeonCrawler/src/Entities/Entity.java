@@ -8,7 +8,7 @@ public class Entity implements Serializable {
 	private static final long serialVersionUID = -1152523368523661488L;
 
 	private String name;
-	protected Location location;
+	public Location location;
 
 	public Entity() {
 		name = "None";
@@ -33,7 +33,7 @@ public class Entity implements Serializable {
 	}
 
 	public void addLoc(float x, float y) {
-		location.addMovement(x, y);
+		location.addLinearMovement(x, y);
 	}
 
 	public void setLoc(Location loc) {
