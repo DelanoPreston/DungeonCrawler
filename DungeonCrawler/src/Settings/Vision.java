@@ -66,7 +66,9 @@ public class Vision {
 		// }
 		// } else if (Key.drawFogOfWar) {
 		g2D.setColor(new Color(0, 0, 0, 255));
-		g2D.fill(createDrawVisionShape(d));
+		Shape temp = createDrawVisionShape(d);
+		if (temp != null)
+			g2D.fill(createDrawVisionShape(d));
 
 		// - Point2D center = source;
 		// -Point2D focus = source;
@@ -107,52 +109,50 @@ public class Vision {
 	}
 
 	public void update() {
-		if (entity != null){
+		if (entity != null) {
 			source = entity.getLoc();
-//			
+			//
 		}
-//		if (source != prevSource) {// || mapRef.translateX != prevTranslateX ||
-//			prevSource = source;		// mapRef.translateY != prevTranslateY ||
-									// mapRef.scale != prevScale) {
-			// recreates the intersect array, for new position
-			Point2D[] allIntersects = new Point2D[0];
-			// re grabs the list of walls from the map
-			// List<MapTile> walls = mapRef.getWalls();
-			List<Line2D> walls = resizeWalls(mapRef.visWallList);
-			// calculates values for each ray in the cast
-			for (int i = 0; i < rays.length; i++) {
-				double angle = Math.toRadians(i * (360 / rays.length));
-				rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
-						+ source.getY()));
-				Point2D[] intersects = new Point2D[0];
-				// checks if it intersects with each wall in the list
-				for (int j = 0; j < walls.size(); j++) {
-					// if (walls.get(j)) {
-					// this uses the generic collision to check if there is
-					// a collision
-					// if (rays[i].intersects(walls.get(j).positionSize)) {
-					if (rays[i].intersectsLine(walls.get(j))) {
-						// then this checks the close walls that seem to
-						// have an intersection, and gets the points
-						// Point2D[] temp = getIntersectionPoint(rays[i],
-						// walls.get(j));
-						Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), walls.get(j).getP1(), walls.get(j).getP2()) };
-						intersects = concatenateArrays(intersects, temp);
-					}
-					// }
+		// if (source != prevSource) {// || mapRef.translateX != prevTranslateX
+		// ||
+		// prevSource = source; // mapRef.translateY != prevTranslateY ||
+		// mapRef.scale != prevScale) {
+		// recreates the intersect array, for new position
+		Point2D[] allIntersects = new Point2D[0];
+		// re grabs the list of walls from the map
+		// List<MapTile> walls = mapRef.getWalls();
+		List<Line2D> walls = resizeWalls(mapRef.visWallList);
+		// calculates values for each ray in the cast
+		for (int i = 0; i < rays.length; i++) {
+			double angle = Math.toRadians(i * (360 / rays.length));
+			rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
+					+ source.getY()));
+			Point2D[] intersects = new Point2D[0];
+			// checks if it intersects with each wall in the list
+			for (int j = 0; j < walls.size(); j++) {
+				// if (walls.get(j)) {
+				// this uses the generic collision to check if there is
+				// a collision
+				// if (rays[i].intersects(walls.get(j).positionSize)) {
+				if (rays[i].intersectsLine(walls.get(j))) {
+					// then this checks the close walls that seem to
+					// have an intersection, and gets the points
+					// Point2D[] temp = getIntersectionPoint(rays[i],
+					// walls.get(j));
+					Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), walls.get(j).getP1(), walls.get(j).getP2()) };
+					intersects = concatenateArrays(intersects, temp);
 				}
-				allIntersects = concatenateArrays(intersects, allIntersects);
-				if (intersects.length >= 1) {
-					Point2D lineEnd = null;
-					lineEnd = findClosestPoint(source.getPoint(), intersects);
-
-					rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
-				}
+				// }
 			}
-			createVisionShape();
+			allIntersects = concatenateArrays(intersects, allIntersects);
+			if (intersects.length >= 1) {
+				Point2D lineEnd = null;
+				lineEnd = findClosestPoint(source.getPoint(), intersects);
 
-//		}
-		
+				rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
+			}
+		}
+		createVisionShape();
 	}
 
 	private List<Line2D> resizeWalls(List<Line2D> walls) {
@@ -363,7 +363,7 @@ public class Vision {
 			visShape.lineTo(rays[i].getX2(), rays[i].getY2());
 		}
 		visShape.closePath();
-//		System.out.println("vis shape....................................");
+		// System.out.println("vis shape....................................");
 		shape = (Shape) visShape;
 	}
 

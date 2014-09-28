@@ -34,12 +34,11 @@ public class DungeonPanel extends JPanel {
 	Map map;
 	Player player;
 	public int[][] level;
-//	List<Vision> v = new ArrayList<>();
+	// List<Vision> v = new ArrayList<>();
 	Vision vis;
-//	VisionManager vm;
+	// VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
-	
 
 	// JPanel cards;
 
@@ -51,8 +50,9 @@ public class DungeonPanel extends JPanel {
 		addKeyListener(new KeyboardListener());
 
 		map = new Map(Key.width, Key.height);
-		player = new Player(new Point2D.Double(400,400));//map.rooms.get(1).getCenter());
-//		v.add(new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player));
+		player = new Player(new Point2D.Double(400, 400));// map.rooms.get(1).getCenter());
+		// v.add(new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
+		// player));
 		vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player);
 		// for (Room r : map.rooms)
 		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
@@ -71,21 +71,21 @@ public class DungeonPanel extends JPanel {
 	 */
 	public void Update() {
 		player.update();
-//		for(Vision vi : v)
-//			vi.update();
-//		vis.source = player.getLoc();
+		// for(Vision vi : v)
+		// vi.update();
+		// vis.source = player.getLoc();
 		vis.update();
-//		v.get(0).update();
+		// v.get(0).update();
 		if (popupListener.location != null) {
-//			vis.source = popupListener.location;
-//			v.get(0).source = player.getLoc();
-			
-//			System.out.println(player.getLoc());
-//			System.out.println(popupListener.location);
+			// vis.source = popupListener.location;
+			// v.get(0).source = player.getLoc();
+
+			// System.out.println(player.getLoc());
+			// System.out.println(popupListener.location);
 			// System.out.println("yes");
 		}
-//		for (int i = 0; i < v.size(); i++)
-//			v.get(i).update();
+		// for (int i = 0; i < v.size(); i++)
+		// v.get(i).update();
 		//
 		// vm.update(this.getSize(), v);
 		//
@@ -102,18 +102,14 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				map.drawGameMap(g2D, this.getSize());//, translateX, translateY, scale);
+				map.drawGameMap(g2D, this.getSize());
 			} else {
 				map.drawWholeMap(g2D);
 			}
 		}
-		// for (Vision vis : v)
-		// vis.paint(g2D, this.getSize());
-		// if (Key.drawFogOfWar)
-		// vm.paint(g2D);
-
-		vis.paint(g2D, this.getSize());
-//		v.get(0).paint(g2D, this.getSize());
+		if (Key.drawFogOfWar)
+			vis.paint(g2D, this.getSize());
+		player.draw(g2D);
 
 		// this tells the minimap to be drawn
 		if (Key.drawMiniMap) {
@@ -165,9 +161,9 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing");
 			}
-			
-			player.input(arg0);
-			
+
+//			player.input(arg0);
+			player.pressed(arg0);
 
 		}
 
@@ -178,6 +174,7 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing");
 			}
+			player.released(arg0);
 		}
 
 		@Override
