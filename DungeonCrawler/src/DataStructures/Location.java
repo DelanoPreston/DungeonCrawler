@@ -85,8 +85,8 @@ public class Location {
 	}
 
 	public void addMovement(double speed, double rotation) {
-		x += speed * Math.cosh(rotation);
-		y += speed * Math.sinh(rotation);
+		x += speed * Math.cos(rotation);
+		y += speed * Math.sin(rotation);
 	}
 
 	public float getDistance(Location loc) {

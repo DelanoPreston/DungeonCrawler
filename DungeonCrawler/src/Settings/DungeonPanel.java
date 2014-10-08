@@ -13,15 +13,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
-import Entities.Entity;
-import Entities.Player;
+import Player.Player;
 
 /**
  * GamePanel class that extends JPanel
@@ -75,6 +72,7 @@ public class DungeonPanel extends JPanel {
 		// vi.update();
 		// vis.source = player.getLoc();
 		vis.update();
+		map.updateMinimapVisibility(vis);//player.getLoc().getTileX(), player.getLoc().getTileY(), Key.rayCastingDistance);
 		// v.get(0).update();
 		if (popupListener.location != null) {
 			// vis.source = popupListener.location;
@@ -113,15 +111,30 @@ public class DungeonPanel extends JPanel {
 
 		// this tells the minimap to be drawn
 		if (Key.drawMiniMap) {
-			int tx = (int) (popupListener.location.getX() / Key.tileSize);
-			int ty = (int) (popupListener.location.getY() / Key.tileSize);
+
+			int tx = 0;// (int) (popupListener.location.getX() / Key.tileSize);
+			int ty = 0;// (int) (popupListener.location.getY() / Key.tileSize);
+			if (Key.minimapFollowPlayer) {
+				tx = player.getLoc().getTileX();// (int)
+												// (popupListener.location.getX()
+												// / Key.tileSize);
+				ty = player.getLoc().getTileY();// (int)
+												// (popupListener.location.getY()
+												// / Key.tileSize);
+			} else {
+				tx = (int) (popupListener.location.getX() / Key.tileSize);
+				ty = (int) (popupListener.location.getY() / Key.tileSize);
+			}
 			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
 		}
 
 		// this draws the mouse's tile location under the map
-		int x = (int) (popupListener.location.getX() / Key.tileSize);
-		int y = (int) (popupListener.location.getY() / Key.tileSize);
-		g2D.setColor(new Color(0, 0, 0, 255));
+		// int x = (int) (popupListener.location.getX() / Key.tileSize);
+		// int y = (int) (popupListener.location.getY() / Key.tileSize);
+		int x = player.location.getTileX();
+		int y = player.location.getTileY();
+		// g2D.setColor(new Color(0, 0, 0, 255));
+		g2D.setColor(Color.WHITE);
 		g2D.drawString("Mouse is at: " + x + ", " + y, 15, 16 + (Key.tileSize * Key.height));
 		g2D.drawString("you are awesome", 15, 32 + (Key.tileSize * Key.height));
 	}
@@ -162,7 +175,7 @@ public class DungeonPanel extends JPanel {
 				System.out.println("nothing");
 			}
 
-//			player.input(arg0);
+			// player.input(arg0);
 			player.pressed(arg0);
 
 		}

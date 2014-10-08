@@ -4,15 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.ImageIcon;
 
 import DataStructures.ID;
 import DataStructures.Path;
@@ -128,6 +125,45 @@ public class Map implements TileBasedMap {
 						}
 					}
 				}
+			}
+		}
+	}
+
+	// public void updateMinimapVisibility(int tileX, int tileY, int visionDist)
+	// {
+	// for (int x = 0; x < Key.width; x++) {
+	// for (int y = 0; y < Key.height; y++) {
+	// if (!isCell(x, y, Key.unused.getID()))
+	// if (new Location(tileX, tileY).getDistance(new Location(x, y)) <
+	// (visionDist/Key.tileSize)) {
+	// map[x][y].setVisible(true);
+	// }
+	// }
+	// }
+	// }
+
+	public void updateMinimapVisibility(Vision vis) {
+		for (int x = 0; x < Key.width; x++) {
+			for (int y = 0; y < Key.height; y++) {
+				if (!isCell(x, y, Key.unused.getID()))
+					if (vis.getShape().contains(new Rectangle(x * Key.tileSize, y * Key.tileSize, x * Key.tileSize + 16, y * Key.tileSize + 16))) {// ||
+																																					// vis.getShape().contains(x
+																																					// *
+																																					// Key.tileSize
+																																					// +
+																																					// 8,
+																																					// y
+																																					// *
+																																					// Key.tileSize)
+						// || vis.getShape().contains(x * Key.tileSize, y *
+						// Key.tileSize + 8) || vis.getShape().contains(x *
+						// Key.tileSize, y * Key.tileSize)) {
+						map[x][y].setVisible(true);
+					}
+				// if (new Location(tileX, tileY).getDistance(new Location(x,
+				// y)) < (visionDist/Key.tileSize)) {
+				// map[x][y].setVisible(true);
+				// }
 			}
 		}
 	}

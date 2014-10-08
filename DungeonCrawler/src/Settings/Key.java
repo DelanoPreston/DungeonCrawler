@@ -9,12 +9,16 @@ public class Key {
 
 	// input
 	public static float sensitivity = 1f;
+	public static boolean someMovementType = true;
+	
+	//
+	public static boolean minimapFollowPlayer = true;
 
 	// pathfinder types
 	public static int pathFinderRoomCheck = -100;
 	public static int pathFinderRoomTunneler = -101;
-//	public static int player = 1000;
-//	public static int monster1 = 1500;
+	// public static int player = 1000;
+	// public static int monster1 = 1500;
 
 	// tile keys
 	public static final ID nullID = new ID();
@@ -35,7 +39,7 @@ public class Key {
 	// size of map
 	public static int width = 90;
 	public static int height = 75;
-	public static int tileSize = 8;
+	public static int tileSize = 12;
 
 	// map settings
 	public static int numOfRooms = 320;
@@ -48,7 +52,7 @@ public class Key {
 	public static boolean drawRoomNumbers = false;
 	public static boolean drawRoomCenters = false;
 	public static boolean drawTunnelingPaths = false;
-	public static boolean drawWallLines = true;
+	public static boolean drawWallLines = false;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
@@ -61,7 +65,7 @@ public class Key {
 	public static boolean drawGamePlay = false;
 
 	// fog of war things
-	public static boolean drawFogOfWar = false;
+	public static boolean drawFogOfWar = true;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 

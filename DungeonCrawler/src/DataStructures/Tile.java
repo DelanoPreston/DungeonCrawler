@@ -9,22 +9,19 @@ public class Tile {
 	int cost;
 	boolean visible;
 	boolean visited;
-	Rectangle wall;
 
 	public Tile() {
 		this.key = Key.unused;
 		this.cost = 0;
 		this.visible = false;
 		this.visited = false;
-		this.wall = null;
 	}
 
-	public Tile(ID key, int cost, boolean visible, Rectangle wall) {
+	public Tile(ID key, int cost, boolean visible){
 		this.key = key;
 		this.cost = cost;
 		this.visible = visible;
 		this.visited = false;
-		this.wall = wall;
 	}
 
 	public ID getID() {
@@ -41,10 +38,6 @@ public class Tile {
 
 	public boolean getVisited() {
 		return visited;
-	}
-
-	public Rectangle getWall() {
-		return wall;
 	}
 
 	public void addCost(int i) {
@@ -69,9 +62,5 @@ public class Tile {
 
 	public void setVisited(boolean visited) {
 		this.visited = visited;
-	}
-
-	public void setWall(Rectangle wall) {
-		this.wall = wall;
 	}
 }

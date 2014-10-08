@@ -3,23 +3,37 @@ package Entities;
 public class MoveableEntity extends Entity {
 	private static final long serialVersionUID = 7134108231669813902L;
 
-	float rotation;
-	float maxRotSpeed;
-	float rotAccel;
-	float maxRotAcc;
-	float speed;
-	float maxSpeed;
-	float accel;
-	float maxAcc;
+	protected float rotation;
+	protected float maxRotSpeed;
+	protected float rotAccel;
+	protected float maxRotAcc;
+	protected float speed;
+	protected float maxSpeed;
+	protected float accel;
+	protected float maxAcc;
 
 	public MoveableEntity() {
 		super();
+		maxSpeed = .65f;
+		maxRotSpeed = .01f;
+		maxAcc = .1f;
+		maxRotAcc = .1f;
 	}
 
 	public void update() {
-		rotation = Math.min(rotation + rotAccel, 360);
-		speed = Math.min(speed + accel, maxSpeed);
-//		location.addMovement(speed, rotation);
+		rotation = (rotation + rotAccel) % 360;// Math.min(rotation + rotAccel,
+												// 360);
+		speed += accel;
+		if(speed > maxSpeed)
+			speed = maxSpeed;
+		else if(speed < -maxSpeed)
+			speed = -maxSpeed;
+//		speed = Math.min(speed + accel, maxSpeed);
+//		if (rotAccel == 0f)
+//			rotation -= maxRotAcc;
+//		if (maxAcc == 0f)
+//			accel -= maxAcc;
+		location.addMovement(speed, rotation);
 	}
 
 	public float getRot() {
