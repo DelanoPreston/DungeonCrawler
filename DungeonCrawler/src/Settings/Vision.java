@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -14,7 +15,6 @@ import java.util.List;
 
 import DataStructures.Location;
 import Entities.Entity;
-import Player.Player;
 import Player.PlayerView;
 
 public class Vision {
@@ -31,19 +31,15 @@ public class Vision {
 
 	Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
-		// source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[360];
-		// update();
 		shape = new GeneralPath();
 	}
 
 	Vision(Map mapRef, int resolution, int radius) {
 		this.mapRef = mapRef;
-		// source = new Location(64, 64);
 		this.radius = radius;
 		rays = new Line2D[resolution];
-		// update();
 		shape = new GeneralPath();
 	}
 
@@ -53,27 +49,20 @@ public class Vision {
 		this.source = entity.getLoc();
 		this.radius = radius;
 		rays = new Line2D[resolution];
-		// update();
 		shape = new GeneralPath();
 	}
 
+	public void drawVisShape(Graphics2D g2D) {
+		g2D.setColor(Color.RED);
+		g2D.draw(shape);
+	}
+
 	public void paint(Graphics2D g2D, Dimension d) {
-		// if (Key.drawRays) {
-		// for (Line2D l : rays) {
-		// // g2D.draw(l);
-		// // g2D.drawLine((float) l.getX1(), (float) l.getY1(), (float)
-		// // l.getX2(), (float) l.getY2());
-		// g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int)
-		// l.getY2());
-		// }
-		// } else if (Key.drawFogOfWar) {
 		g2D.setColor(new Color(0, 0, 0, 255));
 		Shape temp = createDrawVisionShape(d);
 		if (temp != null)
 			g2D.fill(createDrawVisionShape(d));
 
-		// - Point2D center = source;
-		// -Point2D focus = source;
 		float[] dist = { 0.5f, 0.75f, 1.0f };
 		Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
 
@@ -83,30 +72,6 @@ public class Vision {
 		// - g2D.setComposite(AlphaComposite.SrcOut);
 		g2D.setPaint(p);
 		g2D.fill(shape);
-
-		// g2D.setColor(new Color(255, 255, 255, 255));
-		// g2D.draw(createDrawVisionShape(d));
-
-		// } else {
-		// g2D.setColor(Color.black);
-		// Composite defaultComp = g2D.getComposite();
-		// // g2D.setColor(new Color(0, 0, 0, 255));
-		//
-		// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_ATOP,
-		// 1f));
-		// g2D.fillRect(0, 0, (int) d.getWidth(), (int) d.getHeight());//
-		// createDrawVisionShape(d));
-		// // System.out.println("good");
-		//
-		// // g2D.setColor(new Color(0, 0, 0, 127));
-		// g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-		// 0f));
-		// g2D.draw(shape);
-		// g2D.setComposite(defaultComp);
-		// // g2D.fill(shape);
-		// }
-
-		// g2D.draw(shape);
 
 	}
 
@@ -159,7 +124,7 @@ public class Vision {
 
 	private List<Line2D> resizeWalls(List<Line2D> walls, PlayerView pv) {
 		List<Line2D> temp = new ArrayList<>();
-		
+
 		for (int i = 0; i < walls.size(); i++) {
 			double x1 = walls.get(i).getX1() + pv.getTraslateX();
 			double x2 = walls.get(i).getX2() + pv.getTraslateX();
@@ -343,14 +308,14 @@ public class Vision {
 	}
 
 	public Point2D findClosestPoint(Point2D source, Point2D[] intersects) {
-		// TODO - ummm this might have been the fix...
 		Point2D temp = source;
 		double dist = radius + 1;
 
 		for (Point2D p : intersects) {
 			if (p != null && Math.abs(source.distance(p)) < dist) {
+				// set the new smallest distance
 				dist = Math.abs(source.distance(p));
-
+				// set new closest point to temp
 				temp = p;
 			}
 		}

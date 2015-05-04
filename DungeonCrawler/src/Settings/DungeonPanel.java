@@ -41,19 +41,24 @@ public class DungeonPanel extends JPanel {
 	// VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
-
+	// JPanel mapDraw;
 	JPanel cards;
+
+	public DungeonPanel() {
+
+	}
 
 	/**
 	 * Constructor for the GamePanel class that extends JPanel
 	 */
-	public DungeonPanel() {
+	public DungeonPanel(BorderLayout borderLayout) {
+		super(borderLayout);
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
-		
-		//creates test buttons
-		createButtonLayout();
-		
+
+		// creates test buttons
+		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
+
 		map = new Map(Key.width, Key.height);
 		player = new Player(new Point2D.Double(400, 400));// map.rooms.get(1).getCenter());
 		// v.add(new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
@@ -62,64 +67,12 @@ public class DungeonPanel extends JPanel {
 		// for (Room r : map.rooms)
 		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
 		// vm = new VisionManager();
-		// v2 = new Vision(map);
-		// level = createDungeon(32, 32);
+		// v2 = new Vision(map)
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
 		// timer for updating game every 17 miliseconds
 		mainTimer = new Timer(17, new TimerListener());
 		mainTimer.start();
-	}
-
-	/**
-	 * createButtonLayout class creates buttons for the screen
-	 */
-	private void createButtonLayout() {
-		cards = new JPanel(new CardLayout());
-
-		/*
-		 * Button Panel creation/
-		 */
-		cards.add(setupTestButtons(), "Test Buttons");// I think the
-														// "Test Buttons" is the
-														// identifier for this
-														// card
-
-		// adds button pane to cards
-
-		JPanel temp = new JPanel(new BorderLayout());
-		temp.setBackground(new Color(0, 0, 0, 0));
-		temp.add(cards, BorderLayout.EAST);
-		this.add(temp, BorderLayout.SOUTH);
-	}
-
-	/**
-	 * 
-	 */
-	public JPanel setupTestButtons() {
-		JPanel temp = new JPanel();
-
-		temp.setLayout(new SubMenuLayout(3, 5));// new GridLayout(3, 0, 5, 5));
-		temp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		temp.setBackground(new Color(0, 0, 0, 0));// sets the portion of the
-													// panel to transparent, so
-													// I can see the map
-
-		ButtonListener btnListener = new ButtonListener();
-
-		// this is the build menu cancel button
-		JButton btn = new JButton();// new
-									// ImageIcon(ContentBank.buttonIcons[63]));
-		btn.setPreferredSize(new Dimension(64, 64));
-		btn.setActionCommand("toggle FOW");
-		btn.setBackground(new Color(0, 96, 0, 255));
-		btn.addActionListener(btnListener);
-		temp.add(btn);
-
-		JPanel retTemp = new JPanel(new BorderLayout());
-		retTemp.add(temp, BorderLayout.SOUTH);
-
-		return retTemp;
 	}
 
 	/**
@@ -167,10 +120,9 @@ public class DungeonPanel extends JPanel {
 				map.drawWholeMap(g2D);
 			}
 		}
+		vis.drawVisShape(g2D);
 		if (Key.drawFogOfWar)
 			vis.paint(g2D, this.getSize());
-		player.draw(g2D);
-
 		// this tells the minimap to be drawn
 		if (Key.drawMiniMap) {
 
@@ -183,16 +135,17 @@ public class DungeonPanel extends JPanel {
 				tx = (int) (popupListener.location.getX() / Key.tileSize);
 				ty = (int) (popupListener.location.getY() / Key.tileSize);
 			}
-			map.drawMiniMap(g2D, this.getSize(), tx, ty, 24, 24);
+			map.drawMiniMap(g2D, this.getSize(), tx, ty);
 		}
 
+		player.draw(g2D);
 		// this draws the mouse's tile location under the map
 		// int x = (int) (popupListener.location.getX() / Key.tileSize);
 		// int y = (int) (popupListener.location.getY() / Key.tileSize);
 		int x = player.location.getTileX();
 		int y = player.location.getTileY();
 		// g2D.setColor(new Color(0, 0, 0, 255));
-		g2D.setColor(Color.WHITE);
+		g2D.setColor(Color.GRAY);
 		g2D.drawString("Player is at: " + x + ", " + y, 15, 16 + (Key.tileSize * Key.height));
 		g2D.drawString("you are awesome", 15, 32 + (Key.tileSize * Key.height));
 	}
@@ -217,65 +170,6 @@ public class DungeonPanel extends JPanel {
 	}
 
 	/**
-	 * ButtonListener class, implements ActionListener, this class is used when
-	 * a button is clicked
-	 * 
-	 * @author Preston Delano
-	 * 
-	 */
-	private class ButtonListener implements ActionListener {
-
-		public ButtonListener() {
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			// gm - game menu
-			if (arg0.getActionCommand().equals("toggle FOW")) {
-				if(Key.drawFogOfWar == true){
-					Key.drawFogOfWar = false;
-				}else{
-					Key.drawFogOfWar = true;
-				}
-			}
-
-			/*
-			 * bm - build menu if
-			 * (arg0.getActionCommand().equals("bm build wooden wall")) { //
-			 * Location loc = new
-			 * Location(popupListener.GetPopupLocation().getX(),
-			 * popupListener.GetPopupLocation().getY()); Location loc = new
-			 * Location(MouseInfo.getPointerInfo().getLocation().x,
-			 * MouseInfo.getPointerInfo().getLocation().y); // Location loc =
-			 * ref.source.getTileAtLocation(tempLoc); WallEntity wall = new
-			 * WallEntity("Wall", new Location(), 3.4, true);
-			 * level.setConstruction(new ConstructionEntity("test", wall, loc,
-			 * false)); System.out.println(
-			 * "oh ya wooden wall --- hopefully works!!!!!!!!!!!!!!"); } else if
-			 * (arg0.getActionCommand().equals("bm build stone wall")) {
-			 * System.out.println("oh ya stone wall"); } else if
-			 * (arg0.getActionCommand().equals("bm cancel")) { CardLayout cl =
-			 * (CardLayout) (cards.getLayout()); cl.show(cards, "Main Buttons");
-			 * }
-			 * 
-			 * // fm - furniture menu if
-			 * (arg0.getActionCommand().equals("fm build bed")) {
-			 * System.out.println("bed woo hoo"); // CardLayout cl =
-			 * (CardLayout) (cards.getLayout()); // cl.show(cards,
-			 * "Main Buttons"); } else if
-			 * (arg0.getActionCommand().equals("fm cancel")) { CardLayout cl =
-			 * (CardLayout) (cards.getLayout()); cl.show(cards, "Main Buttons");
-			 * }
-			 * 
-			 * // rm - roster menu if
-			 * (arg0.getActionCommand().equals("rm cancel")) { CardLayout cl =
-			 * (CardLayout) (cards.getLayout()); cl.show(cards, "Main Buttons");
-			 * }//
-			 */
-		}
-	}
-
-	/**
 	 * KeyboardListener class, implements ActionListener, this class is used
 	 * when there is a key press, release, or type
 	 * 
@@ -292,7 +186,6 @@ public class DungeonPanel extends JPanel {
 				System.out.println("nothing - Pressed");
 			}
 
-			// player.input(arg0);
 			player.pressed(arg0);
 
 		}
@@ -304,6 +197,7 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing - Release");
 			}
+
 			player.released(arg0);
 		}
 
@@ -463,6 +357,115 @@ public class DungeonPanel extends JPanel {
 			// (((reference.getHeight() / 2) - e.getY()) / reference.scale);
 			// location = new Point2D.Double(x, y);
 			// // System.out.println(location.getX() + ", " + location.getY());
+		}
+	}
+
+	/**
+	 * createButtonLayout class creates buttons for the screen
+	 */
+	private void createButtonLayout(int x, int y) {
+		cards = new JPanel(new CardLayout());
+		cards.setBackground(new Color(0, 0, 0, 0));
+		/*
+		 * Button Panel creation/
+		 */
+		JPanel testButtons = setupTestButtons();
+		cards.add(testButtons, "Test Buttons");// I think the
+												// "Test Buttons" is the
+												// identifier for this
+												// card
+
+		// adds button pane to cards
+
+		JPanel temp = new JPanel(new BorderLayout());
+		temp.setBackground(new Color(0, 0, 0, 0));
+		temp.add(cards, BorderLayout.EAST);
+		this.add(temp, BorderLayout.SOUTH);
+	}
+
+	/**
+	 * 
+	 */
+	private JPanel setupTestButtons() {
+		JPanel temp = new JPanel();
+
+		temp.setLayout(new RowMenuLayout(1, 100, 32, 5));// new GridLayout(3,
+															// 0, 5, 5));
+		temp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		temp.setBackground(new Color(0, 0, 0, 0));// sets the portion of the
+													// panel to transparent, so
+													// I can see the map
+
+		ButtonListener btnListener = new ButtonListener(this);
+
+		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s" };
+
+		// this is the build menu cancel button
+		JButton btn;
+
+		for (int i = 0; i < buttonNames.length; i++) {
+			temp.add(buttonCreator(buttonNames[i], 128, 32, btnListener));
+		}
+
+		// JPanel retTemp = new JPanel(new BorderLayout());
+		// retTemp.add(temp, BorderLayout.SOUTH);
+
+		return temp;// retTemp;
+	}
+
+	private JButton buttonCreator(String name, int width, int height, ButtonListener bl) {
+		JButton btn = new JButton(name);
+		btn.setForeground(Color.BLACK);
+		btn.setPreferredSize(new Dimension(width, height));
+		btn.setActionCommand(name);
+		btn.setBackground(new Color(0, 96, 0, 255));
+		btn.addActionListener(bl);
+		return btn;
+	}
+
+	/**
+	 * ButtonListener class, implements ActionListener, this class is used when
+	 * a button is clicked
+	 * 
+	 * @author Preston Delano
+	 * 
+	 */
+	private class ButtonListener implements ActionListener {
+		JPanel jpanel;
+
+		public ButtonListener(JPanel jp) {
+			jpanel = jp;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			// gm - game menu
+			if (arg0.getActionCommand().equals("Toggle FOW")) {
+				if (Key.drawFogOfWar == true) {
+					Key.drawFogOfWar = false;
+				} else {
+					Key.drawFogOfWar = true;
+				}
+			} else if (arg0.getActionCommand().equals("Toggle MMFOW")) {
+				if (Key.drawMMFogOfWar == true) {
+					Key.drawMMFogOfWar = false;
+				} else {
+					Key.drawMMFogOfWar = true;
+				}
+			} else if (arg0.getActionCommand().equals("Toggle MM")) {
+				if (Key.drawMiniMap == true) {
+					Key.drawMiniMap = false;
+				} else {
+					Key.drawMiniMap = true;
+				}
+			} else if (arg0.getActionCommand().equals("Toggle Rm #s")) {
+				if (Key.drawRoomNumbers == true) {
+					Key.drawRoomNumbers = false;
+				} else {
+					Key.drawRoomNumbers = true;
+				}
+			}
+			jpanel.requestFocus();
 		}
 	}
 }

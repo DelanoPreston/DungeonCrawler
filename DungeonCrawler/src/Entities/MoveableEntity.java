@@ -1,5 +1,7 @@
 package Entities;
 
+import DataStructures.Location;
+
 public class MoveableEntity extends Entity {
 	private static final long serialVersionUID = 7134108231669813902L;
 
@@ -11,6 +13,10 @@ public class MoveableEntity extends Entity {
 	protected float maxSpeed;
 	protected float accel;
 	protected float maxAcc;
+
+	public MoveableEntity(String name, Location loc) {
+		super(name, loc);
+	}
 
 	public MoveableEntity() {
 		super();
@@ -24,15 +30,15 @@ public class MoveableEntity extends Entity {
 		rotation = (rotation + rotAccel) % 360;// Math.min(rotation + rotAccel,
 												// 360);
 		speed += accel;
-		if(speed > maxSpeed)
+		if (speed > maxSpeed)
 			speed = maxSpeed;
-		else if(speed < -maxSpeed)
+		else if (speed < -maxSpeed)
 			speed = -maxSpeed;
-//		speed = Math.min(speed + accel, maxSpeed);
-//		if (rotAccel == 0f)
-//			rotation -= maxRotAcc;
-//		if (maxAcc == 0f)
-//			accel -= maxAcc;
+		// speed = Math.min(speed + accel, maxSpeed);
+		// if (rotAccel == 0f)
+		// rotation -= maxRotAcc;
+		// if (maxAcc == 0f)
+		// accel -= maxAcc;
 		location.addMovement(speed, rotation);
 	}
 

@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +27,10 @@ public class Map implements TileBasedMap {
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
 	List<Path> paths = new ArrayList<>();
-	//float translateX = 0;
-	//float translateY = 0;
-	//float scale = 1.0f;
+
+	// float translateX = 0;
+	// float translateY = 0;
+	// float scale = 1.0f;
 
 	public Map(int width, int height) {
 
@@ -129,43 +131,44 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	// public void updateMinimapVisibility(int tileX, int tileY, int visionDist)
-	// {
-	// for (int x = 0; x < Key.width; x++) {
-	// for (int y = 0; y < Key.height; y++) {
-	// if (!isCell(x, y, Key.unused.getID()))
-	// if (new Location(tileX, tileY).getDistance(new Location(x, y)) <
-	// (visionDist/Key.tileSize)) {
-	// map[x][y].setVisible(true);
-	// }
-	// }
-	// }
-	// }
-
 	public void updateMinimapVisibility(Vision vis) {
-		for (int x = 0; x < Key.width; x++) {
-			for (int y = 0; y < Key.height; y++) {
-				if (!isCell(x, y, Key.unused.getID()))
-					if (vis.getShape().contains(new Rectangle(x * Key.tileSize, y * Key.tileSize, x * Key.tileSize + 16, y * Key.tileSize + 16))) {// ||
-																																					// vis.getShape().contains(x
-																																					// *
-																																					// Key.tileSize
-																																					// +
-																																					// 8,
-																																					// y
-																																					// *
-																																					// Key.tileSize)
-						// || vis.getShape().contains(x * Key.tileSize, y *
-						// Key.tileSize + 8) || vis.getShape().contains(x *
-						// Key.tileSize, y * Key.tileSize)) {
-						map[x][y].setVisible(true);
+		int ts = Key.tileSize;
+		int hts = ts / 2;
+		// only checks the map in the vision range
+		Rectangle r = vis.getShape().getBounds();
+		int minX = (int) Math.floor(Math.max(r.getMinX(), 0) / ts);
+		int minY = (int) Math.floor(Math.max(r.getMinY(), 0) / ts);
+		int maxX = (int) Math.ceil(Math.min(r.getMaxX(), Key.width * ts) / ts);
+		int maxY = (int) Math.ceil(Math.min(r.getMaxY(), Key.height * ts) / ts);
+		for (int x = minX; x < maxX; x++) {
+			for (int y = minY; y < maxY; y++) {
+				if (!isCell(x, y, Key.unused.getID()) && !map[x][y].getVisible()) {
+					// seems a little not optimized... because it has to check 4
+					// points to see if a wall is set to visible
+					if (isCell(x, y, Key.lockedWall.getID())) {
+						Point2D p1 = new Point2D.Float(x * ts + hts - 1, y * ts + hts - 1);
+						Point2D p2 = new Point2D.Float(x * ts + hts + 1, y * ts + hts - 1);
+						Point2D p3 = new Point2D.Float(x * ts + hts - 1, y * ts + hts + 1);
+						Point2D p4 = new Point2D.Float(x * ts + hts + 1, y * ts + hts + 1);
+						if (containsWall(vis.getShape(), p1, p2, p3, p4)) {
+							map[x][y].setVisible(true);
+						}
+					} else {
+						if (vis.getShape().contains(new Point2D.Float(x * ts + hts, y * ts + hts))) {
+							map[x][y].setVisible(true);
+						}
 					}
-				// if (new Location(tileX, tileY).getDistance(new Location(x,
-				// y)) < (visionDist/Key.tileSize)) {
-				// map[x][y].setVisible(true);
-				// }
+				}
 			}
 		}
+	}
+
+	private boolean containsWall(Shape s, Point2D p1, Point2D p2, Point2D p3, Point2D p4) {
+
+		if (s.contains(p1) || s.contains(p2) || s.contains(p3) || s.contains(p4)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -184,9 +187,10 @@ public class Map implements TileBasedMap {
 	 * @param h
 	 *            - the miniature map tile height
 	 */
-	public void drawMiniMap(Graphics g2D, Dimension d, int px, int py, int w, int h) {
+	public void drawMiniMap(Graphics g2D, Dimension d, int px, int py) {
 		// Start location
-		int mmTileSize = 6;
+		int w = Key.mmWidth, h = Key.mmHeight;
+		int mmTileSize = Key.mmtileSize;
 		int sx = d.width - (w * mmTileSize);
 		int sy = 0;
 		int xOffset = w / 2;
@@ -213,15 +217,15 @@ public class Map implements TileBasedMap {
 						} else if (isCell(x, y, Key.door)) {
 							g2D.setColor(brown);
 						} else {
-							// Redundant
+							// Redundant?
 							g2D.setColor(transparent);
 						}
 					} else {
-						// Redundant
+						// Redundant?
 						g2D.setColor(transparent);
 					}
 				} else {
-					// Redundant
+					// Redundant?
 					g2D.setColor(transparent);
 				}
 				// does not even draw anything if its out of bounds of the
@@ -233,8 +237,7 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	public void drawGameMap(Graphics2D g2D, Dimension screen , float
- translateX, float translateY, float scale) {
+	public void drawGameMap(Graphics2D g2D, Dimension screen, float translateX, float translateY, float scale) {
 		AffineTransform holder = new AffineTransform();
 
 		holder.translate(screen.getWidth() / 2, screen.getHeight() / 2);
