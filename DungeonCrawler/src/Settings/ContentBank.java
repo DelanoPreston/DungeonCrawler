@@ -11,8 +11,8 @@ public class ContentBank {
 	public static Image player;
 
 	public static void loadImages() {
-		BufferedImage bigImg = null;
-		int index = 0;
+		//BufferedImage bigImg = null;
+		//int index = 0;
 
 		// try {
 		// bigImg = ImageIO.read(new File("Images/SurvivorTileMap1.png"));

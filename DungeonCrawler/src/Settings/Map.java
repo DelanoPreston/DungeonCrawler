@@ -26,9 +26,9 @@ public class Map implements TileBasedMap {
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
 	List<Path> paths = new ArrayList<>();
-	float translateX = 0;
-	float translateY = 0;
-	float scale = 1.0f;
+	//float translateX = 0;
+	//float translateY = 0;
+	//float scale = 1.0f;
 
 	public Map(int width, int height) {
 
@@ -233,12 +233,8 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	public void drawGameMap(Graphics2D g2D, Dimension screen) {// , double
-																// translateX,
-																// double
-																// translateY,
-																// double scale)
-																// {
+	public void drawGameMap(Graphics2D g2D, Dimension screen , float
+ translateX, float translateY, float scale) {
 		AffineTransform holder = new AffineTransform();
 
 		holder.translate(screen.getWidth() / 2, screen.getHeight() / 2);
@@ -265,21 +261,6 @@ public class Map implements TileBasedMap {
 						g2D.setColor(new Color(137, 137, 137, 255));
 					else if (key == Key.door.getID())
 						g2D.setColor(new Color(32, 32, 32, 255));
-					// switch (checkCell(x, y)) {
-					// case Key.floor:
-					// case Key.hallwayFloor:
-					// g2D.setColor(new Color(32, 127, 32, 255));
-					// break;
-					// case Key.sideWall:
-					// g2D.setColor(new Color(127, 127, 127, 255));
-					// break;
-					// case Key.lockedWall:
-					// g2D.setColor(new Color(137, 137, 137, 255));
-					// break;
-					// case Key.door:
-					// g2D.setColor(new Color(32, 32, 32, 255));
-					// break;
-					// }
 					g2D.fillRect(xLoc, yLoc, Key.tileSize, Key.tileSize);
 
 					if (Key.drawGrid) {

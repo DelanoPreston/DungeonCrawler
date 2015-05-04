@@ -14,6 +14,8 @@ import java.util.List;
 
 import DataStructures.Location;
 import Entities.Entity;
+import Player.Player;
+import Player.PlayerView;
 
 public class Vision {
 	public Location prevSource;
@@ -108,7 +110,7 @@ public class Vision {
 
 	}
 
-	public void update() {
+	public void update(PlayerView pv) {
 		if (entity != null) {
 			source = entity.getLoc();
 			//
@@ -121,7 +123,7 @@ public class Vision {
 		Point2D[] allIntersects = new Point2D[0];
 		// re grabs the list of walls from the map
 		// List<MapTile> walls = mapRef.getWalls();
-		List<Line2D> walls = resizeWalls(mapRef.visWallList);
+		List<Line2D> walls = resizeWalls(mapRef.visWallList, pv);
 		// calculates values for each ray in the cast
 		for (int i = 0; i < rays.length; i++) {
 			double angle = Math.toRadians(i * (360 / rays.length));
@@ -155,14 +157,14 @@ public class Vision {
 		createVisionShape();
 	}
 
-	private List<Line2D> resizeWalls(List<Line2D> walls) {
+	private List<Line2D> resizeWalls(List<Line2D> walls, PlayerView pv) {
 		List<Line2D> temp = new ArrayList<>();
-
+		
 		for (int i = 0; i < walls.size(); i++) {
-			double x1 = walls.get(i).getX1() + mapRef.translateX;
-			double x2 = walls.get(i).getX2() + mapRef.translateX;
-			double y1 = walls.get(i).getY1() + mapRef.translateY;
-			double y2 = walls.get(i).getY2() + mapRef.translateY;
+			double x1 = walls.get(i).getX1() + pv.getTraslateX();
+			double x2 = walls.get(i).getX2() + pv.getTraslateX();
+			double y1 = walls.get(i).getY1() + pv.getTraslateY();
+			double y2 = walls.get(i).getY2() + pv.getTraslateY();
 			temp.add(new Line2D.Double(x1, y1, x2, y2));
 		}
 

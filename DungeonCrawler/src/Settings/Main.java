@@ -14,7 +14,7 @@ public class Main {
 //			frame.setSize(200, 200);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(true);
-			frame.setVisible(true);
+			//frame.setVisible(true);
 			frame.add(gamePanel);
 			frame.setVisible(true);
 		} catch (Exception e) {

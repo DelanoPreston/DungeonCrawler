@@ -39,7 +39,7 @@ public class Key {
 	// size of map
 	public static int width = 90;
 	public static int height = 75;
-	public static int tileSize = 12;
+	public static int tileSize = 8;
 
 	// map settings
 	public static int numOfRooms = 320;
@@ -61,11 +61,11 @@ public class Key {
 	public static boolean useWallRectangles = false;
 
 	// miniMap things
-	public static boolean drawMiniMap = true;
+	public static boolean drawMiniMap = false;
 	public static boolean drawGamePlay = false;
 
 	// fog of war things
-	public static boolean drawFogOfWar = true;
+	public static boolean drawFogOfWar = false;
 	public static boolean drawMMFogOfWar = false;// true makes minimap not work
 													// for now
 

@@ -13,9 +13,11 @@ public class Player extends MoveableEntity {
 	private static final long serialVersionUID = 7134283731669813902L;
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
 	boolean accFor = false, accBac = false, accRotRig = false, accRotLef = false;
-
+	PlayerView pv;
+	
 	public Player(Point2D loc) {
 		location = new Location(loc);
+		pv = new PlayerView();
 	}
 
 	public Player(Location loc) {
@@ -57,6 +59,10 @@ public class Player extends MoveableEntity {
 		super.update();
 	}
 
+	public PlayerView getPlayerView(){
+		return pv;
+	}
+	
 	public void pressed(KeyEvent input) {
 		int key = input.getKeyCode();
 		if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
