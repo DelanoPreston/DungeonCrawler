@@ -10,7 +10,7 @@ public class Key {
 	// input
 	public static float sensitivity = 1f;
 	public static boolean someMovementType = true;
-	
+
 	//
 	public static boolean minimapFollowPlayer = true;
 
@@ -19,6 +19,32 @@ public class Key {
 	public static int pathFinderRoomTunneler = -101;
 	// public static int player = 1000;
 	// public static int monster1 = 1500;
+
+	// damage string keys
+	// physical
+	public static final String slashing = "Slashing";
+	public static final String blugeoning = "Blugeoning";
+	public static final String piercing = "Piercing";
+	// magical
+	public static final String fire = "Fire";
+	public static final String water = "Water";
+	public static final String earth = "Earth";
+	public static final String air = "Air";
+	// damage over time physical
+	public static final String bleeding = "bleeding";
+	public static final String brokenBone = "broken_bone";
+	// damage over time magical
+	public static final String cold = "Cold";
+	public static final String burning = "burning";
+
+	// Quality values
+	public static final int QShoddy = 15;
+	public static final int QPoor = 25;
+	public static final int QGood = 40;
+	public static final int QFair = 60;
+	public static final int QExcellent = 80;
+	public static final int QPerfect = 100;
+	public static final int QLegendary = 125;
 
 	// tile keys
 	public static final ID nullID = new ID();
@@ -40,12 +66,12 @@ public class Key {
 	public static int width = 90;
 	public static int height = 75;
 	public static int tileSize = 8;
-	
-	//size of MiniMap
+
+	// size of MiniMap
 	public static int mmWidth = 24;
 	public static int mmHeight = 24;
 	public static int mmtileSize = 6;
-	
+
 	// map settings
 	public static int numOfRooms = 320;
 

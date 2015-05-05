@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<name>Tutorial Simple Block</name>
+	<author>Dour Joseph</author>
+	<url>about:blank</url>
+	<targetVersion>Alpha 10</targetVersion>
+	<description>A very simple block for a tutorial.</description>
+</ModMetaData>
