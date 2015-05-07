@@ -9,7 +9,7 @@ import java.awt.LayoutManager;
 public class SubMenuLayout implements LayoutManager {
 	private int vgap;
 	private int rows;
-	private int xOffset = 0, yOffset = 0;
+	//private int xOffset = 0, yOffset = 0;
 	private int minWidth = 0, minHeight = 0;
 	private int preferredWidth = 0, preferredHeight = 0;
 	private boolean sizeUnknown = true;
@@ -19,8 +19,8 @@ public class SubMenuLayout implements LayoutManager {
 	}
 
 	public SubMenuLayout(int x, int y, int inRows, int v) {
-		xOffset = x;
-		yOffset = y;
+		//xOffset = x;
+		//yOffset = y;
 		rows = inRows;
 		vgap = v;
 	}

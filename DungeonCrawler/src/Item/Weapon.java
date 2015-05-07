@@ -10,9 +10,11 @@ public class Weapon extends Item {
 	private Quality quality;
 	private double condition;
 	private HashMap<String, Double> stats = new HashMap<>();
+	private String weaponType;
 
-	public Weapon(String name, Quality qual, double cond) {
+	public Weapon(String name, String weaponType, Quality qual, double cond) {
 		super(name);
+		this.weaponType = weaponType;
 		quality = qual;
 		condition = cond;
 	}
@@ -24,12 +26,11 @@ public class Weapon extends Item {
 	public Quality getQuality() {
 		return quality;
 	}
-	
-	public String getWeaponType(){
-		return "Axe";
-		//TODO - create something that will return the string name of the weapon type
+
+	public String getWeaponType() {
+		return weaponType;
 	}
-	
+
 	public double getStat(String s) {
 		if (stats.containsKey(s)) {
 			return stats.get(s);

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -89,6 +88,7 @@ public class Vision {
 		// re grabs the list of walls from the map
 		// List<MapTile> walls = mapRef.getWalls();
 		List<Line2D> walls = resizeWalls(mapRef.visWallList, pv);
+		List<Door> doors = resizeDoors(mapRef.visDoorList, pv);
 		// calculates values for each ray in the cast
 		for (int i = 0; i < rays.length; i++) {
 			double angle = Math.toRadians(i * (360 / rays.length));
@@ -110,6 +110,17 @@ public class Vision {
 					intersects = concatenateArrays(intersects, temp);
 				}
 				// }
+			}
+			// checks for intersections with any closed doors
+			for (int j = 0; j < doors.size(); j++) {
+				if (doors.get(j).isDoorOpen()) {
+//					System.out.println("door is open");
+					if (rays[i].intersectsLine(doors.get(j).getLine())) {
+//						System.out.println("intersect");
+						Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), doors.get(j).getLine().getP1(), doors.get(j).getLine().getP2()) };
+						intersects = concatenateArrays(intersects, temp);
+					}
+				}
 			}
 			allIntersects = concatenateArrays(intersects, allIntersects);
 			if (intersects.length >= 1) {
@@ -134,6 +145,20 @@ public class Vision {
 		}
 
 		return temp;
+	}
+
+	private List<Door> resizeDoors(List<Door> doors, PlayerView pv) {
+
+		for (int i = 0; i < doors.size(); i++) {
+			double x1 = doors.get(i).getLine().getX1() + pv.getTraslateX();
+			double x2 = doors.get(i).getLine().getX2() + pv.getTraslateX();
+			double y1 = doors.get(i).getLine().getY1() + pv.getTraslateY();
+			double y2 = doors.get(i).getLine().getY2() + pv.getTraslateY();
+			//temp.add(new Door(new Line2D.Double(x1, y1, x2, y2), doors.get(i).getLocation()));
+			doors.get(i).setLine(new Line2D.Double(x1, y1, x2, y2));
+		}
+
+		return doors;
 	}
 
 	public Point2D getSource() {

@@ -9,7 +9,7 @@ import java.awt.LayoutManager;
 public class RowMenuLayout implements LayoutManager {
 	private int buttonGap, buttonHeight, buttonWidth;
 	private int rows;
-	private int minWidth = 0, minHeight = 0;
+	private int minWidth = 0;//, minHeight = 0;
 	private int preferredWidth = 0, preferredHeight = 0;
 	private boolean sizeUnknown = true;
 
@@ -34,12 +34,12 @@ public class RowMenuLayout implements LayoutManager {
 
 	private void setSizes(Container parent) {
 		int nComps = parent.getComponentCount();
-System.out.println(nComps);
+		// System.out.println(nComps);
 		nComps = nComps / rows + 1;
 		preferredHeight = rows * buttonHeight + (rows + 1) * buttonGap;
 
 		preferredWidth = nComps * buttonWidth + (nComps + 1) * buttonGap;
-		System.out.println(nComps + " ncomps, width " + preferredWidth);
+		// System.out.println(nComps + " ncomps, width " + preferredWidth);
 	}
 
 	/* Required by LayoutManager. */
@@ -88,10 +88,10 @@ System.out.println(nComps);
 		int maxWidth = parent.getWidth() - (insets.left + insets.right);
 		int maxHeight = parent.getHeight() - (insets.top + insets.bottom);
 		int nComps = parent.getComponentCount();
-		int previousWidth = 0, previousHeight = 0;
+		//int previousWidth = 0, previousHeight = 0;
 		int x = 0, y = insets.top;
-		int rowh = 0, start = 0;
-		int xFudge = 0, yFudge = 0;
+		//int rowh = 0, start = 0;
+		//int xFudge = 0, yFudge = 0;
 		boolean oneColumn = true;
 
 		// Go through the components' sizes, if neither
@@ -151,8 +151,8 @@ System.out.println(nComps);
 				// Set the component's size and position.
 				c.setBounds(x, y, d.width, d.height);
 
-				previousWidth = d.width;
-				previousHeight = d.height;
+				//previousWidth = d.width;
+				//previousHeight = d.height;
 			}
 		}
 	}

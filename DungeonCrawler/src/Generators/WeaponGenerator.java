@@ -8,14 +8,20 @@ public class WeaponGenerator {
 	Weapon w;
 
 	public WeaponGenerator(int level, Quality minCond, Quality maxCond) {
-		w = new Weapon(new NameGenerator().createName(), chooseQuality(minCond, maxCond), 100.0);
+		w = new Weapon(new NameGenerator().createName(), chooseWeaponType(), chooseQuality(minCond, maxCond), 100.0);
 
 	}
 
 	public void printWeapon() {
 		System.out.println(w.getName() + "'s " + w.getQuality().toString() + " " + w.getWeaponType());
 	}
-
+	
+	public String chooseWeaponType(){
+		String[] weaponTypes = {"Axe", "Sword", "Knife", "Bow", "CrossBow"};
+		
+		return weaponTypes[Key.random.nextInt(weaponTypes.length)];
+	}
+	
 	public Quality chooseQuality(Quality minCond, Quality maxCond) {
 		int i;
 		Quality retQual = null;

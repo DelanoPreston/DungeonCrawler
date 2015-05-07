@@ -22,20 +22,20 @@ public class Key {
 
 	// damage string keys
 	// physical
-	public static final String slashing = "Slashing";
-	public static final String blugeoning = "Blugeoning";
-	public static final String piercing = "Piercing";
+	public static final String Eslashing = "Slashing";
+	public static final String Eblugeoning = "Blugeoning";
+	public static final String Epiercing = "Piercing";
 	// magical
-	public static final String fire = "Fire";
-	public static final String water = "Water";
-	public static final String earth = "Earth";
-	public static final String air = "Air";
+	public static final String Efire = "Fire";
+	public static final String Ewater = "Water";
+	public static final String Eearth = "Earth";
+	public static final String Eair = "Air";
 	// damage over time physical
-	public static final String bleeding = "bleeding";
-	public static final String brokenBone = "broken_bone";
+	public static final String Ebleeding = "bleeding";
+	public static final String EbrokenBone = "broken_bone";
 	// damage over time magical
-	public static final String cold = "Cold";
-	public static final String burning = "burning";
+	public static final String Ecold = "Cold";
+	public static final String Eburning = "burning";
 
 	// Quality values
 	public static final int QShoddy = 15;
@@ -57,6 +57,7 @@ public class Key {
 	public static final ID lockedWall = new ID(5, 1);
 	// doors
 	public static final ID door = new ID(12, 0);
+	public static final ID doorClosed = new ID(12, 1);
 
 	// resolution of ray casting
 	public static int rayCastResolution = 360;
@@ -84,6 +85,7 @@ public class Key {
 	public static boolean drawRoomCenters = false;
 	public static boolean drawTunnelingPaths = false;
 	public static boolean drawWallLines = false;
+	public static boolean drawDoorLines = false;
 	public static boolean drawPathMap = false;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;

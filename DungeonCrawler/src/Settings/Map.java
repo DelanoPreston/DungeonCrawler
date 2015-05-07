@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DataStructures.ID;
+import DataStructures.Location;
 import DataStructures.Path;
 import DataStructures.Room;
 import DataStructures.Tile;
@@ -23,6 +24,7 @@ public class Map implements TileBasedMap {
 	Tile[][] map;
 	ChunkImage chunks[][];
 	List<Line2D> visWallList = new ArrayList<>();
+	List<Door> visDoorList = new ArrayList<>();
 	// List<MapTile> wallList = new ArrayList<>();
 	List<Room> rooms = new ArrayList<>();
 	// for testing only
@@ -74,6 +76,10 @@ public class Map implements TileBasedMap {
 		return visWallList;
 	}
 
+	public List<Door> getDoors() {
+		return visDoorList;
+	}
+
 	public List<Room> getRooms() {
 		return rooms;
 	}
@@ -118,8 +124,10 @@ public class Map implements TileBasedMap {
 						for (int tx = x - 1; tx <= x + 1; tx++) {
 							for (int ty = y - 1; ty <= y + 1; ty++) {
 
-								if (tx >= 0 && ty >= 0 && tx < getWidthInTiles() && ty < getHeightInTiles()) {
-
+								// if (tx >= 0 && ty >= 0 && tx <
+								// getWidthInTiles() && ty < getHeightInTiles())
+								// {
+								if (inBounds(x, y)) {
 									if (isWall(checkCell(tx, ty)))
 										map[tx][ty].setVisible(true);
 								}
@@ -145,7 +153,7 @@ public class Map implements TileBasedMap {
 				if (!isCell(x, y, Key.unused.getID()) && !map[x][y].getVisible()) {
 					// seems a little not optimized... because it has to check 4
 					// points to see if a wall is set to visible
-					if (isCell(x, y, Key.lockedWall.getID())) {
+					if (isWall(x, y) || isCell(x, y, Key.door)) {
 						Point2D p1 = new Point2D.Float(x * ts + hts - 1, y * ts + hts - 1);
 						Point2D p2 = new Point2D.Float(x * ts + hts + 1, y * ts + hts - 1);
 						Point2D p3 = new Point2D.Float(x * ts + hts - 1, y * ts + hts + 1);
@@ -206,7 +214,7 @@ public class Map implements TileBasedMap {
 
 		for (int x = px - xOffset; x < px + xOffset; x++) {
 			for (int y = py - yOffset; y < py + yOffset; y++) {
-				if (x >= 0 && y >= 0 && x < getWidthInTiles() && y < getHeightInTiles()) {
+				if (inBounds(x, y)) {
 					if (map[x][y].getVisible() || !Key.drawMMFogOfWar) {
 						if (x == px && y == py) {
 							g2D.setColor(yellow);
@@ -370,66 +378,6 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	// public BufferedImage toBufferedImage() {
-	// // Create a buffered image with a format that's compatible with the
-	// // screen
-	// BufferedImage tempBImage = null;
-	//
-	// // boolean hasAlpha = hasAlpha(image);
-	// //
-	// // if (tempBImage == null) {
-	// // // Create a buffered image using the default color model
-	// // int type = BufferedImage.TYPE_INT_RGB;
-	// // if (hasAlpha) {
-	// // type = BufferedImage.TYPE_INT_ARGB;
-	// // }
-	// // tempBImage = new BufferedImage(tileWidth * ContentBank.tileSize,
-	// // tileHeight * ContentBank.tileSize, type);
-	// // }
-	//
-	// tempBImage = new BufferedImage(Key.width * Key.tileSize, Key.height *
-	// Key.tileSize, BufferedImage.TYPE_INT_RGB);
-	//
-	// for (int y = 0; y < chunks; y++) {
-	// for (int x = xLoc; x < xLoc + tileWidth; x++) {
-	// int index = map[y][x].imageKey;
-	// Image image = ContentBank.landTiles[index];
-	//
-	// // This code ensures that all the pixels in the image are loaded
-	// image = new ImageIcon(image).getImage();
-	//
-	// // Determine if the image has transparent pixels; for this
-	// // method's
-	// // implementation, see Determining If an Image Has Transparent
-	// // Pixels
-	//
-	// // Copy image to buffered image
-	// Graphics g = tempBImage.createGraphics();
-	//
-	// // Paint the image onto the buffered image
-	// g.drawImage(image, (x - xLoc) * ContentBank.tileSize, (y - yLoc) *
-	// ContentBank.tileSize, null);
-	//
-	// // g.drawRect((x - xLoc) * ContentBank.tileSize, (y - yLoc) *
-	// // ContentBank.tileSize, (x - xLoc + 1) * ContentBank.tileSize,
-	// // (y - yLoc + 1) *
-	// // ContentBank.tileSize);
-	//
-	// if (map[y][x].getEntity() != null) {// tempEntImg != null){
-	// g.drawImage(ContentBank.woodenWalls[map[y][x].getEntity().getImageKey()],
-	// (x - xLoc) * ContentBank.tileSize, (y - yLoc)
-	// * ContentBank.tileSize, null);
-	// }
-	//
-	// g.dispose();
-	// }
-	// }
-	//
-	// System.out.println(tempBImage.getHeight() + "," + tempBImage.getWidth());
-	//
-	// return tempBImage;
-	// }
-
 	public boolean isCell(int x, int y, ID cellType) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
 			return false;
@@ -551,7 +499,7 @@ public class Map implements TileBasedMap {
 								int y = p.getY(pathKey);
 								if (isCell(x, y, Key.sideWall)) {
 									if (!(isCell(x + 1, y, Key.door) || isCell(x - 1, y, Key.door) || isCell(x, y + 1, Key.door) || isCell(x, y - 1, Key.door))) {
-										setCell(x, y, Key.door);
+										setCell(x, y, Key.door);// Closed);
 										Room tempR = getRoomAt(x, y);
 										tempR.addDoor();
 										if (tempR.getDoors() >= 3) {
@@ -652,12 +600,15 @@ public class Map implements TileBasedMap {
 					setCell(x, y, Key.sideWall);
 			}
 		}
+		// this sets all corners of the rooms to locked wall (helps make vision
+		// walls
 		for (int r = 0; r < rooms.size(); r++) {
 			setCell(rooms.get(r).x, rooms.get(r).y, Key.lockedWall);
 			setCell(rooms.get(r).x, rooms.get(r).getRoomY2(), Key.lockedWall);
 			setCell(rooms.get(r).getRoomX2(), rooms.get(r).y, Key.lockedWall);
 			setCell(rooms.get(r).getRoomX2(), rooms.get(r).getRoomY2(), Key.lockedWall);
 		}
+		// setting more walls to locked walls
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
 				if (isCell(x, y, Key.sideWall)) {
@@ -851,6 +802,20 @@ public class Map implements TileBasedMap {
 			startYLoc = -1;
 			wallStart = true;
 		}
+
+		double hTS = tS / 2;
+		// this adds the lines for the doors
+		for (int y = 1; y < Key.height - 1; y++) {
+			for (int x = 1; x < Key.width - 1; x++) {
+				if (isCell(x, y, Key.door)) {
+					if (isCell(x + 1, y, Key.lockedWall) && isCell(x - 1, y, Key.lockedWall)) {
+						visDoorList.add(new Door(new Line2D.Double((x * tS), (y * tS) + hTS, (x + 1) * tS, (y * tS) + hTS), new Location(x, y)));
+					} else if (isCell(x, y + 1, Key.lockedWall) && isCell(x, y - 1, Key.lockedWall)) {
+						visDoorList.add(new Door(new Line2D.Double((x * tS) + hTS, (y * tS), (x * tS) + hTS, (y + 1) * tS), new Location(x, y)));
+					}
+				}
+			}
+		}
 	}
 
 	public Room getRoomAt(int x, int y) {
@@ -902,6 +867,12 @@ public class Map implements TileBasedMap {
 			return true;
 		}
 		// returns false because there is no space for the room
+		return false;
+	}
+
+	private boolean inBounds(int x, int y) {
+		if (x >= 0 && x < getWidthInTiles() && y >= 0 && y < getHeightInTiles())
+			return true;
 		return false;
 	}
 
@@ -961,4 +932,64 @@ public class Map implements TileBasedMap {
 	public float getCost(int type, int sx, int sy, int tx, int ty) {
 		return (float) map[tx][ty].getCost();
 	}
+
+	// public BufferedImage toBufferedImage() {
+	// // Create a buffered image with a format that's compatible with the
+	// // screen
+	// BufferedImage tempBImage = null;
+	//
+	// // boolean hasAlpha = hasAlpha(image);
+	// //
+	// // if (tempBImage == null) {
+	// // // Create a buffered image using the default color model
+	// // int type = BufferedImage.TYPE_INT_RGB;
+	// // if (hasAlpha) {
+	// // type = BufferedImage.TYPE_INT_ARGB;
+	// // }
+	// // tempBImage = new BufferedImage(tileWidth * ContentBank.tileSize,
+	// // tileHeight * ContentBank.tileSize, type);
+	// // }
+	//
+	// tempBImage = new BufferedImage(Key.width * Key.tileSize, Key.height *
+	// Key.tileSize, BufferedImage.TYPE_INT_RGB);
+	//
+	// for (int y = 0; y < chunks; y++) {
+	// for (int x = xLoc; x < xLoc + tileWidth; x++) {
+	// int index = map[y][x].imageKey;
+	// Image image = ContentBank.landTiles[index];
+	//
+	// // This code ensures that all the pixels in the image are loaded
+	// image = new ImageIcon(image).getImage();
+	//
+	// // Determine if the image has transparent pixels; for this
+	// // method's
+	// // implementation, see Determining If an Image Has Transparent
+	// // Pixels
+	//
+	// // Copy image to buffered image
+	// Graphics g = tempBImage.createGraphics();
+	//
+	// // Paint the image onto the buffered image
+	// g.drawImage(image, (x - xLoc) * ContentBank.tileSize, (y - yLoc) *
+	// ContentBank.tileSize, null);
+	//
+	// // g.drawRect((x - xLoc) * ContentBank.tileSize, (y - yLoc) *
+	// // ContentBank.tileSize, (x - xLoc + 1) * ContentBank.tileSize,
+	// // (y - yLoc + 1) *
+	// // ContentBank.tileSize);
+	//
+	// if (map[y][x].getEntity() != null) {// tempEntImg != null){
+	// g.drawImage(ContentBank.woodenWalls[map[y][x].getEntity().getImageKey()],
+	// (x - xLoc) * ContentBank.tileSize, (y - yLoc)
+	// * ContentBank.tileSize, null);
+	// }
+	//
+	// g.dispose();
+	// }
+	// }
+	//
+	// System.out.println(tempBImage.getHeight() + "," + tempBImage.getWidth());
+	//
+	// return tempBImage;
+	// }
 }

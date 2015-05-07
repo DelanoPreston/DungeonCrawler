@@ -137,7 +137,14 @@ public class DungeonPanel extends JPanel {
 			}
 			map.drawMiniMap(g2D, this.getSize(), tx, ty);
 		}
-
+		if (Key.drawDoorLines) {
+			g2D.setColor(Color.WHITE);
+			//System.out.println("drawing lines");
+			for (int i = 0; i < map.getDoors().size(); i++) {
+				//System.out.println("drawing line " + i);
+				g2D.draw(map.getDoors().get(i).getLine());
+			}
+		}
 		player.draw(g2D);
 		// this draws the mouse's tile location under the map
 		// int x = (int) (popupListener.location.getX() / Key.tileSize);
@@ -401,7 +408,7 @@ public class DungeonPanel extends JPanel {
 		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s" };
 
 		// this is the build menu cancel button
-		JButton btn;
+		//JButton btn;
 
 		for (int i = 0; i < buttonNames.length; i++) {
 			temp.add(buttonCreator(buttonNames[i], 128, 32, btnListener));
