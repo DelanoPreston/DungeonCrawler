@@ -1,7 +1,10 @@
 package Player;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+
 import DataStructures.Location;
-import Settings.Key;
 
 public class PlayerView {
 	float translateX;
@@ -34,6 +37,20 @@ public class PlayerView {
 		prevTranslateY = translateY;
 		translateX = 550-p.getLoc().getX();
 		translateY = 450-p.getLoc().getY();
+	}
+	
+	public AffineTransform draw(Dimension screen){
+		AffineTransform temp = new AffineTransform();
+		
+		//centers translation so scale is about the center
+		temp.translate(screen.getWidth() / 2, screen.getHeight() / 2);
+		temp.scale(scale, scale);
+		temp.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
+		
+		//translates the map so the player is in the center
+		temp.translate(translateX, translateY);
+		
+		return temp;
 	}
 
 	public float getTraslateX() {

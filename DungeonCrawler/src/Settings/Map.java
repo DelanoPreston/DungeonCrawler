@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -190,10 +189,6 @@ public class Map implements TileBasedMap {
 	 *            - the player's x position
 	 * @param py
 	 *            - the player's y position
-	 * @param w
-	 *            - the miniature map tile width
-	 * @param h
-	 *            - the miniature map tile height
 	 */
 	public void drawMiniMap(Graphics g2D, Dimension d, int px, int py) {
 		// Start location
@@ -245,17 +240,7 @@ public class Map implements TileBasedMap {
 		}
 	}
 
-	public void drawGameMap(Graphics2D g2D, Dimension screen, float translateX, float translateY, float scale) {
-		AffineTransform holder = new AffineTransform();
-		
-		//centers translation so scale is about the center
-		holder.translate(screen.getWidth() / 2, screen.getHeight() / 2);
-		holder.scale(scale, scale);
-		holder.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
-		
-		//translates the map so the player is in the center
-		holder.translate(translateX, translateY);
-		g2D.setTransform(holder);
+	public void drawGameMap(Graphics2D g2D, Dimension screen) {
 
 		if (map != null) {
 			for (int x = 0; x < Key.width; x++) {
@@ -285,7 +270,7 @@ public class Map implements TileBasedMap {
 		}
 
 		// this resets the at for the j components to draw normally
-		//g2D.setTransform(new AffineTransform());
+		// g2D.setTransform(new AffineTransform());
 	}
 
 	public void drawWholeMap(Graphics g2D) {

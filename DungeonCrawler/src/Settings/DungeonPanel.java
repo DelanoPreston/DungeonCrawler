@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
@@ -46,6 +48,7 @@ public class DungeonPanel extends JPanel {
 	PopupListener popupListener;
 	// JPanel mapDraw;
 	JPanel cards;
+	AffineTransform normView;
 
 	// debug variables
 	int uCounter = 0;
@@ -94,7 +97,7 @@ public class DungeonPanel extends JPanel {
 		eM.update();
 		// if (popupListener.location != null) {
 		// vis.source = popupListener.location;
-		
+
 		// System.out.println(popupListener.location);
 	}
 
@@ -103,14 +106,17 @@ public class DungeonPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		pCounter++;
 		Graphics2D g2D = (Graphics2D) g;
-		super.paintComponent(g);
+		normView = new AffineTransform();// g2D.getTransform();
+		AffineTransform temp = normView;
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
 				player.getPlayerView().update(player);
-				map.drawGameMap(g2D, this.getSize(), player.getPlayerView().getTraslateX(), player.getPlayerView().getTraslateY(), player.getPlayerView()
-						.getScale());
+				temp = player.getPlayerView().draw(this.getSize());
+				g2D.transform(temp);
+				map.drawGameMap(g2D, this.getSize());
 			} else {
 				map.drawWholeMap(g2D);
 			}
@@ -120,6 +126,19 @@ public class DungeonPanel extends JPanel {
 		if (Key.drawFogOfWar)
 			vis.paint(g2D, this.getSize());
 		// this tells the minimap to be drawn
+
+		if (Key.drawDoorLines) {
+			g2D.setColor(Color.RED);
+			// System.out.println("drawing lines");
+			for (int i = 0; i < map.getDoors().size(); i++) {
+				// System.out.println("drawing line " + i);
+				g2D.draw(map.getDoors().get(i).getLine());
+			}
+		}
+		player.draw(g2D);
+
+		g2D.setTransform(new AffineTransform());
+		// draws the minimap
 		if (Key.drawMiniMap) {
 
 			int tx = 0;// (int) (popupListener.location.getX() / Key.tileSize);
@@ -133,26 +152,29 @@ public class DungeonPanel extends JPanel {
 			}
 			map.drawMiniMap(g2D, this.getSize(), tx, ty);
 		}
-		if (Key.drawDoorLines) {
-			g2D.setColor(Color.WHITE);
-			// System.out.println("drawing lines");
-			for (int i = 0; i < map.getDoors().size(); i++) {
-				// System.out.println("drawing line " + i);
-				g2D.draw(map.getDoors().get(i).getLine());
-			}
-		}
-		player.draw(g2D);
-		// this draws the mouse's tile location under the map
-		// int x = (int) (popupListener.location.getX() / Key.tileSize);
-		// int y = (int) (popupListener.location.getY() / Key.tileSize);
+		// g2D.transform(normView);
+
+		/*
+		 * g2D.drawString("Player is at: " + x + ", " + y, 15, 16 +
+		 * (Key.tileSize * Key.height)); g2D.drawString("you are awesome", 15,
+		 * 32 + (Key.tileSize * Key.height)); g2D.drawString("update fps: " +
+		 * updateCounter, 15, 48 + (Key.tileSize * Key.height));
+		 * g2D.drawString("paint fps:  " + paintCounter, 15, 64 + (Key.tileSize
+		 * * Key.height));//
+		 */
+		
+		drawInfo(g2D, player);
+	}
+
+	private void drawInfo(Graphics2D g2D, Player player) {
 		int x = player.location.getTileX();
 		int y = player.location.getTileY();
-		// g2D.setColor(new Color(0, 0, 0, 255));
-		g2D.setColor(Color.GRAY);
-		g2D.drawString("Player is at: " + x + ", " + y, 15, 16 + (Key.tileSize * Key.height));
-		g2D.drawString("you are awesome", 15, 32 + (Key.tileSize * Key.height));
-		g2D.drawString("update fps: " + updateCounter, 15, 48 + (Key.tileSize * Key.height));
-		g2D.drawString("paint fps:  " + paintCounter, 15, 64 + (Key.tileSize * Key.height));
+		g2D.setColor(Color.WHITE);
+		int startHeight = (int) (this.getSize().getHeight());
+		g2D.drawString("Player is at: " + x + ", " + y, 15, startHeight - 80);
+		g2D.drawString("you are awesome", 15, startHeight - 64);
+		g2D.drawString("update fps: " + updateCounter, 15, startHeight - 48);
+		g2D.drawString("paint fps:  " + paintCounter, 15, startHeight - 32);
 	}
 
 	/**
