@@ -9,7 +9,6 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 import DataStructures.Location;
@@ -17,38 +16,47 @@ import Entities.Entity;
 import Player.PlayerView;
 
 public class Vision {
-	public Location prevSource;
-	public Location source;
-	public Entity entity;
+	private Location prevSource;
+	private Location source;
+	private Entity entity;
 	float radius;
 	Line2D[] rays;
 	Map mapRef;
 	Shape shape;
-	float prevTranslateX = 0;
-	float prevTranslateY = 0;
-	float prevScale = 1.0f;
 
-	Vision(Map mapRef, int radius) {
+	// float prevTranslateX = 0;
+	// float prevTranslateY = 0;
+	// float prevScale = 1.0f;
+
+	public Vision(Map mapRef, int radius) {
 		this.mapRef = mapRef;
 		this.radius = radius;
 		rays = new Line2D[360];
 		shape = new GeneralPath();
 	}
 
-	Vision(Map mapRef, int resolution, int radius) {
+	public Vision(Map mapRef, int resolution, int radius) {
 		this.mapRef = mapRef;
 		this.radius = radius;
 		rays = new Line2D[resolution];
 		shape = new GeneralPath();
 	}
 
-	Vision(Map mapRef, int resolution, int radius, Entity source) {
+	public Vision(Map mapRef, int resolution, int radius, Entity entity) {
 		this.mapRef = mapRef;
-		this.entity = source;
+		this.entity = entity;
 		this.source = entity.getLoc();
 		this.radius = radius;
 		rays = new Line2D[resolution];
 		shape = new GeneralPath();
+	}
+
+	public void setVisionRange(float r) {
+		radius = r;
+	}
+
+	public float getVisionRange() {
+		return radius;
 	}
 
 	public void drawVisShape(Graphics2D g2D) {
@@ -77,88 +85,56 @@ public class Vision {
 	public void update(PlayerView pv) {
 		if (entity != null) {
 			source = entity.getLoc();
-			//
 		}
-		// if (source != prevSource) {// || mapRef.translateX != prevTranslateX
-		// ||
-		// prevSource = source; // mapRef.translateY != prevTranslateY ||
-		// mapRef.scale != prevScale) {
-		// recreates the intersect array, for new position
-		Point2D[] allIntersects = new Point2D[0];
-		// re grabs the list of walls from the map
-		// List<MapTile> walls = mapRef.getWalls();
-		List<Line2D> walls = resizeWalls(mapRef.visWallList, pv);
-		List<Door> doors = resizeDoors(mapRef.visDoorList, pv);
-		// calculates values for each ray in the cast
-		for (int i = 0; i < rays.length; i++) {
-			double angle = Math.toRadians(i * (360 / rays.length));
-			rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
-					+ source.getY()));
-			Point2D[] intersects = new Point2D[0];
-			// checks if it intersects with each wall in the list
-			for (int j = 0; j < walls.size(); j++) {
-				// if (walls.get(j)) {
-				// this uses the generic collision to check if there is
-				// a collision
-				// if (rays[i].intersects(walls.get(j).positionSize)) {
-				if (rays[i].intersectsLine(walls.get(j))) {
-					// then this checks the close walls that seem to
-					// have an intersection, and gets the points
-					// Point2D[] temp = getIntersectionPoint(rays[i],
-					// walls.get(j));
-					Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), walls.get(j).getP1(), walls.get(j).getP2()) };
-					intersects = concatenateArrays(intersects, temp);
-				}
-				// }
-			}
-			// checks for intersections with any closed doors
-			for (int j = 0; j < doors.size(); j++) {
-				if (doors.get(j).isDoorOpen()) {
-//					System.out.println("door is open");
-					if (rays[i].intersectsLine(doors.get(j).getLine())) {
-//						System.out.println("intersect");
-						Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), doors.get(j).getLine().getP1(), doors.get(j).getLine().getP2()) };
+		if (source != prevSource || !pv.samePlayerView()) {
+			prevSource = new Location(source);
+			// recreates the intersect array, for new position
+			Point2D[] allIntersects = new Point2D[0];
+			// re grabs the list of walls from the map
+			List<Line2D> walls = mapRef.visWallList;
+			List<Door> doors = mapRef.visDoorList;
+
+			for (int i = 0; i < rays.length; i++) {
+				double angle = Math.toRadians(i * (360 / rays.length));
+				rays[i] = new Line2D.Double(source.getPoint(), new Point2D.Double((Math.cos(angle) * radius) + source.getX(), (Math.sin(angle) * radius)
+						+ source.getY()));
+				Point2D[] intersects = new Point2D[0];
+				// checks if it intersects with each wall in the list
+				for (int j = 0; j < walls.size(); j++) {
+					// if (walls.get(j)) {
+					// this uses the generic collision to check if there is
+					// a collision
+					// if (rays[i].intersects(walls.get(j).positionSize)) {
+					if (rays[i].intersectsLine(walls.get(j))) {
+						// then this checks the close walls that seem to
+						// have an intersection, and gets the points
+						Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), walls.get(j).getP1(), walls.get(j).getP2()) };
 						intersects = concatenateArrays(intersects, temp);
 					}
+					// }
+				}
+				// checks for intersections with any closed doors
+				for (int j = 0; j < doors.size(); j++) {
+					if (!doors.get(j).isDoorOpen()) {
+						// System.out.println("door is open");
+						if (rays[i].intersectsLine(doors.get(j).getLine())) {
+							// System.out.println("intersect");
+							Point2D[] temp = { findIntersection(rays[i].getP1(), rays[i].getP2(), doors.get(j).getLine().getP1(), doors.get(j).getLine()
+									.getP2()) };
+							intersects = concatenateArrays(intersects, temp);
+						}
+					}
+				}
+				allIntersects = concatenateArrays(intersects, allIntersects);
+				if (intersects.length >= 1) {
+					Point2D lineEnd = null;
+					lineEnd = findClosestPoint(source.getPoint(), intersects);
+
+					rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
 				}
 			}
-			allIntersects = concatenateArrays(intersects, allIntersects);
-			if (intersects.length >= 1) {
-				Point2D lineEnd = null;
-				lineEnd = findClosestPoint(source.getPoint(), intersects);
-
-				rays[i] = new Line2D.Double(source.getPoint(), lineEnd);
-			}
+			createVisionShape();
 		}
-		createVisionShape();
-	}
-
-	private List<Line2D> resizeWalls(List<Line2D> walls, PlayerView pv) {
-		List<Line2D> temp = new ArrayList<>();
-
-		for (int i = 0; i < walls.size(); i++) {
-			double x1 = walls.get(i).getX1() + pv.getTraslateX();
-			double x2 = walls.get(i).getX2() + pv.getTraslateX();
-			double y1 = walls.get(i).getY1() + pv.getTraslateY();
-			double y2 = walls.get(i).getY2() + pv.getTraslateY();
-			temp.add(new Line2D.Double(x1, y1, x2, y2));
-		}
-
-		return temp;
-	}
-
-	private List<Door> resizeDoors(List<Door> doors, PlayerView pv) {
-
-		for (int i = 0; i < doors.size(); i++) {
-			double x1 = doors.get(i).getLine().getX1() + pv.getTraslateX();
-			double x2 = doors.get(i).getLine().getX2() + pv.getTraslateX();
-			double y1 = doors.get(i).getLine().getY1() + pv.getTraslateY();
-			double y2 = doors.get(i).getLine().getY2() + pv.getTraslateY();
-			//temp.add(new Door(new Line2D.Double(x1, y1, x2, y2), doors.get(i).getLocation()));
-			doors.get(i).setLine(new Line2D.Double(x1, y1, x2, y2));
-		}
-
-		return doors;
 	}
 
 	public Point2D getSource() {

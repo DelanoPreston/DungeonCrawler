@@ -1,6 +1,7 @@
 package Player;
 
 import DataStructures.Location;
+import Settings.Key;
 
 public class PlayerView {
 	float translateX;
@@ -10,12 +11,12 @@ public class PlayerView {
 	float scale;
 	float prevScale;
 
-	public PlayerView(){
+	public PlayerView() {
 		translateX = prevTranslateX = 0;
 		translateY = prevTranslateY = 0;
 		scale = prevScale = 2;
 	}
-	
+
 	public PlayerView(float x, float y, float inScale) {
 		translateX = prevTranslateX = x;
 		translateY = prevTranslateY = y;
@@ -27,20 +28,29 @@ public class PlayerView {
 		translateY = prevTranslateY = loc.getY();
 		scale = prevScale = inScale;
 	}
-	
-	public float getTraslateX(){
+
+	public void update(Player p) {
+		prevTranslateX = translateX;
+		prevTranslateY = translateY;
+		translateX = 550-p.getLoc().getX();
+		translateY = 450-p.getLoc().getY();
+	}
+
+	public float getTraslateX() {
 		return translateX;
 	}
-	
-	public float getTraslateY(){
+
+	public float getTraslateY() {
 		return translateY;
 	}
-	
-	public float getScale(){
+
+	public float getScale() {
 		return scale;
 	}
-	
-//	public void draw(Graphics2D g2D, Map map) {
-//		
-//	}
+
+	public boolean samePlayerView() {
+		if (translateX == prevTranslateX && translateY == prevTranslateY && scale == prevScale)
+			return true;
+		return false;
+	}
 }

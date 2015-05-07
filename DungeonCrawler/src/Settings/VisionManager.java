@@ -64,7 +64,7 @@ public class VisionManager {
 		float[] dist = { 0.2f, 0.6f, 1.0f };
 		Color[] colors = { new Color(0, 0, 0, 255), new Color(0, 0, 0, 127), new Color(0, 0, 0, 0) };
 		// Color[] colors = { new Color(0, 0, 0, 0), new Color(0, 0, 0, 127), new Color(0, 0, 0, 255) };
-		RadialGradientPaint p = new RadialGradientPaint(v.source.getPoint(), radius, dist, colors);
+		RadialGradientPaint p = new RadialGradientPaint(v.getSource(), radius, dist, colors);
 		gr.setPaint(p);
 		gr.fill(v.shape);
 

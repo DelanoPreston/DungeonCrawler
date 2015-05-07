@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
+import Entities.EntityManager;
 import Player.Player;
 
 /**
@@ -32,9 +33,11 @@ import Player.Player;
 public class DungeonPanel extends JPanel {
 	int timer = 0;
 	Timer mainTimer;
+	Timer fpsTimer;
 	// MapCreator map;
 	Map map;
 	Player player;
+	EntityManager eM;
 	public int[][] level;
 	// List<Vision> v = new ArrayList<>();
 	Vision vis;
@@ -43,6 +46,12 @@ public class DungeonPanel extends JPanel {
 	PopupListener popupListener;
 	// JPanel mapDraw;
 	JPanel cards;
+
+	// debug variables
+	int uCounter = 0;
+	int pCounter = 0;
+	int updateCounter = 0;
+	int paintCounter = 0;
 
 	public DungeonPanel() {
 
@@ -60,49 +69,33 @@ public class DungeonPanel extends JPanel {
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		player = new Player(new Point2D.Double(400, 400));// map.rooms.get(1).getCenter());
-		// v.add(new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
-		// player));
+		player = new Player(new Point2D.Double(400, 400));
+		eM = new EntityManager(map, player);
 		vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player);
-		// for (Room r : map.rooms)
-		// v.add(new Vision(map, 72, 35, r.getMapLocation()));
-		// vm = new VisionManager();
-		// v2 = new Vision(map)
+
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
-		// timer for updating game every 17 miliseconds
-		mainTimer = new Timer(17, new TimerListener());
+		// timer for updating game every 10 milliseconds
+		// up to 100 frames per second - it caps at 60
+		mainTimer = new Timer(10, new TimerListener());
 		mainTimer.start();
+		fpsTimer = new Timer(1000, new TimerFPSListener());
+		fpsTimer.start();
 	}
 
 	/**
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
+		uCounter++;
 		player.update();
-		// for(Vision vi : v)
-		// vi.update();
-		// vis.source = player.getLoc();
 		vis.update(player.getPlayerView());
-		map.updateMinimapVisibility(vis);// player.getLoc().getTileX(),
-											// player.getLoc().getTileY(),
-											// Key.rayCastingDistance);
-		// v.get(0).update();
+		map.updateMinimapVisibility(vis);
+		eM.update();
 		// if (popupListener.location != null) {
 		// vis.source = popupListener.location;
-		// v.get(0).source = player.getLoc();
-
-		// System.out.println(player.getLoc());
+		
 		// System.out.println(popupListener.location);
-		// System.out.println("yes");
-		// }
-		// for (int i = 0; i < v.size(); i++)
-		// v.get(i).update();
-		//
-		// vm.update(this.getSize(), v);
-		//
-		// // v2.update();
-		// map.setVisible(v.get(0).getShape());
 	}
 
 	/**
@@ -110,16 +103,19 @@ public class DungeonPanel extends JPanel {
 	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		pCounter++;
 		Graphics2D g2D = (Graphics2D) g;
 		super.paintComponent(g);
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
+				player.getPlayerView().update(player);
 				map.drawGameMap(g2D, this.getSize(), player.getPlayerView().getTraslateX(), player.getPlayerView().getTraslateY(), player.getPlayerView()
 						.getScale());
 			} else {
 				map.drawWholeMap(g2D);
 			}
 		}
+		eM.draw(g2D);
 		vis.drawVisShape(g2D);
 		if (Key.drawFogOfWar)
 			vis.paint(g2D, this.getSize());
@@ -139,9 +135,9 @@ public class DungeonPanel extends JPanel {
 		}
 		if (Key.drawDoorLines) {
 			g2D.setColor(Color.WHITE);
-			//System.out.println("drawing lines");
+			// System.out.println("drawing lines");
 			for (int i = 0; i < map.getDoors().size(); i++) {
-				//System.out.println("drawing line " + i);
+				// System.out.println("drawing line " + i);
 				g2D.draw(map.getDoors().get(i).getLine());
 			}
 		}
@@ -155,6 +151,8 @@ public class DungeonPanel extends JPanel {
 		g2D.setColor(Color.GRAY);
 		g2D.drawString("Player is at: " + x + ", " + y, 15, 16 + (Key.tileSize * Key.height));
 		g2D.drawString("you are awesome", 15, 32 + (Key.tileSize * Key.height));
+		g2D.drawString("update fps: " + updateCounter, 15, 48 + (Key.tileSize * Key.height));
+		g2D.drawString("paint fps:  " + paintCounter, 15, 64 + (Key.tileSize * Key.height));
 	}
 
 	/**
@@ -168,11 +166,22 @@ public class DungeonPanel extends JPanel {
 		public void actionPerformed(ActionEvent arg0) {
 			Update();
 			repaint();
+		}
+	}
 
-			// if(timer >= 25){
-			// System.out.println(timer);
-			// }
-			// timer++;
+	/**
+	 * TimerFPSListener class, implements ActionListener, this class records fps
+	 * for updat and paint methods
+	 * 
+	 * @author Preston Delano
+	 */
+	class TimerFPSListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			updateCounter = uCounter;
+			paintCounter = pCounter;
+			uCounter = 0;
+			pCounter = 0;
 		}
 	}
 
@@ -408,7 +417,7 @@ public class DungeonPanel extends JPanel {
 		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s" };
 
 		// this is the build menu cancel button
-		//JButton btn;
+		// JButton btn;
 
 		for (int i = 0; i < buttonNames.length; i++) {
 			temp.add(buttonCreator(buttonNames[i], 128, 32, btnListener));

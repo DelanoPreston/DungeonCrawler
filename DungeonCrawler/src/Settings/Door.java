@@ -16,6 +16,7 @@ public class Door {
 			open = false;
 		else
 			open = true;
+		open = false;
 	}
 
 	public boolean isDoorOpen() {

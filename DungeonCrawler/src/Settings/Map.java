@@ -247,11 +247,13 @@ public class Map implements TileBasedMap {
 
 	public void drawGameMap(Graphics2D g2D, Dimension screen, float translateX, float translateY, float scale) {
 		AffineTransform holder = new AffineTransform();
-
+		
+		//centers translation so scale is about the center
 		holder.translate(screen.getWidth() / 2, screen.getHeight() / 2);
 		holder.scale(scale, scale);
 		holder.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
-
+		
+		//translates the map so the player is in the center
 		holder.translate(translateX, translateY);
 		g2D.setTransform(holder);
 
@@ -283,8 +285,7 @@ public class Map implements TileBasedMap {
 		}
 
 		// this resets the at for the j components to draw normally
-		AffineTransform at = new AffineTransform();
-		g2D.setTransform(at);
+		//g2D.setTransform(new AffineTransform());
 	}
 
 	public void drawWholeMap(Graphics g2D) {

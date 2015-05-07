@@ -45,7 +45,10 @@ public class Key {
 	public static final int QExcellent = 80;
 	public static final int QPerfect = 100;
 	public static final int QLegendary = 125;
-
+	
+	//stat names
+	public static final String statVision = "Vision";
+	
 	// tile keys
 	public static final ID nullID = new ID();
 	public static final ID unused = new ID(0);
@@ -61,7 +64,8 @@ public class Key {
 
 	// resolution of ray casting
 	public static int rayCastResolution = 360;
-	public static int rayCastingDistance = 75;
+	public static int rayCastingDistance = 100;//75;
+	public static int monsterVisionResoultion = 32;
 
 	// size of map
 	public static int width = 90;
@@ -95,7 +99,7 @@ public class Key {
 
 	// miniMap things
 	public static boolean drawMiniMap = true;
-	public static boolean drawGamePlay = false;
+	public static boolean drawGamePlay = true;
 
 	// fog of war things
 	public static boolean drawFogOfWar = false;

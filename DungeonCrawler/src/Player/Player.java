@@ -31,7 +31,7 @@ public class Player extends MoveableEntity {
 	}
 
 	public void update() {
-		
+//		location.addLinearMovement(1, 0);
 		if (Key.someMovementType) {
 			// update location
 			if (movingRight)
