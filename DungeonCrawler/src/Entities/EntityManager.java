@@ -7,9 +7,9 @@ import java.util.List;
 
 import DataStructures.Location;
 import Entities.Monsters.Monster;
+import Map.Map;
 import Player.Player;
 import Settings.Key;
-import Settings.Map;
 
 public class EntityManager {
 	Map mapRef;
@@ -25,7 +25,7 @@ public class EntityManager {
 	private void addMonsters(int num) {
 		for (int i = 0; i < num; i++) {
 			HashMap<String, Double> stats = new HashMap<>();
-			stats.put(Key.statVision, Key.random.nextDouble() * 20 + 50);
+			stats.put(Key.statVision, Key.random.nextDouble() * 20 + 30);
 			monsters.add(new Monster(this, "one", new Location(mapRef.getRoom(i).getWindowLocation()), stats));
 		}
 	}

@@ -11,6 +11,7 @@ public class Room {
 	public int height;
 	public int width;
 	public int numOfDoors = 0;
+	public int maxDoors = 0;
 
 	// 0 is N, 1 is E, 2 is S, 3 is W
 	// boolean[] sideAvail;
@@ -46,7 +47,11 @@ public class Room {
 	public int getFloorY2() {
 		return y + height - 2;
 	}
-
+	
+	public int getMaxDoor(){
+		return maxDoors;
+	}
+	
 	public Point2D getCenter() {
 		int x1 = width / 2 + x;
 		int y1 = height / 2 + y;
@@ -73,6 +78,7 @@ public class Room {
 		this.y = y;
 		this.height = height;
 		this.width = width;
+		this.maxDoors = Key.random.nextInt(2)+2;
 	}
 
 	public boolean spaceAvailable(int side, Room toBePlacedRoom, int[][] mapKey) {

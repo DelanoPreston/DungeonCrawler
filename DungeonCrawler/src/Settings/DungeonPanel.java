@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -26,7 +26,9 @@ import javax.swing.Timer;
 
 import DataStructures.Location;
 import Entities.EntityManager;
+import Map.Map;
 import Player.Player;
+import Player.PlayerView;
 
 /**
  * GamePanel class that extends JPanel
@@ -78,6 +80,8 @@ public class DungeonPanel extends JPanel {
 
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
+		this.addMouseListener(popupListener);
+		this.addMouseWheelListener(popupListener);
 		// timer for updating game every 10 milliseconds
 		// up to 100 frames per second - it caps at 60
 		mainTimer = new Timer(10, new TimerListener());
@@ -99,6 +103,10 @@ public class DungeonPanel extends JPanel {
 		// vis.source = popupListener.location;
 
 		// System.out.println(popupListener.location);
+
+		// mouse stuff, not sure if I should put this into another class such as
+		// user input things TODO
+
 	}
 
 	/**
@@ -109,60 +117,57 @@ public class DungeonPanel extends JPanel {
 		super.paintComponent(g);
 		pCounter++;
 		Graphics2D g2D = (Graphics2D) g;
-		normView = new AffineTransform();// g2D.getTransform();
+		normView = new AffineTransform();
 		AffineTransform temp = normView;
+		Dimension d = null;
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
 				player.getPlayerView().update(player);
 				temp = player.getPlayerView().draw(this.getSize());
 				g2D.transform(temp);
-				map.drawGameMap(g2D, this.getSize());
+				map.drawMapWithChunks(g2D, player.getLoc());
+//				map.drawGameMap(g2D, this.getSize());
 			} else {
 				map.drawWholeMap(g2D);
 			}
 		}
 		eM.draw(g2D);
-		vis.drawVisShape(g2D);
-		if (Key.drawFogOfWar)
-			vis.paint(g2D, this.getSize());
-		// this tells the minimap to be drawn
+		// vis.drawVisShape(g2D);
+		if (Key.drawFogOfWar) {
+			if(d==null)
+				d=this.getSize();
+			vis.paint(g2D, d);
+		}
 
 		if (Key.drawDoorLines) {
 			g2D.setColor(Color.RED);
 			// System.out.println("drawing lines");
 			for (int i = 0; i < map.getDoors().size(); i++) {
-				// System.out.println("drawing line " + i);
 				g2D.draw(map.getDoors().get(i).getLine());
 			}
 		}
 		player.draw(g2D);
 
+		// mouse over things
+		float x = popupListener.getMouseScreenLocation().getX();
+		float y = popupListener.getMouseScreenLocation().getY();
+		// Point2D p2D = new Point2D.Double(0.0, 0.0);
+		// p2D = temp.transform(new Point2D.Double(x, y), p2D);
+		int ts = Key.tileSize;
+		if (vis.getShape().intersects(new Rectangle((int) x, (int) y, ts, ts))) {
+			g2D.setColor(Color.WHITE);
+			Location lTemp = new Location(x, y);
+			lTemp.setLocationAtTile();
+			g2D.drawRect((int) lTemp.getX() - (ts / 2), (int) lTemp.getY() - (ts / 2), ts, ts);
+		}
+
+		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
 		// draws the minimap
 		if (Key.drawMiniMap) {
-
-			int tx = 0;// (int) (popupListener.location.getX() / Key.tileSize);
-			int ty = 0;// (int) (popupListener.location.getY() / Key.tileSize);
-			if (Key.minimapFollowPlayer) {
-				tx = player.getLoc().getTileX();
-				ty = player.getLoc().getTileY();
-			} else {
-				tx = (int) (popupListener.location.getX() / Key.tileSize);
-				ty = (int) (popupListener.location.getY() / Key.tileSize);
-			}
-			map.drawMiniMap(g2D, this.getSize(), tx, ty);
+			map.drawMiniMap(g2D, this.getSize(), player.getLoc().getTileX(), player.getLoc().getTileY());
 		}
-		// g2D.transform(normView);
 
-		/*
-		 * g2D.drawString("Player is at: " + x + ", " + y, 15, 16 +
-		 * (Key.tileSize * Key.height)); g2D.drawString("you are awesome", 15,
-		 * 32 + (Key.tileSize * Key.height)); g2D.drawString("update fps: " +
-		 * updateCounter, 15, 48 + (Key.tileSize * Key.height));
-		 * g2D.drawString("paint fps:  " + paintCounter, 15, 64 + (Key.tileSize
-		 * * Key.height));//
-		 */
-		
 		drawInfo(g2D, player);
 	}
 
@@ -193,7 +198,7 @@ public class DungeonPanel extends JPanel {
 
 	/**
 	 * TimerFPSListener class, implements ActionListener, this class records fps
-	 * for updat and paint methods
+	 * for update and paint methods
 	 * 
 	 * @author Preston Delano
 	 */
@@ -269,11 +274,15 @@ public class DungeonPanel extends JPanel {
 			showPopup = true;
 		}
 
-		public Location getMouseLocation() {
-			if (location != null)
-				return new Location(location.getX(), location.getY());
-			else
-				return new Location(0, 0);
+		public Location getMouseScreenLocation() {
+			PlayerView pv = reference.player.getPlayerView();
+			double x = ((reference.getWidth() / 2) - pv.getTraslateX()) - (((reference.getWidth() / 2) - location.getX()) / pv.getScale());
+			double y = ((reference.getHeight() / 2) - pv.getTraslateY()) - (((reference.getHeight() / 2) - location.getY()) / pv.getScale());
+			return new Location((float) x, (float) y);
+		}
+
+		public Location getMouseAbsoluteLocation() {
+			return location;
 		}
 
 		public Location GetPopupLocation() {
@@ -283,37 +292,16 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public void mousePressed(MouseEvent e) {
-			// // capture starting point
-			// lastOffsetX = (int) (e.getX() / reference.scale);
-			// lastOffsetY = (int) (e.getY() / reference.scale);
+			// System.out.println("mousePressed");
 		}
 
 		public void mouseReleased(MouseEvent e) {
-
+			// System.out.println("mouseReleased");
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			// // System.out.println(e.getModifiersEx());
-			// if (e.getModifiersEx() == 2048) {// scroll click
-			// showPopup = false;
-			// // new x and y are defined by current mouse location subtracted
-			// // by previously processed mouse location
-			// getMousePosition(e);
-			// int newX = (int) (e.getX() / reference.scale) - lastOffsetX;
-			// int newY = (int) (e.getY() / reference.scale) - lastOffsetY;
-			//
-			// // increment last offset to last processed by drag event.
-			// lastOffsetX += newX;
-			// lastOffsetY += newY;
-			//
-			// // update the canvas locations
-			// reference.translateX += newX;
-			// reference.translateY += newY;
-			//
-			// // schedule a repaint.
-			// reference.repaint();
-			// }
+
 		}
 
 		@Override
@@ -323,57 +311,58 @@ public class DungeonPanel extends JPanel {
 
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
-			// if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-			//
-			// // make it a reasonable amount of zoom
-			// // .1 gives a nice slow transition
-			// reference.scale -= (.1 * e.getWheelRotation());
-			// // don't cross negative threshold.
-			// // also, setting scale to 0 has bad effects
-			// reference.scale = Math.max(0.1, reference.scale);
-			// reference.scale = Math.min(1, reference.scale);
-			// System.out.println(reference.scale);
-			// reference.repaint();
-			// }
+			if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+
+				// make it a reasonable amount of zoom
+				// .1 gives a nice slow transition
+				reference.player.getPlayerView().setScale(reference.player.getPlayerView().getScale() - (.1f * e.getWheelRotation()));
+				// don't cross negative threshold.
+				// also, setting scale to 0 has bad effects
+				reference.player.getPlayerView().setScale((float) Math.max(1, reference.player.getPlayerView().getScale()));
+				reference.player.getPlayerView().setScale((float) Math.min(10, reference.player.getPlayerView().getScale()));
+				// System.out.println(reference.player.getPlayerView().getScale());
+				reference.repaint();
+			}
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// // this is clicking with no movement
-			// // System.out.println("mouse clicked");
-			// // double[] loc = { popupListener.GetPopupLocation().getX(),
-			// popupListener.GetPopupLocation().getY() };
-			// System.out.println("something");
-			// if (level.placingEntity()) {
-			// ConstructionEntity temp = level.getConstructionEntity();
-			// ConstructionEntity asdf = new ConstructionEntity(temp);
-			// asdf.setPlaced();
-			// level.addConstruction(asdf);
-			//
-			// } else {
-			// // Location loc = new Location(e.getX(), e.getY());
-			// Human temp = new Human("mouse", getMouseLocation(), 0.0, false,
-			// reference.source);
-			// Entity tempSel = reference.level.getSelectedEntity();
-			// tempSel = reference.source.findEntityEvent(temp, "humans");
-			// if (tempSel != null && bgf.getDistance(getMouseLocation(),
-			// tempSel.getMapLocation()) < 25)
-			// System.out.println("you found: " + tempSel.name);
-			// else
-			// System.out.println("no one is there");
-			// }
+			// left click to open doors
+			if (e.getModifiersEx() == 0) {
+				double tempMin = Key.tileSize * 2;
+				Door closestDoor = null;
+				for (Door d : reference.map.getDoors()) {
+					Location tempm = getMouseScreenLocation();
+					Location tempd = d.getLocation().setToScreenLoc();
+					double temp = tempm.getDistance(tempd);
+					if (temp < tempMin) {
+						tempMin = temp;
+						closestDoor = d;
+					}
+				}
+
+				if (closestDoor != null) {
+					// System.out.println(tempMin + " dist| door at loc: {" +
+					// closestDoor.getLocation().getX() + ", " +
+					// closestDoor.getLocation().getY() + "}");
+					if (tempMin < Key.tileSize * 2) {
+						if (closestDoor.isDoorOpen())
+							closestDoor.closeDoor();
+						else
+							closestDoor.openDoor();
+					}
+				}
+			}
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// this is when the mouse enters the jpanel i think
-			// System.out.println("mouse entered");
+			// System.out.println("mouseEntered");
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// this is when the mouse exits the jpanel i think
-			// System.out.println("mouse exited");
+			// System.out.println("mouseExited");
 		}
 
 		public void ShowPopup(MouseEvent e) {
@@ -386,15 +375,12 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public void getMousePosition(MouseEvent e) {
-			location = new Location(e.getX(), e.getY());
-			// // this gets the position on the map of the mouse, given the
-			// translation, and scale
-			// double x = ((reference.getWidth() / 2) - reference.translateX) -
-			// (((reference.getWidth() / 2) - e.getX()) / reference.scale);
-			// double y = ((reference.getHeight() / 2) - reference.translateY) -
-			// (((reference.getHeight() / 2) - e.getY()) / reference.scale);
-			// location = new Point2D.Double(x, y);
-			// // System.out.println(location.getX() + ", " + location.getY());
+			// System.out.println("get mouse position {" + e.getX() + ", " +
+			// e.getY() + "}");
+			// location = new Location(e.getX(), e.getY());
+
+			location = new Location((float) e.getX(), (float) e.getY());
+			// System.out.println("get mouse position {" + x + ", " + y + "}");
 		}
 	}
 
@@ -427,7 +413,7 @@ public class DungeonPanel extends JPanel {
 	private JPanel setupTestButtons() {
 		JPanel temp = new JPanel();
 
-		temp.setLayout(new RowMenuLayout(1, 100, 32, 5));// new GridLayout(3,
+		temp.setLayout(new RowMenuLayout(3, 128, 32, 5));// new GridLayout(3,
 															// 0, 5, 5));
 		temp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		temp.setBackground(new Color(0, 0, 0, 0));// sets the portion of the

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import DataStructures.Path;
+import Map.MapKey;
 import Settings.Key;
-import Settings.Map;
 
 public class AStarPathFinder {
 	/** The set of nodes that have been searched through */
@@ -14,7 +14,7 @@ public class AStarPathFinder {
 	private SortedList open = new SortedList();
 
 	/** The map being searched */
-	private Map map;
+	private MapKey map;
 	/** The maximum depth of search we're willing to accept before giving up */
 	private int maxSearchDistance;
 
@@ -42,7 +42,7 @@ public class AStarPathFinder {
 	 * @param allowDiagMovement
 	 *            True if the search should try diaganol movement
 	 */
-	public AStarPathFinder(Map map, int maxSearchDistance, boolean allowDiagMovement) {
+	public AStarPathFinder(MapKey map, int maxSearchDistance, boolean allowDiagMovement) {
 		this(map, maxSearchDistance, allowDiagMovement, new ClosestHeuristic());
 	}
 
@@ -58,7 +58,7 @@ public class AStarPathFinder {
 	 * @param allowDiagMovement
 	 *            True if the search should try diaganol movement
 	 */
-	public AStarPathFinder(Map map, int maxSearchDistance, boolean allowDiagMovement, AStarHeuristic heuristic) {
+	public AStarPathFinder(MapKey map, int maxSearchDistance, boolean allowDiagMovement, AStarHeuristic heuristic) {
 		this.heuristic = heuristic;
 		this.map = map;
 		this.maxSearchDistance = maxSearchDistance;

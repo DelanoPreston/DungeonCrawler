@@ -1,11 +1,43 @@
 package Settings;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 import DataStructures.ID;
 
 public class Key {
 	public static Random random = new Random();
+
+	public static Image[] dungeonTiles = new Image[4];
+
+	public static void setDungeonTiles() {
+		dungeonTiles = new Image[4];
+
+		BufferedImage bigImg = null;
+		int index = 0;
+
+		try {
+			bigImg = ImageIO.read(new File("Images/SurvivorTileMap.png"));
+			index = 0;
+			dungeonTiles = new Image[4];
+
+			for (int y = 0; y <= 1; y++) {
+				for (int x = 0; x <= 1; x++) {
+					// the multiply by 2 is because the image is slightly too
+					// big
+					dungeonTiles[index] = (Image) bigImg.getSubimage(x * Key.tileSize * 2, y * Key.tileSize * 2, Key.tileSize, Key.tileSize);
+					index++;
+				}
+			}
+			System.out.println("got tiles done");
+		} catch (Exception e) {
+
+		}
+	}
 
 	// input
 	public static float sensitivity = 1f;
@@ -17,6 +49,7 @@ public class Key {
 	// pathfinder types
 	public static int pathFinderRoomCheck = -100;
 	public static int pathFinderRoomTunneler = -101;
+	public static int pathFinderGamePlay = -102;
 	// public static int player = 1000;
 	// public static int monster1 = 1500;
 
@@ -45,32 +78,33 @@ public class Key {
 	public static final int QExcellent = 80;
 	public static final int QPerfect = 100;
 	public static final int QLegendary = 125;
-	
-	//stat names
+
+	// stat names
 	public static final String statVision = "Vision";
-	
+
 	// tile keys
 	public static final ID nullID = new ID();
-	public static final ID unused = new ID(0);
+	public static final ID unused = new ID(0, 0, 0);
 	// floors
-	public static final ID floor = new ID(1, 0);
-	public static final ID hallwayFloor = new ID(1, 1);
+	public static final ID floor = new ID(1, 0, 1);
+	public static final ID hallwayFloor = new ID(1, 1, 1);
 	// walls
-	public static final ID sideWall = new ID(5, 0);
-	public static final ID lockedWall = new ID(5, 1);
+	public static final ID sideWall = new ID(2, 0, 2);
+	public static final ID lockedWall = new ID(2, 1, 2);
 	// doors
-	public static final ID door = new ID(12, 0);
-	public static final ID doorClosed = new ID(12, 1);
+	public static final ID door = new ID(3, 0, 3);
+	public static final ID doorClosed = new ID(3, 1, 3);
 
 	// resolution of ray casting
 	public static int rayCastResolution = 360;
-	public static int rayCastingDistance = 100;//75;
+	public static int rayCastingDistance = 100;// 75;
 	public static int monsterVisionResoultion = 32;
 
 	// size of map
-	public static int width = 90;
-	public static int height = 75;
+	public static int width = 50;
+	public static int height = 50;
 	public static int tileSize = 8;
+	public static int chunkTiles = 8;
 
 	// size of MiniMap
 	public static int mmWidth = 24;

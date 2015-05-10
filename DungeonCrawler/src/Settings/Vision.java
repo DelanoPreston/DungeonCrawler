@@ -13,6 +13,7 @@ import java.util.List;
 
 import DataStructures.Location;
 import Entities.Entity;
+import Map.Map;
 import Player.PlayerView;
 
 public class Vision {
@@ -91,8 +92,8 @@ public class Vision {
 			// recreates the intersect array, for new position
 			Point2D[] allIntersects = new Point2D[0];
 			// re grabs the list of walls from the map
-			List<Line2D> walls = mapRef.visWallList;
-			List<Door> doors = mapRef.visDoorList;
+			List<Line2D> walls = mapRef.getWalls();
+			List<Door> doors = mapRef.getDoors();
 
 			for (int i = 0; i < rays.length; i++) {
 				double angle = Math.toRadians(i * (360 / rays.length));

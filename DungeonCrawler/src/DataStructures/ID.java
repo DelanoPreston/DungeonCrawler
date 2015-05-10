@@ -3,6 +3,7 @@ package DataStructures;
 public class ID {
 	int id;
 	int subID;
+	int imageID;
 
 	public ID() {
 		id = -1;
@@ -17,6 +18,12 @@ public class ID {
 	public ID(int id, int subID) {
 		this.id = id;
 		this.subID = subID;
+	}
+	
+	public ID(int id, int subID, int imageID) {
+		this.id = id;
+		this.subID = subID;
+		this.imageID = imageID;
 	}
 
 	public boolean equals(ID thingID) {
@@ -40,7 +47,11 @@ public class ID {
 	public int getID() {
 		return id;
 	}
-
+	
+	public int getImageID(){
+		return imageID;
+	}
+	
 	public int getSubID() {
 		return subID;
 	}

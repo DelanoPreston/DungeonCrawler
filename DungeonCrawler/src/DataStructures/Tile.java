@@ -1,7 +1,5 @@
 package DataStructures;
 
-import java.awt.Rectangle;
-
 import Settings.Key;
 
 public class Tile {

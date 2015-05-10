@@ -35,21 +35,21 @@ public class PlayerView {
 	public void update(Player p) {
 		prevTranslateX = translateX;
 		prevTranslateY = translateY;
-		translateX = 550-p.getLoc().getX();
-		translateY = 450-p.getLoc().getY();
+		translateX = 550 - p.getLoc().getX();
+		translateY = 450 - p.getLoc().getY();
 	}
-	
-	public AffineTransform draw(Dimension screen){
+
+	public AffineTransform draw(Dimension screen) {
 		AffineTransform temp = new AffineTransform();
-		
-		//centers translation so scale is about the center
+
+		// centers translation so scale is about the center
 		temp.translate(screen.getWidth() / 2, screen.getHeight() / 2);
 		temp.scale(scale, scale);
 		temp.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
-		
-		//translates the map so the player is in the center
+
+		// translates the map so the player is in the center
 		temp.translate(translateX, translateY);
-		
+
 		return temp;
 	}
 
@@ -63,6 +63,10 @@ public class PlayerView {
 
 	public float getScale() {
 		return scale;
+	}
+
+	public void setScale(float val) {
+		scale = val;
 	}
 
 	public boolean samePlayerView() {

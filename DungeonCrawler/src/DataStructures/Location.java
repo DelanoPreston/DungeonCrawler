@@ -64,10 +64,10 @@ public class Location {
 	public void setLocationAtTile() {
 		x = getTileX() * Key.tileSize + (Key.tileSize / 2);
 		y = getTileY() * Key.tileSize + (Key.tileSize / 2);
-		int i = 0;
-		if (i == 0) {
+	}
 
-		}
+	public Location setToScreenLoc() {
+		return new Location(x * Key.tileSize + (Key.tileSize / 2), y * Key.tileSize + (Key.tileSize / 2));
 	}
 
 	public Point2D getPoint() {
