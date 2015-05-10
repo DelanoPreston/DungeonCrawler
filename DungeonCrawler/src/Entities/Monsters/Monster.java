@@ -17,8 +17,6 @@ public class Monster extends MoveableEntity {
 	private Entity target;
 	private HashMap<String, Double> stats;
 	private Vision vision;
-	// private Vision hearing;
-	// private Vision smell;
 	private boolean statChange = true;// to initially set the vision
 
 	// temp Variables for testing
@@ -42,8 +40,8 @@ public class Monster extends MoveableEntity {
 			g2D.setColor(Color.BLUE);
 		}
 		g2D.fillOval((int) location.getX(), (int) location.getY(), 10, 10);
-		g2D.setColor(Color.RED);
-		g2D.draw(vision.getShape());
+//		g2D.setColor(Color.RED);
+//		g2D.draw(vision.getShape());
 		g2D.setColor(c);
 	}
 

@@ -19,6 +19,7 @@ import DataStructures.Location;
 import DataStructures.Path;
 import DataStructures.Room;
 import Pathfinding.AStarPathFinder;
+import Player.Player;
 import Settings.ChunkImage;
 import Settings.Door;
 import Settings.Key;
@@ -35,7 +36,7 @@ public class Map {
 	List<Path> paths = new ArrayList<>();
 
 	public Map(int width, int height) {
-		
+
 		map = new MapKey(width, height);
 		// this initializes and creates the mapKey, pathMap, and the walls, and
 		// rooms
@@ -223,12 +224,13 @@ public class Map {
 		// g2D.setTransform(new AffineTransform());
 	}
 
-	public void drawMapWithChunks(Graphics2D g2D, Location l) {
+	public void drawMapWithChunks(Graphics2D g2D, Player p) {
 		// createChunkImages();
 		for (int y = 0; y < chunks.length; y++) {
 			for (int x = 0; x < chunks[0].length; x++) {
-
-				if (chunks[y][x].getCenterLocation().getDistance(l) < Key.rayCastingDistance * 1.5) {
+				// /the player is passed in here because eventually the ray cast
+				// dist will be in player
+				if (chunks[y][x].getCenterLocation().getDistance(p.getLoc()) < Key.rayCastingDistance * (Key.tileSize / 8)) {
 					int y2 = (int) chunks[y][x].getLocation().getY();
 					int x2 = (int) chunks[y][x].getLocation().getX();
 					g2D.drawImage(chunks[y][x].getImage(), x2, y2, null);

@@ -13,6 +13,7 @@ public class Key {
 	public static Random random = new Random();
 
 	public static Image[] dungeonTiles = new Image[4];
+	public static Image[] items = new Image[4];
 
 	public static void setDungeonTiles() {
 		dungeonTiles = new Image[4];
@@ -27,13 +28,25 @@ public class Key {
 
 			for (int y = 0; y <= 1; y++) {
 				for (int x = 0; x <= 1; x++) {
-					// the multiply by 2 is because the image is slightly too
-					// big
-					dungeonTiles[index] = (Image) bigImg.getSubimage(x * Key.tileSize * 2, y * Key.tileSize * 2, Key.tileSize, Key.tileSize);
+					dungeonTiles[index] = (Image) bigImg.getSubimage(x * Key.tileSize, y * Key.tileSize, Key.tileSize, Key.tileSize);
 					index++;
 				}
 			}
 			System.out.println("got tiles done");
+			
+			bigImg = ImageIO.read(new File("Images/Items.png"));
+			index = 0;
+			items = new Image[4];
+			
+			for (int y = 0; y <= 1; y++) {
+				for (int x = 0; x <= 1; x++) {
+					int tileSize = 32;
+					items[index] = (Image) bigImg.getSubimage(x * tileSize, y * tileSize, tileSize, tileSize);
+					index++;
+				}
+			}
+			System.out.println("got items done");
+			
 		} catch (Exception e) {
 
 		}
@@ -103,7 +116,7 @@ public class Key {
 	// size of map
 	public static int width = 50;
 	public static int height = 50;
-	public static int tileSize = 8;
+	public static int tileSize = 16;
 	public static int chunkTiles = 8;
 
 	// size of MiniMap

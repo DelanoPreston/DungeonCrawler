@@ -14,15 +14,12 @@ public class DungeonCrawler {
 		try {
 			JFrame frame = new JFrame();
 			Key.setDungeonTiles();
-			DungeonPanel gamePanel = new DungeonPanel(new BorderLayout());
+			DungeonPanel gamePanel = new DungeonPanel(frame, new BorderLayout());
 			// ButtonPanel buttonPanel = new ButtonPanel();
 			frame.setSize(1100, 900);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(true);
-			frame.setVisible(true);
-			frame.add(gamePanel);// , new
-															// BorderLayout().CENTER);
-			// frame.add(buttonPanel, new BorderLayout().SOUTH);
+			frame.add(gamePanel);
 			frame.setVisible(true);
 		} catch (Exception e) {
 			// IOClass io = new IOClass();

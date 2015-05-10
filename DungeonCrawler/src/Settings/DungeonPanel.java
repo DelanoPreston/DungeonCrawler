@@ -21,11 +21,14 @@ import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
 import Entities.EntityManager;
+import Item.Inventory;
 import Map.Map;
 import Player.Player;
 import Player.PlayerView;
@@ -35,6 +38,7 @@ import Player.PlayerView;
  */
 @SuppressWarnings("serial")
 public class DungeonPanel extends JPanel {
+	JFrame parent;
 	int timer = 0;
 	Timer mainTimer;
 	Timer fpsTimer;
@@ -52,11 +56,19 @@ public class DungeonPanel extends JPanel {
 	JPanel cards;
 	AffineTransform normView;
 
+	// Inventory testInv;
+	JInternalFrame testInv;
+	JInternalFrame testInv2;
+
 	// debug variables
 	int uCounter = 0;
 	int pCounter = 0;
 	int updateCounter = 0;
 	int paintCounter = 0;
+
+	public Player getPlayer() {
+		return eM.getPlayerRef();
+	}
 
 	public DungeonPanel() {
 
@@ -65,8 +77,9 @@ public class DungeonPanel extends JPanel {
 	/**
 	 * Constructor for the GamePanel class that extends JPanel
 	 */
-	public DungeonPanel(BorderLayout borderLayout) {
+	public DungeonPanel(JFrame parent, BorderLayout borderLayout) {
 		super(borderLayout);
+		this.parent = parent;
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
 
@@ -82,6 +95,19 @@ public class DungeonPanel extends JPanel {
 		this.addMouseMotionListener(popupListener);
 		this.addMouseListener(popupListener);
 		this.addMouseWheelListener(popupListener);
+
+		testInv = new JInternalFrame("Inventory", true, false, false, false);
+		testInv2 = new JInternalFrame("Inventory", true, false, false, false);
+
+		testInv.add(new Inventory(4, 4));
+		testInv.pack();
+		testInv2.add(new Inventory(4, 4));
+		testInv2.pack();
+		testInv.setVisible(true);
+		testInv2.setVisible(true);
+		parent.add(testInv);
+		parent.add(testInv2);
+
 		// timer for updating game every 10 milliseconds
 		// up to 100 frames per second - it caps at 60
 		mainTimer = new Timer(10, new TimerListener());
@@ -96,16 +122,13 @@ public class DungeonPanel extends JPanel {
 	public void Update() {
 		uCounter++;
 		player.update();
-		vis.update(player.getPlayerView());
+		vis.update(getPlayer().getPlayerView());
 		map.updateMinimapVisibility(vis);
 		eM.update();
 		// if (popupListener.location != null) {
 		// vis.source = popupListener.location;
 
 		// System.out.println(popupListener.location);
-
-		// mouse stuff, not sure if I should put this into another class such as
-		// user input things TODO
 
 	}
 
@@ -125,8 +148,8 @@ public class DungeonPanel extends JPanel {
 				player.getPlayerView().update(player);
 				temp = player.getPlayerView().draw(this.getSize());
 				g2D.transform(temp);
-				map.drawMapWithChunks(g2D, player.getLoc());
-//				map.drawGameMap(g2D, this.getSize());
+				map.drawMapWithChunks(g2D, player);
+				// map.drawGameMap(g2D, this.getSize());
 			} else {
 				map.drawWholeMap(g2D);
 			}
@@ -134,8 +157,8 @@ public class DungeonPanel extends JPanel {
 		eM.draw(g2D);
 		// vis.drawVisShape(g2D);
 		if (Key.drawFogOfWar) {
-			if(d==null)
-				d=this.getSize();
+			if (d == null)
+				d = this.getSize();
 			vis.paint(g2D, d);
 		}
 
@@ -167,14 +190,13 @@ public class DungeonPanel extends JPanel {
 		if (Key.drawMiniMap) {
 			map.drawMiniMap(g2D, this.getSize(), player.getLoc().getTileX(), player.getLoc().getTileY());
 		}
-
 		drawInfo(g2D, player);
 	}
 
 	private void drawInfo(Graphics2D g2D, Player player) {
 		int x = player.location.getTileX();
 		int y = player.location.getTileY();
-		g2D.setColor(Color.WHITE);
+		g2D.setColor(Color.GRAY);
 		int startHeight = (int) (this.getSize().getHeight());
 		g2D.drawString("Player is at: " + x + ", " + y, 15, startHeight - 80);
 		g2D.drawString("you are awesome", 15, startHeight - 64);
@@ -192,7 +214,9 @@ public class DungeonPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			Update();
-			repaint();
+			// repaint();
+			// testInv.repaint();
+			parent.repaint();
 		}
 	}
 
@@ -227,6 +251,16 @@ public class DungeonPanel extends JPanel {
 
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing - Pressed");
+			} else if (key == KeyEvent.VK_I) {
+				if (testInv.isVisible())
+					testInv.setVisible(false);
+				else
+					testInv.setVisible(true);
+			} else if (key == KeyEvent.VK_O) {
+				if (testInv2.isVisible())
+					testInv2.setVisible(false);
+				else
+					testInv2.setVisible(true);
 			}
 
 			player.pressed(arg0);
@@ -357,12 +391,13 @@ public class DungeonPanel extends JPanel {
 
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			// System.out.println("mouseEntered");
+			System.out.println("mouseEntered dungeonPanel");
+			reference.requestFocus();
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			// System.out.println("mouseExited");
+			System.out.println("mouseExited dungeonPanel");
 		}
 
 		public void ShowPopup(MouseEvent e) {
