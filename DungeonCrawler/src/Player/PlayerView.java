@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import DataStructures.Location;
+import Settings.Key;
 
 public class PlayerView {
 	float translateX;
@@ -35,17 +36,21 @@ public class PlayerView {
 	public void update(Player p) {
 		prevTranslateX = translateX;
 		prevTranslateY = translateY;
-		translateX = 550 - p.getLoc().getX();
-		translateY = 450 - p.getLoc().getY();
+		translateX = (Key.resWidth / 2) - p.getLoc().getX();
+		translateY = (Key.resHeight / 2) - p.getLoc().getY();
 	}
 
 	public AffineTransform draw(Dimension screen) {
 		AffineTransform temp = new AffineTransform();
 
 		// centers translation so scale is about the center
-		temp.translate(screen.getWidth() / 2, screen.getHeight() / 2);
+		// temp.translate(screen.getWidth() / 2, screen.getHeight() / 2);
+		// temp.scale(scale, scale);
+		// temp.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
+
+		temp.translate(Key.resWidth / 2, Key.resHeight / 2);
 		temp.scale(scale, scale);
-		temp.translate(-screen.getWidth() / 2, -screen.getHeight() / 2);
+		temp.translate(-Key.resWidth / 2, -Key.resHeight / 2);
 
 		// translates the map so the player is in the center
 		temp.translate(translateX, translateY);

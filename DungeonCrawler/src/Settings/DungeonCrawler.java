@@ -16,7 +16,7 @@ public class DungeonCrawler {
 			Key.setDungeonTiles();
 			DungeonPanel gamePanel = new DungeonPanel(frame, new BorderLayout());
 			// ButtonPanel buttonPanel = new ButtonPanel();
-			frame.setSize(1100, 900);
+			frame.setSize(Key.resWidth, Key.resHeight);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(true);
 			frame.add(gamePanel);

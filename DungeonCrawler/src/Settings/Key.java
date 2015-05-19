@@ -54,8 +54,12 @@ public class Key {
 
 	// input
 	public static float sensitivity = 1f;
-	public static boolean someMovementType = true;
-
+	public static boolean lockedMovementType = false;
+	
+	//
+	public static int resWidth = 800;
+	public static int resHeight = 600;
+	
 	//
 	public static boolean minimapFollowPlayer = true;
 
@@ -117,7 +121,12 @@ public class Key {
 	public static int width = 50;
 	public static int height = 50;
 	public static int tileSize = 16;
-	public static int chunkTiles = 8;
+	public static int chunkTiles = 12;
+	public static int renderChunkDist = rayCastingDistance * 5 /2;
+	
+	//inventory size stuff
+	public static int tileSizeInventory = 64;
+	
 
 	// size of MiniMap
 	public static int mmWidth = 24;

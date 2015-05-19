@@ -230,7 +230,7 @@ public class Map {
 			for (int x = 0; x < chunks[0].length; x++) {
 				// /the player is passed in here because eventually the ray cast
 				// dist will be in player
-				if (chunks[y][x].getCenterLocation().getDistance(p.getLoc()) < Key.rayCastingDistance * (Key.tileSize / 8)) {
+				if (chunks[y][x].getCenterLocation().getDistance(p.getLoc()) < Key.renderChunkDist) {
 					int y2 = (int) chunks[y][x].getLocation().getY();
 					int x2 = (int) chunks[y][x].getLocation().getX();
 					g2D.drawImage(chunks[y][x].getImage(), x2, y2, null);

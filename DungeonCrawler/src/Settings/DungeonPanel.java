@@ -28,7 +28,9 @@ import javax.swing.Timer;
 
 import DataStructures.Location;
 import Entities.EntityManager;
+import Event.CustomEventSource;
 import Item.Inventory;
+import Item.Item;
 import Map.Map;
 import Player.Player;
 import Player.PlayerView;
@@ -38,7 +40,9 @@ import Player.PlayerView;
  */
 @SuppressWarnings("serial")
 public class DungeonPanel extends JPanel {
-	JFrame parent;
+	public static JFrame parent;
+	public static CustomEventSource source;
+	JInternalFrame testInv;
 	int timer = 0;
 	Timer mainTimer;
 	Timer fpsTimer;
@@ -47,7 +51,6 @@ public class DungeonPanel extends JPanel {
 	Player player;
 	EntityManager eM;
 	public int[][] level;
-	// List<Vision> v = new ArrayList<>();
 	Vision vis;
 	// VisionManager vm;
 	// Vision v2;
@@ -56,9 +59,12 @@ public class DungeonPanel extends JPanel {
 	JPanel cards;
 	AffineTransform normView;
 
-	// Inventory testInv;
-	JInternalFrame testInv;
-	JInternalFrame testInv2;
+	// List<JInternalFrame> inventories = new ArrayList<>();
+	// create class that can be passed in that creates windows
+
+	// Inventory testing;
+	WindowController wc;
+	Item itemHeld;
 
 	// debug variables
 	int uCounter = 0;
@@ -79,34 +85,31 @@ public class DungeonPanel extends JPanel {
 	 */
 	public DungeonPanel(JFrame parent, BorderLayout borderLayout) {
 		super(borderLayout);
-		this.parent = parent;
+		DungeonPanel.parent = parent;
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
-
+		
+		testInv = new JInternalFrame("name");
+		testInv.add(new Inventory(4, 4));
+		testInv.setVisible(true);
+		parent.add(testInv);
+		
 		// creates test buttons
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		player = new Player(new Point2D.Double(400, 400));
-		eM = new EntityManager(map, player);
+		player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2));
+		wc = new WindowController(parent);
+		eM = new EntityManager(map, player, wc);
 		vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player);
 
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
 		this.addMouseListener(popupListener);
 		this.addMouseWheelListener(popupListener);
-
-		testInv = new JInternalFrame("Inventory", true, false, false, false);
-		testInv2 = new JInternalFrame("Inventory", true, false, false, false);
-
-		testInv.add(new Inventory(4, 4));
-		testInv.pack();
-		testInv2.add(new Inventory(4, 4));
-		testInv2.pack();
-		testInv.setVisible(true);
-		testInv2.setVisible(true);
-		parent.add(testInv);
-		parent.add(testInv2);
+		
+		source = new CustomEventSource();
+		source.addEventListener(eM);
 
 		// timer for updating game every 10 milliseconds
 		// up to 100 frames per second - it caps at 60
@@ -120,6 +123,7 @@ public class DungeonPanel extends JPanel {
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
+		System.out.println(parent.getComponents().length);
 		uCounter++;
 		player.update();
 		vis.update(getPlayer().getPlayerView());
@@ -158,7 +162,8 @@ public class DungeonPanel extends JPanel {
 		// vis.drawVisShape(g2D);
 		if (Key.drawFogOfWar) {
 			if (d == null)
-				d = this.getSize();
+				d = new Dimension(Key.tileSize * Key.width, Key.tileSize * Key.height);
+			// d = this.getSize();
 			vis.paint(g2D, d);
 		}
 
@@ -171,18 +176,7 @@ public class DungeonPanel extends JPanel {
 		}
 		player.draw(g2D);
 
-		// mouse over things
-		float x = popupListener.getMouseScreenLocation().getX();
-		float y = popupListener.getMouseScreenLocation().getY();
-		// Point2D p2D = new Point2D.Double(0.0, 0.0);
-		// p2D = temp.transform(new Point2D.Double(x, y), p2D);
-		int ts = Key.tileSize;
-		if (vis.getShape().intersects(new Rectangle((int) x, (int) y, ts, ts))) {
-			g2D.setColor(Color.WHITE);
-			Location lTemp = new Location(x, y);
-			lTemp.setLocationAtTile();
-			g2D.drawRect((int) lTemp.getX() - (ts / 2), (int) lTemp.getY() - (ts / 2), ts, ts);
-		}
+		drawSelectSquare(g2D);
 
 		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
@@ -198,10 +192,37 @@ public class DungeonPanel extends JPanel {
 		int y = player.location.getTileY();
 		g2D.setColor(Color.GRAY);
 		int startHeight = (int) (this.getSize().getHeight());
-		g2D.drawString("Player is at: " + x + ", " + y, 15, startHeight - 80);
-		g2D.drawString("you are awesome", 15, startHeight - 64);
-		g2D.drawString("update fps: " + updateCounter, 15, startHeight - 48);
-		g2D.drawString("paint fps:  " + paintCounter, 15, startHeight - 32);
+
+		int mx = (int) popupListener.getMouseScreenLocation().getX();
+		int my = (int) popupListener.getMouseScreenLocation().getY();
+		Location l = new Location(mx, my);
+		l.setLocationAtTile();
+		g2D.drawString("Mouse is at: " + l.getTileX() + ", " + l.getTileY(), 15, startHeight - 80);
+
+		g2D.drawString("Player is at: " + x + ", " + y, 15, startHeight - 64);
+		g2D.drawString("you are awesome", 15, startHeight - 48);
+		g2D.drawString("update fps: " + updateCounter, 15, startHeight - 32);
+		g2D.drawString("paint fps:  " + paintCounter, 15, startHeight - 16);
+	}
+
+	public void drawSelectSquare(Graphics2D g2D) {
+		// mouse over things
+		float x = popupListener.getMouseScreenLocation().getX();
+		float y = popupListener.getMouseScreenLocation().getY();
+		// Point2D p2D = new Point2D.Double(0.0, 0.0);
+		// p2D = temp.transform(new Point2D.Double(x, y), p2D);
+		int ts = Key.tileSize;
+		if (vis.getShape().intersects(new Rectangle((int) x, (int) y, ts, ts))) {
+			g2D.setColor(Color.WHITE);
+			Location lTemp = new Location(x, y);
+			lTemp.setLocationAtTile();
+			g2D.drawRect((int) lTemp.getX() - (ts / 2), (int) lTemp.getY() - (ts / 2), ts, ts);
+			// g2D.drawRect((int) lTemp.getX(), (int) lTemp.getY(), ts, ts);
+		}
+	}
+
+	public void addInventory(Inventory i) {
+
 	}
 
 	/**
@@ -252,15 +273,9 @@ public class DungeonPanel extends JPanel {
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing - Pressed");
 			} else if (key == KeyEvent.VK_I) {
-				if (testInv.isVisible())
-					testInv.setVisible(false);
-				else
-					testInv.setVisible(true);
+				wc.hideWindows();
 			} else if (key == KeyEvent.VK_O) {
-				if (testInv2.isVisible())
-					testInv2.setVisible(false);
-				else
-					testInv2.setVisible(true);
+				wc.showWindows();
 			}
 
 			player.pressed(arg0);
@@ -310,8 +325,8 @@ public class DungeonPanel extends JPanel {
 
 		public Location getMouseScreenLocation() {
 			PlayerView pv = reference.player.getPlayerView();
-			double x = ((reference.getWidth() / 2) - pv.getTraslateX()) - (((reference.getWidth() / 2) - location.getX()) / pv.getScale());
-			double y = ((reference.getHeight() / 2) - pv.getTraslateY()) - (((reference.getHeight() / 2) - location.getY()) / pv.getScale());
+			double x = ((Key.resWidth / 2) - pv.getTraslateX()) - (((Key.resWidth / 2) - location.getX()) / pv.getScale());
+			double y = ((Key.resHeight / 2) - pv.getTraslateY()) - (((Key.resHeight / 2) - location.getY()) / pv.getScale());
 			return new Location((float) x, (float) y);
 		}
 

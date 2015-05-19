@@ -20,7 +20,9 @@ public class Inventory extends JPanel {
 		this.width = width;
 		this.height = height;
 		this.setPreferredSize(new Dimension(Key.tileSize * 16, Key.tileSize * 16));
-		this.addMouseListener(new InventoryMouseListener());
+		InventoryMouseListener iml = new InventoryMouseListener(this);
+		this.addMouseListener(iml);
+		this.addMouseMotionListener(iml);
 		items.put(7, new Item("one"));
 		items.put(10, new Item("two"));
 		items.put(2, new Item("three"));
@@ -40,7 +42,7 @@ public class Inventory extends JPanel {
 	 */
 	public boolean putItemIn(Item item, int x, int y) {
 		if (inBounds(x, y)) {
-			int val = (y * x) + x;
+			int val = (y * width) + x;
 			if (!items.containsKey(val)) {
 				items.put(val, item);
 				return true;
@@ -60,10 +62,9 @@ public class Inventory extends JPanel {
 	 */
 	public Item getItemFrom(int x, int y) {
 		if (inBounds(x, y)) {
-			int val = (y * x) + x;
+			int val = (y * width) + x;
 			if (items.containsKey(val)) {
-				items.remove(val);
-				return items.get(val);
+				return items.remove(val);
 			}
 		}
 		return null;
@@ -71,20 +72,22 @@ public class Inventory extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
+		int tsi = Key.tileSizeInventory;
 		Graphics2D g2D = (Graphics2D) g;
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				g2D.setColor(Color.LIGHT_GRAY);
-				g2D.fillRect(x * Key.tileSize * 4, y * Key.tileSize * 4, Key.tileSize * 4, Key.tileSize * 4);
+				g2D.fillRect(x * tsi, y * tsi, tsi, tsi);
 				g2D.setColor(Color.DARK_GRAY);
-				g2D.drawRect(x * Key.tileSize * 4, y * Key.tileSize * 4, Key.tileSize * 4, Key.tileSize * 4);
+				g2D.drawRect(x * tsi, y * tsi, tsi, tsi);
 			}
 		}
 
 		for (int key : items.keySet()) {
 			g2D.setColor(Color.BLUE);
-			g2D.fillRect((int) ((key % width) * Key.tileSize * 4 + 5), (int) (Math.floor(key / width) * Key.tileSize * 4 + 5), 54, 54);
+			g2D.fillRect((int) ((key % width) * tsi + 5), (int) (Math.floor(key / width) * tsi + 5), 54, 54);
 		}
+		System.out.println("what");
 	}
 
 	private boolean inBounds(int x, int y) {
