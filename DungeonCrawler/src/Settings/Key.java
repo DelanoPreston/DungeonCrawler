@@ -12,6 +12,9 @@ import DataStructures.ID;
 public class Key {
 	public static Random random = new Random();
 
+	//don't know where to put these
+	public static int monsterMovementSpeed = 3;
+	
 	public static Image[] dungeonTiles = new Image[4];
 	public static Image[] items = new Image[4];
 
@@ -33,11 +36,11 @@ public class Key {
 				}
 			}
 			System.out.println("got tiles done");
-			
+
 			bigImg = ImageIO.read(new File("Images/Items.png"));
 			index = 0;
 			items = new Image[4];
-			
+
 			for (int y = 0; y <= 1; y++) {
 				for (int x = 0; x <= 1; x++) {
 					int tileSize = 32;
@@ -46,7 +49,7 @@ public class Key {
 				}
 			}
 			System.out.println("got items done");
-			
+
 		} catch (Exception e) {
 
 		}
@@ -55,11 +58,11 @@ public class Key {
 	// input
 	public static float sensitivity = 1f;
 	public static boolean lockedMovementType = false;
-	
+
 	//
 	public static int resWidth = 800;
 	public static int resHeight = 600;
-	
+
 	//
 	public static boolean minimapFollowPlayer = true;
 
@@ -98,6 +101,9 @@ public class Key {
 
 	// stat names
 	public static final String statVision = "Vision";
+	public static final String statMemory = "Memory";
+	public static final String statMovement = "Movement";
+	
 
 	// tile keys
 	public static final ID nullID = new ID();
@@ -122,11 +128,10 @@ public class Key {
 	public static int height = 50;
 	public static int tileSize = 16;
 	public static int chunkTiles = 12;
-	public static int renderChunkDist = rayCastingDistance * 5 /2;
-	
-	//inventory size stuff
+	public static int renderChunkDist = rayCastingDistance * 5 / 2;
+
+	// inventory size stuff
 	public static int tileSizeInventory = 64;
-	
 
 	// size of MiniMap
 	public static int mmWidth = 24;
@@ -146,7 +151,7 @@ public class Key {
 	public static boolean drawTunnelingPaths = false;
 	public static boolean drawWallLines = false;
 	public static boolean drawDoorLines = false;
-	public static boolean drawPathMap = false;
+	public static boolean drawPathMap = true;
 	public static boolean drawGrid = false;
 	public static boolean drawMap = true;
 

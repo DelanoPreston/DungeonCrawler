@@ -22,14 +22,16 @@ public class WindowController implements IWIndowController {
 		JInternalFrame testInv = new JInternalFrame("inventory", true, false, false, false);
 
 		testInv.add(inv);
-//		testInv.pack();
-
-		gameWindow.add(testInv);
+		testInv.pack();
 		testInv.setVisible(true);
-		frames.put(name, testInv);
-		System.out.println("window controller reporting");
-		showWindows();
-		System.out.println(testInv.isVisible());
+		gameWindow.add(testInv);
+
+//		testInv = new JInternalFrame("name");
+//		parent.add(testInv);
+		
+		
+//		frames.put(name, testInv);
+		System.out.println("added wc");
 	}
 
 	@Override

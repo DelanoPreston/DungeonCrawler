@@ -3,6 +3,7 @@ package Pathfinding;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import DataStructures.Location;
 import DataStructures.Path;
 import Map.MapKey;
 import Settings.Key;
@@ -70,6 +71,10 @@ public class AStarPathFinder {
 				nodes[x][y] = new Node(x, y);
 			}
 		}
+	}
+
+	public Path findPath(int type, Location start, Location end) {
+		return findPath(type, start.getTileX(), start.getTileY(), end.getTileX(), end.getTileY());
 	}
 
 	/**

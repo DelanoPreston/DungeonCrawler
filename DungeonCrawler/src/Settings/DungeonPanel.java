@@ -18,15 +18,16 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import DataStructures.Location;
+import DataStructures.Path;
 import Entities.EntityManager;
 import Event.CustomEventSource;
 import Item.Inventory;
@@ -42,13 +43,13 @@ import Player.PlayerView;
 public class DungeonPanel extends JPanel {
 	public static JFrame parent;
 	public static CustomEventSource source;
-	JInternalFrame testInv;
+	// JInternalFrame testInv;
 	int timer = 0;
 	Timer mainTimer;
 	Timer fpsTimer;
 	// MapCreator map;
 	Map map;
-	Player player;
+	//Player player;
 	EntityManager eM;
 	public int[][] level;
 	Vision vis;
@@ -73,6 +74,7 @@ public class DungeonPanel extends JPanel {
 	int paintCounter = 0;
 
 	public Player getPlayer() {
+		// return player;
 		return eM.getPlayerRef();
 	}
 
@@ -88,17 +90,19 @@ public class DungeonPanel extends JPanel {
 		DungeonPanel.parent = parent;
 		setFocusable(true);
 		addKeyListener(new KeyboardListener());
-		
-		testInv = new JInternalFrame("name");
-		testInv.add(new Inventory(4, 4));
-		testInv.setVisible(true);
-		parent.add(testInv);
-		
+
+		// JInternalFrame testInv = new JInternalFrame("name", true, false,
+		// false, false);
+		// testInv.add(new Inventory(4, 4));
+		// testInv.setVisible(true);
+		// testInv.pack();
+		// parent.add(testInv);
+
 		// creates test buttons
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2));
+		Player player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2));
 		wc = new WindowController(parent);
 		eM = new EntityManager(map, player, wc);
 		vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player);
@@ -107,7 +111,7 @@ public class DungeonPanel extends JPanel {
 		this.addMouseMotionListener(popupListener);
 		this.addMouseListener(popupListener);
 		this.addMouseWheelListener(popupListener);
-		
+
 		source = new CustomEventSource();
 		source.addEventListener(eM);
 
@@ -123,9 +127,8 @@ public class DungeonPanel extends JPanel {
 	 * Update Method, Action performed calls this to update game
 	 */
 	public void Update() {
-		System.out.println(parent.getComponents().length);
 		uCounter++;
-		player.update();
+		//player.update();
 		vis.update(getPlayer().getPlayerView());
 		map.updateMinimapVisibility(vis);
 		eM.update();
@@ -149,10 +152,10 @@ public class DungeonPanel extends JPanel {
 		Dimension d = null;
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
-				player.getPlayerView().update(player);
-				temp = player.getPlayerView().draw(this.getSize());
+				getPlayer().getPlayerView().update(getPlayer());
+				temp = getPlayer().getPlayerView().draw(this.getSize());
 				g2D.transform(temp);
-				map.drawMapWithChunks(g2D, player);
+				map.drawMapWithChunks(g2D, getPlayer());
 				// map.drawGameMap(g2D, this.getSize());
 			} else {
 				map.drawWholeMap(g2D);
@@ -166,7 +169,17 @@ public class DungeonPanel extends JPanel {
 			// d = this.getSize();
 			vis.paint(g2D, d);
 		}
-
+		
+		if(Key.drawPathMap){
+			List<Path> tempPaths = eM.getMapRef().getPaths();
+			g2D.setColor(Color.RED);
+			for(int i = 0; i < tempPaths.size(); i++){
+				for(int j = 0; j < tempPaths.get(i).getLength() - 1; j++){
+					g2D.drawLine(tempPaths.get(i).getX(j), tempPaths.get(i).getY(j), tempPaths.get(i).getX(j+1), tempPaths.get(i).getY(j+1));
+				}
+			}
+		}
+		
 		if (Key.drawDoorLines) {
 			g2D.setColor(Color.RED);
 			// System.out.println("drawing lines");
@@ -174,7 +187,7 @@ public class DungeonPanel extends JPanel {
 				g2D.draw(map.getDoors().get(i).getLine());
 			}
 		}
-		player.draw(g2D);
+		getPlayer().draw(g2D);
 
 		drawSelectSquare(g2D);
 
@@ -182,9 +195,9 @@ public class DungeonPanel extends JPanel {
 		g2D.setTransform(new AffineTransform());
 		// draws the minimap
 		if (Key.drawMiniMap) {
-			map.drawMiniMap(g2D, this.getSize(), player.getLoc().getTileX(), player.getLoc().getTileY());
+			map.drawMiniMap(g2D, this.getSize(), getPlayer().getLoc().getTileX(), getPlayer().getLoc().getTileY());
 		}
-		drawInfo(g2D, player);
+		drawInfo(g2D, getPlayer());
 	}
 
 	private void drawInfo(Graphics2D g2D, Player player) {
@@ -203,6 +216,7 @@ public class DungeonPanel extends JPanel {
 		g2D.drawString("you are awesome", 15, startHeight - 48);
 		g2D.drawString("update fps: " + updateCounter, 15, startHeight - 32);
 		g2D.drawString("paint fps:  " + paintCounter, 15, startHeight - 16);
+		g2D.drawString("Turn: " + eM.getTurn(), 15, startHeight);
 	}
 
 	public void drawSelectSquare(Graphics2D g2D) {
@@ -278,7 +292,7 @@ public class DungeonPanel extends JPanel {
 				wc.showWindows();
 			}
 
-			player.pressed(arg0);
+			getPlayer().pressed(arg0);
 
 		}
 
@@ -290,7 +304,7 @@ public class DungeonPanel extends JPanel {
 				System.out.println("nothing - Release");
 			}
 
-			player.released(arg0);
+			getPlayer().released(arg0);
 		}
 
 		@Override
@@ -324,7 +338,7 @@ public class DungeonPanel extends JPanel {
 		}
 
 		public Location getMouseScreenLocation() {
-			PlayerView pv = reference.player.getPlayerView();
+			PlayerView pv = reference.getPlayer().getPlayerView();
 			double x = ((Key.resWidth / 2) - pv.getTraslateX()) - (((Key.resWidth / 2) - location.getX()) / pv.getScale());
 			double y = ((Key.resHeight / 2) - pv.getTraslateY()) - (((Key.resHeight / 2) - location.getY()) / pv.getScale());
 			return new Location((float) x, (float) y);
@@ -364,11 +378,11 @@ public class DungeonPanel extends JPanel {
 
 				// make it a reasonable amount of zoom
 				// .1 gives a nice slow transition
-				reference.player.getPlayerView().setScale(reference.player.getPlayerView().getScale() - (.1f * e.getWheelRotation()));
+				reference.getPlayer().getPlayerView().setScale(reference.getPlayer().getPlayerView().getScale() - (.1f * e.getWheelRotation()));
 				// don't cross negative threshold.
 				// also, setting scale to 0 has bad effects
-				reference.player.getPlayerView().setScale((float) Math.max(1, reference.player.getPlayerView().getScale()));
-				reference.player.getPlayerView().setScale((float) Math.min(10, reference.player.getPlayerView().getScale()));
+				reference.getPlayer().getPlayerView().setScale((float) Math.max(1, reference.getPlayer().getPlayerView().getScale()));
+				reference.getPlayer().getPlayerView().setScale((float) Math.min(10, reference.getPlayer().getPlayerView().getScale()));
 				// System.out.println(reference.player.getPlayerView().getScale());
 				reference.repaint();
 			}
@@ -382,7 +396,7 @@ public class DungeonPanel extends JPanel {
 				Door closestDoor = null;
 				for (Door d : reference.map.getDoors()) {
 					Location tempm = getMouseScreenLocation();
-					Location tempd = d.getLocation().setToScreenLoc();
+					Location tempd = d.getLocation().getScreenLoc();
 					double temp = tempm.getDistance(tempd);
 					if (temp < tempMin) {
 						tempMin = temp;
@@ -472,7 +486,7 @@ public class DungeonPanel extends JPanel {
 
 		ButtonListener btnListener = new ButtonListener(this);
 
-		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s" };
+		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s", "Done" };
 
 		// this is the build menu cancel button
 		// JButton btn;
@@ -505,9 +519,9 @@ public class DungeonPanel extends JPanel {
 	 * 
 	 */
 	private class ButtonListener implements ActionListener {
-		JPanel jpanel;
+		DungeonPanel jpanel;
 
-		public ButtonListener(JPanel jp) {
+		public ButtonListener(DungeonPanel jp) {
 			jpanel = jp;
 		}
 
@@ -538,6 +552,8 @@ public class DungeonPanel extends JPanel {
 				} else {
 					Key.drawRoomNumbers = true;
 				}
+			} else if (arg0.getActionCommand().equals("Done")) {
+				jpanel.eM.playersDone();
 			}
 			jpanel.requestFocus();
 		}

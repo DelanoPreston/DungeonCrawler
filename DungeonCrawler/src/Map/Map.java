@@ -35,6 +35,10 @@ public class Map {
 	// for testing only
 	List<Path> paths = new ArrayList<>();
 
+	public MapKey getMapKey() {
+		return map;
+	}
+
 	public Map(int width, int height) {
 
 		map = new MapKey(width, height);
@@ -89,6 +93,10 @@ public class Map {
 			return null;
 	}
 
+	public List<Path> getPaths(){
+		return paths;
+	}
+	
 	public void updateMinimapVisibility(Vision vis) {
 		int ts = Key.tileSize;
 		int hts = ts / 2;

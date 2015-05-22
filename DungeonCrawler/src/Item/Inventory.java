@@ -6,11 +6,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 
 import Settings.Key;
 
-public class Inventory extends JPanel {
+public class Inventory extends JComponent {
 	private static final long serialVersionUID = -39174767373259435L;
 	HashMap<Integer, Item> items = new HashMap<>();
 	// size of the container
@@ -87,7 +87,6 @@ public class Inventory extends JPanel {
 			g2D.setColor(Color.BLUE);
 			g2D.fillRect((int) ((key % width) * tsi + 5), (int) (Math.floor(key / width) * tsi + 5), 54, 54);
 		}
-		System.out.println("what");
 	}
 
 	private boolean inBounds(int x, int y) {

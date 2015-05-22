@@ -3,6 +3,7 @@ package Settings;
 import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
 public class DungeonCrawler {
 
@@ -21,6 +22,7 @@ public class DungeonCrawler {
 			frame.setResizable(true);
 			frame.add(gamePanel);
 			frame.setVisible(true);
+			frame.add(new JInternalFrame());
 		} catch (Exception e) {
 			// IOClass io = new IOClass();
 			e.printStackTrace();

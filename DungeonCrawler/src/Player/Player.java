@@ -7,29 +7,29 @@ import java.awt.geom.Point2D;
 
 import DataStructures.Location;
 import Entities.MoveableEntity;
-import Item.Inventory;
 import Item.Item;
-import Settings.DungeonPanel;
 import Settings.Key;
 
 public class Player extends MoveableEntity {
 	private static final long serialVersionUID = 7134283731669813902L;
 	PlayerView pv;
-	//testing purposes
+	// testing purposes
 	int counter = 1;
 
 	// this is for the not locked moving version
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
-	boolean accFor = false, accBac = false, accRotRig = false, accRotLef = false;
+	//boolean accFor = false, accBac = false, accRotRig = false, accRotLef = false;
 
-	public Player(Point2D loc) {
+	public Player(Point2D loc){//, Map map) {
 		location = new Location(loc);
 		pv = new PlayerView();
-		
+//		vision = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, this);
 	}
 
-	public Player(Location loc) {
+	public Player(Location loc){//, Map map) {
 		location = loc;
+		pv = new PlayerView();
+//		vision = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, this);
 	}
 
 	public void draw(Graphics2D g2D) {
@@ -40,8 +40,8 @@ public class Player extends MoveableEntity {
 	}
 
 	public void update() {
-		counter++;
-		if(counter == 200){
+		//counter++;
+		if (counter == 200) {
 			addInventory();
 		}
 		// location.addLinearMovement(1, 0);
@@ -72,19 +72,15 @@ public class Player extends MoveableEntity {
 			int key = input.getKeyCode();
 			if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
 				movingUp = true;
-				accFor = true;
 			}
 			if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
 				movingDown = true;
-				accBac = true;
 			}
 			if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
 				movingLeft = true;
-				accRotLef = true;
 			}
 			if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
 				movingRight = true;
-				accRotRig = true;
 			}
 		}
 	}
@@ -96,29 +92,25 @@ public class Player extends MoveableEntity {
 			int key = input.getKeyCode();
 			if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
 				movingUp = false;
-				accFor = false;
 			}
 			if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
 				movingDown = false;
-				accBac = false;
 			}
 			if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
 				movingLeft = false;
-				accRotLef = false;
 			}
 			if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
 				movingRight = false;
-				accRotRig = false;
 			}
 		}
 	}
-	
-	public void addInventory(){
+
+	public void addInventory() {
 		gear.addGear("back", new Item("backpack"));
 		System.out.println("new inventory (Player)");
-//		Inventory temp = new Inventory(4,4);
-//		
-//		Item tempI = new Item("belt");
-//		DungeonPanel.source.NewInventory(temp, tempI);
+		// Inventory temp = new Inventory(4,4);
+		//
+		// Item tempI = new Item("belt");
+		// DungeonPanel.source.NewInventory(temp, tempI);
 	}
 }

@@ -366,4 +366,13 @@ public class Vision {
 			return null;
 		}
 	}
+
+	public boolean canSee(Location loc) {
+		if (shape != null) {
+			if (shape.contains(loc.getPoint())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
