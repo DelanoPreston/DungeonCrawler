@@ -242,8 +242,6 @@ public class Map {
 					int y2 = (int) chunks[y][x].getLocation().getY();
 					int x2 = (int) chunks[y][x].getLocation().getX();
 					g2D.drawImage(chunks[y][x].getImage(), x2, y2, null);
-					// System.out.println(chunks[y][x].getImage().getHeight());
-					// System.out.println("drawing {" + x2 + ", " + y2 + "}");
 				}
 			}
 		}

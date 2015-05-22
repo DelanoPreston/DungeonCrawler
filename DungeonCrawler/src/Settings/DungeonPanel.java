@@ -49,7 +49,7 @@ public class DungeonPanel extends JPanel {
 	Timer fpsTimer;
 	// MapCreator map;
 	Map map;
-	//Player player;
+	// Player player;
 	EntityManager eM;
 	public int[][] level;
 	Vision vis;
@@ -128,7 +128,7 @@ public class DungeonPanel extends JPanel {
 	 */
 	public void Update() {
 		uCounter++;
-		//player.update();
+		// player.update();
 		vis.update(getPlayer().getPlayerView());
 		map.updateMinimapVisibility(vis);
 		eM.update();
@@ -169,17 +169,19 @@ public class DungeonPanel extends JPanel {
 			// d = this.getSize();
 			vis.paint(g2D, d);
 		}
-		
-		if(Key.drawPathMap){
+
+		if (Key.drawPathMap) {
 			List<Path> tempPaths = eM.getMapRef().getPaths();
 			g2D.setColor(Color.RED);
-			for(int i = 0; i < tempPaths.size(); i++){
-				for(int j = 0; j < tempPaths.get(i).getLength() - 1; j++){
-					g2D.drawLine(tempPaths.get(i).getX(j), tempPaths.get(i).getY(j), tempPaths.get(i).getX(j+1), tempPaths.get(i).getY(j+1));
+			int ts = Key.tileSize;//
+			for (int i = 0; i < tempPaths.size(); i++) {
+				for (int j = 0; j < tempPaths.get(i).getLength() - 1; j++) {
+					g2D.drawLine(tempPaths.get(i).getX(j) * ts + (ts / 2), tempPaths.get(i).getY(j) * ts + (ts / 2), tempPaths.get(i).getX(j + 1) * ts
+							+ (ts / 2), tempPaths.get(i).getY(j + 1) * ts + (ts / 2));
 				}
 			}
 		}
-		
+
 		if (Key.drawDoorLines) {
 			g2D.setColor(Color.RED);
 			// System.out.println("drawing lines");
@@ -486,7 +488,7 @@ public class DungeonPanel extends JPanel {
 
 		ButtonListener btnListener = new ButtonListener(this);
 
-		String[] buttonNames = { "Toggle FOW", "Toggle MMFOW", "Toggle MM", "Toggle Rm #s", "Done" };
+		String[] buttonNames = { "Done", "Toggle FOW", "Toggle Rm Paths", "Toggle Vision Draw", "Toggle MMFOW", "Toggle MM" };
 
 		// this is the build menu cancel button
 		// JButton btn;
@@ -546,15 +548,23 @@ public class DungeonPanel extends JPanel {
 				} else {
 					Key.drawMiniMap = true;
 				}
-			} else if (arg0.getActionCommand().equals("Toggle Rm #s")) {
-				if (Key.drawRoomNumbers == true) {
-					Key.drawRoomNumbers = false;
+			} else if (arg0.getActionCommand().equals("Toggle Rm Paths")) {
+				if (Key.drawPathMap == true) {
+					Key.drawPathMap = false;
 				} else {
-					Key.drawRoomNumbers = true;
+					Key.drawPathMap = true;
+				}
+			} else if (arg0.getActionCommand().equals("Toggle Vision Draw")) {
+				if (Key.drawRays == true) {
+					Key.drawRays = false;
+				} else {
+					Key.drawRays = true;
 				}
 			} else if (arg0.getActionCommand().equals("Done")) {
 				jpanel.eM.playersDone();
 			}
+
+			// /
 			jpanel.requestFocus();
 		}
 	}

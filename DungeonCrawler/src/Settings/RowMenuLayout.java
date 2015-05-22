@@ -37,7 +37,8 @@ public class RowMenuLayout implements LayoutManager {
 
 		preferredHeight = ((nComps >= rows ? rows : nComps) * buttonHeight) + ((nComps >= rows ? rows + 1 : nComps + 1) * buttonGap);
 
-		preferredWidth = ((nComps % rows + 1) * buttonWidth) + ((nComps % rows) * buttonGap);
+		int temp = (int) Math.ceil(nComps / rows);
+		preferredWidth = ((temp) * buttonWidth) + ((nComps % rows) * buttonGap);
 	}
 
 	/* Required by LayoutManager. */

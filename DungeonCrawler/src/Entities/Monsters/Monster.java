@@ -98,7 +98,7 @@ public class Monster extends MoveableEntity {
 		if (path != null && pathCounter < movement) {
 			location.addMovement(path.getStep(pathCounter).getScreenLoc(), .5);
 			float dist = path.getStep(pathCounter).getScreenLoc().getDistance(location);
-			System.out.println("dist: " + dist);
+			//System.out.println("dist: " + dist);
 			if (dist < .5) {
 				pathCounter++;
 			}
