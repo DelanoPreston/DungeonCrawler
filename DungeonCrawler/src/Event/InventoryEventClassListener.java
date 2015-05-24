@@ -2,9 +2,6 @@ package Event;
 
 import java.util.EventListener;
 
-import Entities.Entity;
-import Map.Map;
-
 public interface InventoryEventClassListener extends EventListener{
 	public void handleNewInventory(InventoryEvent s);
 	public void handleRemoveInventory(InventoryEvent s);

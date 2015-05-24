@@ -51,14 +51,15 @@ public class DungeonPanel extends JPanel {
 	Map map;
 	// Player player;
 	EntityManager eM;
-	public int[][] level;
-	Vision vis;
+	// public int[][] level;
+	// TODO put vis inside player class (or call if from derived class
+	// Vision vis;
 	// VisionManager vm;
 	// Vision v2;
 	PopupListener popupListener;
 	// JPanel mapDraw;
 	JPanel cards;
-	AffineTransform normView;
+	// AffineTransform normView;
 
 	// List<JInternalFrame> inventories = new ArrayList<>();
 	// create class that can be passed in that creates windows
@@ -102,10 +103,11 @@ public class DungeonPanel extends JPanel {
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		Player player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2));
+		Player player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2), map);
 		wc = new WindowController(parent);
 		eM = new EntityManager(map, player, wc);
-		vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, player);
+		// vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
+		// player);
 
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
@@ -129,9 +131,11 @@ public class DungeonPanel extends JPanel {
 	public void Update() {
 		uCounter++;
 		// player.update();
-		vis.update(getPlayer().getPlayerView());
-		map.updateMinimapVisibility(vis);
+		// vis.update(getPlayer().getPlayerView());//this is now updated in
+		// player, which is updated in eM
+
 		eM.update();
+		map.updateMinimapVisibility(eM.getPlayerRef().getVision());
 		// if (popupListener.location != null) {
 		// vis.source = popupListener.location;
 
@@ -145,15 +149,15 @@ public class DungeonPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		// debug thing
 		pCounter++;
+
 		Graphics2D g2D = (Graphics2D) g;
-		normView = new AffineTransform();
-		AffineTransform temp = normView;
 		Dimension d = null;
 		if (Key.drawMap) {
 			if (Key.drawGamePlay) {
 				getPlayer().getPlayerView().update(getPlayer());
-				temp = getPlayer().getPlayerView().draw(this.getSize());
+				AffineTransform temp = getPlayer().getPlayerView().draw(this.getSize());
 				g2D.transform(temp);
 				map.drawMapWithChunks(g2D, getPlayer());
 				// map.drawGameMap(g2D, this.getSize());
@@ -167,7 +171,7 @@ public class DungeonPanel extends JPanel {
 			if (d == null)
 				d = new Dimension(Key.tileSize * Key.width, Key.tileSize * Key.height);
 			// d = this.getSize();
-			vis.paint(g2D, d);
+			eM.getPlayerRef().getVision().paint(g2D, d);
 		}
 
 		if (Key.drawPathMap) {
@@ -191,7 +195,12 @@ public class DungeonPanel extends JPanel {
 		}
 		getPlayer().draw(g2D);
 
-		drawSelectSquare(g2D);
+		if (Key.drawSelectSquare)
+			drawSelectSquare(g2D);
+		if (Key.drawWallLines)
+			map.drawWallLines(g2D);
+		if (Key.drawRoomNumbers)
+			map.drawRoomNumbers(g2D);
 
 		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
@@ -228,7 +237,7 @@ public class DungeonPanel extends JPanel {
 		// Point2D p2D = new Point2D.Double(0.0, 0.0);
 		// p2D = temp.transform(new Point2D.Double(x, y), p2D);
 		int ts = Key.tileSize;
-		if (vis.getShape().intersects(new Rectangle((int) x, (int) y, ts, ts))) {
+		if (eM.getPlayerRef().getVision().getShape().intersects(new Rectangle((int) x, (int) y, ts, ts))) {
 			g2D.setColor(Color.WHITE);
 			Location lTemp = new Location(x, y);
 			lTemp.setLocationAtTile();
@@ -315,6 +324,7 @@ public class DungeonPanel extends JPanel {
 
 			if (key == KeyEvent.VK_SPACE) {
 				System.out.println("nothing - Typed");
+			} else if (key == KeyEvent.VK_I) {
 			}
 		}
 	}

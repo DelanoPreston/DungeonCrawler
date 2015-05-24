@@ -62,7 +62,7 @@ public class MenuLayout implements LayoutManager {
 	/* Required by LayoutManager. */
 	public Dimension preferredLayoutSize(Container parent) {
 		Dimension dim = new Dimension(0, 0);
-		int nComps = parent.getComponentCount();
+//		int nComps = parent.getComponentCount();
 
 		setSizes(parent);
 
@@ -79,7 +79,7 @@ public class MenuLayout implements LayoutManager {
 	/* Required by LayoutManager. */
 	public Dimension minimumLayoutSize(Container parent) {
 		Dimension dim = new Dimension(0, 0);
-		int nComps = parent.getComponentCount();
+//		int nComps = parent.getComponentCount();
 
 		// Always add the container's insets!
 		Insets insets = parent.getInsets();
@@ -101,10 +101,10 @@ public class MenuLayout implements LayoutManager {
 		int maxWidth = parent.getWidth() - (insets.left + insets.right);
 		int maxHeight = parent.getHeight() - (insets.top + insets.bottom);
 		int nComps = parent.getComponentCount();
-		int previousWidth = 0, previousHeight = 0;
+//		int previousWidth = 0, previousHeight = 0;
 		int x = 0, y = insets.top;
-		int rowh = 0, start = 0;
-		int xFudge = 0, yFudge = 0;
+//		int rowh = 0, start = 0;
+//		int xFudge = 0, yFudge = 0;
 		boolean oneColumn = true;
 
 		// Go through the components' sizes, if neither
@@ -163,8 +163,8 @@ public class MenuLayout implements LayoutManager {
 				// Set the component's size and position.
 				c.setBounds(x, y, d.width, d.height);
 
-				previousWidth = d.width;
-				previousHeight = d.height;
+//				previousWidth = d.width;
+//				previousHeight = d.height;
 			}
 		}
 	}

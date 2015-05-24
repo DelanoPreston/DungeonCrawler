@@ -44,17 +44,22 @@ public class Monster extends MoveableEntity {
 		} else {
 			g2D.setColor(Color.BLUE);
 		}
-		g2D.fillOval((int) location.getX(), (int) location.getY(), 10, 10);
-		g2D.setColor(Color.RED);
-		g2D.draw(vision.getShape());
-		g2D.setColor(Color.BLACK);
-		g2D.drawString("m: " + memoryCounter, (int) location.getX(), (int) location.getY());
-		if (targetLoc != null) {
-			g2D.setColor(Color.YELLOW);
-			int targetSize = 10;
-			g2D.drawRect((int) targetLoc.getX() - (targetSize / 2), (int) targetLoc.getY() -(targetSize / 2), targetSize, targetSize);
+		int size = 10;
+		g2D.fillOval((int) location.getX() - (size / 2), (int) location.getY() - (size / 2), size, size);
+		if (Key.drawVision) {
+			g2D.setColor(Color.RED);
+			g2D.draw(vision.getShape());
+			if (targetLoc != null) {
+				g2D.setColor(Color.YELLOW);
+				int targetSize = 10;
+				g2D.drawRect((int) targetLoc.getX() - (targetSize / 2), (int) targetLoc.getY() - (targetSize / 2), targetSize, targetSize);
+			}
 		}
-		g2D.setColor(c);
+		if (Key.drawMonsterAI) {
+			g2D.setColor(Color.BLACK);
+			g2D.drawString("m: " + memoryCounter, (int) location.getX(), (int) location.getY());
+		}
+//		g2D.setColor(c);//don't really need to do this
 	}
 
 	public void takeTurn() {
@@ -98,7 +103,7 @@ public class Monster extends MoveableEntity {
 		if (path != null && pathCounter < movement) {
 			location.addMovement(path.getStep(pathCounter).getScreenLoc(), .5);
 			float dist = path.getStep(pathCounter).getScreenLoc().getDistance(location);
-			//System.out.println("dist: " + dist);
+			// System.out.println("dist: " + dist);
 			if (dist < .5) {
 				pathCounter++;
 			}

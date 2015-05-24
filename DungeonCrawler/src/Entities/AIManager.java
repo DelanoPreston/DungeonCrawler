@@ -12,9 +12,9 @@ public class AIManager {
 	
 	public void update(){
 //		Player.location - get the player location so I can check it against monster location
-		for(MoveableEntity mon : monsters){
+//		for(MoveableEntity mon : monsters){
 //			if(mon.location.getDistance(loc))
 //			mon.update();
-		}
+//		}
 	}
 }

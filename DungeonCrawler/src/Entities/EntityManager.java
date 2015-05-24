@@ -1,7 +1,6 @@
 package Entities;
 
 import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,11 +82,14 @@ public class EntityManager implements InventoryEventClassListener {
 			for (int i = 0; i < entities.size(); i++) {
 				if (entities.get(i).getVision().canSee(pLoc)) {
 					entities.get(i).updateTargetLoc(pLoc);
-
 				}
 			}
 			// do player stuff
-			player.update();
+			player.update(mapRef);
+			if (player.getMovement() <= 0) {
+				playersDone();
+				player.resetMovement();
+			}
 			// monsterTurn = true;
 		}
 
@@ -103,12 +105,12 @@ public class EntityManager implements InventoryEventClassListener {
 
 	public void draw(Graphics2D g2D) {
 		for (Entity m : entities) {
-			if(m.location.getDistance(player.getLoc()) < Key.renderChunkDist)
-			m.draw(g2D);
+			if (m.location.getDistance(player.getLoc()) < Key.renderChunkDist)
+				m.draw(g2D);
 		}
 	}
 
-	private boolean sendAttack(Entity source, Entity target) {
+	public boolean sendAttack(Entity source, Entity target) {
 		// ??
 		return true;
 	}

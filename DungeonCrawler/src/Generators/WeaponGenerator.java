@@ -13,15 +13,18 @@ public class WeaponGenerator {
 	}
 
 	public void printWeapon() {
-		System.out.println(w.getName() + "'s " + w.getQuality().toString() + " " + w.getWeaponType());
+		if (w.getName().length() <= 4)
+			System.out.println(w.getName() + "'s \t\t" + w.getQuality().toString() + " " + w.getWeaponType());
+		else
+			System.out.println(w.getName() + "'s \t" + w.getQuality().toString() + " " + w.getWeaponType());
 	}
-	
-	public String chooseWeaponType(){
-		String[] weaponTypes = {"Axe", "Sword", "Knife", "Bow", "CrossBow"};
-		
+
+	public String chooseWeaponType() {
+		String[] weaponTypes = { "Axe", "Sword", "Knife", "Bow", "CrossBow" };
+
 		return weaponTypes[Key.random.nextInt(weaponTypes.length)];
 	}
-	
+
 	public Quality chooseQuality(Quality minCond, Quality maxCond) {
 		int i;
 		Quality retQual = null;

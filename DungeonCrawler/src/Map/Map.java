@@ -71,9 +71,6 @@ public class Map {
 		createChunkImages();
 	}
 
-	public void paintComponent(Graphics g) {
-	}
-
 	public List<Line2D> getWalls() {
 		return visWallList;
 	}
@@ -93,10 +90,10 @@ public class Map {
 			return null;
 	}
 
-	public List<Path> getPaths(){
+	public List<Path> getPaths() {
 		return paths;
 	}
-	
+
 	public void updateMinimapVisibility(Vision vis) {
 		int ts = Key.tileSize;
 		int hts = ts / 2;
@@ -129,6 +126,18 @@ public class Map {
 		}
 	}
 
+	public boolean canMove(Location loc, int size) {
+		int offset = size / 2;
+		Rectangle entity = new Rectangle((int) loc.getX() - offset, (int) loc.getY() - offset, size, size);
+		for (Line2D l : visWallList) {
+			if (l.intersects(entity)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean containsWall(Shape s, Point2D p1, Point2D p2, Point2D p3, Point2D p4) {
 
 		if (s.contains(p1) || s.contains(p2) || s.contains(p3) || s.contains(p4)) {
@@ -152,49 +161,33 @@ public class Map {
 	public void drawMiniMap(Graphics g2D, Dimension d, int px, int py) {
 		// Start location
 		int w = Key.mmWidth, h = Key.mmHeight;
-		int mmTileSize = Key.mmtileSize;
-		int sx = d.width - (w * mmTileSize);
+		int mmts = Key.mmtileSize;
+		int sx = d.width - (w * mmts);
 		int sy = 0;
 		int xOffset = w / 2;
 		int yOffset = h / 2;
 
-		Color yellow = Color.yellow;
-		Color green = Color.green;
-		Color gray = Color.gray;
-		// Color darkGray = Color.DARK_GRAY;
 		Color brown = new Color(187, 122, 80, 255);
 		Color transparent = new Color(0, 0, 0, 0);
-		// Color black = Color.BLACK;
 
 		for (int x = px - xOffset; x < px + xOffset; x++) {
 			for (int y = py - yOffset; y < py + yOffset; y++) {
+				g2D.setColor(transparent);// this is just in case no color is
+											// selected
 				if (map.inBounds(x, y)) {
 					if (map.getTile(x, y).getVisible() || !Key.drawMMFogOfWar) {
 						if (x == px && y == py) {
-							g2D.setColor(yellow);
+							g2D.setColor(Color.yellow);
 						} else if (map.isCell(x, y, Key.floor) || map.isCell(x, y, Key.hallwayFloor)) {
-							g2D.setColor(green);
+							g2D.setColor(Color.green);
 						} else if (map.isWall(map.checkCell(x, y))) {
-							g2D.setColor(gray);
+							g2D.setColor(Color.gray);
 						} else if (map.isCell(x, y, Key.door)) {
 							g2D.setColor(brown);
-						} else {
-							// Redundant?
-							g2D.setColor(transparent);
 						}
-					} else {
-						// Redundant?
-						g2D.setColor(transparent);
 					}
-				} else {
-					// Redundant?
-					g2D.setColor(transparent);
 				}
-				// does not even draw anything if its out of bounds of the
-				// mapkey
-				// g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy +
-				// ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
-				g2D.fillRect(sx + ((x - (px - xOffset)) * mmTileSize), sy + ((y - (py - yOffset)) * mmTileSize), mmTileSize, mmTileSize);
+				g2D.fillRect(sx + ((x - (px - xOffset)) * mmts), sy + ((y - (py - yOffset)) * mmts), mmts, mmts);
 			}
 		}
 	}
@@ -227,9 +220,6 @@ public class Map {
 				}
 			}
 		}
-
-		// this resets the at for the j components to draw normally
-		// g2D.setTransform(new AffineTransform());
 	}
 
 	public void drawMapWithChunks(Graphics2D g2D, Player p) {
@@ -302,40 +292,22 @@ public class Map {
 				}
 			}
 		}
+	}
 
-		if (Key.drawRoomNumbers) {
-			g2D.setColor(new Color(255, 255, 255, 255));
-			for (int r = 0; r < rooms.size(); r++) {
-				int x = (int) (rooms.get(r).getCenter().getX() * tS);
-				int y = (int) (rooms.get(r).getCenter().getY() * tS);
-				g2D.drawString(String.valueOf(r), x, y);
-			}
+	public void drawRoomNumbers(Graphics2D g2D) {
+		int tS = Key.tileSize;
+		g2D.setColor(new Color(255, 255, 255, 255));
+		for (int r = 0; r < rooms.size(); r++) {
+			int x = (int) (rooms.get(r).getCenter().getX() * tS);
+			int y = (int) (rooms.get(r).getCenter().getY() * tS);
+			g2D.drawString(String.valueOf(r), x, y);
 		}
-		if (Key.drawRoomCenters) {
-			g2D.setColor(new Color(32, 63, 95, 255));
-			for (int r = 0; r < rooms.size(); r++) {
-				int x = (int) rooms.get(r).getCenter().getX();
-				int y = (int) rooms.get(r).getCenter().getY();
-				g2D.fillRect(x * tS, y * tS, tS, tS);
-			}
-		}
-		if (Key.drawTunnelingPaths) {
+	}
 
-			for (Path p : paths) {
-				for (int i = 0; i < p.getLength() - 1; i++) {
-					g2D.setColor(new Color(Math.min(i * 2 + 45, 255), 0, 0, 255));
-					g2D.drawLine(p.getX(i) * Key.tileSize + (Key.tileSize / 2), p.getY(i) * Key.tileSize + (Key.tileSize / 2), p.getX(i + 1) * Key.tileSize
-							+ (Key.tileSize / 2), p.getY(i + 1) * Key.tileSize + (Key.tileSize / 2));
-				}
-			}
-		}
-		if (Key.drawWallLines) {
-			g2D.setColor(new Color(195, 0, 0, 255));
-			for (Line2D l : visWallList) {
-				g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
-				// g2D.drawRect((int) l.getX1(), (int) l.getY1(), 5, 5);
-				// TODO working on drawing
-			}
+	public void drawWallLines(Graphics2D g2D) {
+		g2D.setColor(new Color(195, 0, 0, 255));
+		for (Line2D l : visWallList) {
+			g2D.drawLine((int) l.getX1(), (int) l.getY1(), (int) l.getX2(), (int) l.getY2());
 		}
 	}
 
@@ -535,7 +507,7 @@ public class Map {
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
 				// TODO if you find a locked wall, make sure there is one above
-				// and or below it
+				// and or below it -------------- I think this is done
 				if (map.isCell(x, y, Key.lockedWall)/* &&false// */) {
 					// check above
 					boolean temp = false;
@@ -581,7 +553,7 @@ public class Map {
 		for (int y = 0; y < Key.height; y++) {
 			for (int x = 0; x < Key.width; x++) {
 				// TODO if you find a locked wall, make sure there is one above
-				// and or below it
+				// and or below it -------------- I think this is done
 				if (map.isCell(x, y, Key.lockedWall)/* &&false// */) {
 					// check above
 					boolean temp = false;
@@ -785,8 +757,7 @@ public class Map {
 			for (int x = xLoc; x < xLoc + Key.chunkTiles; x++) {
 				// System.out.println(x + ", " + y);
 				int index = 2;
-				if (map != null && y < map.getHeightInTiles() && x < map.getWidthInTiles()) {// TODO
-																								// 123
+				if (map != null && y < map.getHeightInTiles() && x < map.getWidthInTiles()) {
 					index = map.getTile(x, y).getID().getID();
 					// System.out.println(x + " " + y + " " + index + " " +
 					// map[x][y].getID().getID());

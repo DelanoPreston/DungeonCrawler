@@ -1,6 +1,5 @@
 import Emuns.Quality;
 import Generators.WeaponGenerator;
-import Settings.Key;
 
 public class Test {
 
@@ -12,5 +11,10 @@ public class Test {
 		}
 		// System.out.println();
 	}
+	enum Size{
+		Tiny, Small, Normal, Large, Huge
+	}
+	
+	
 
 }

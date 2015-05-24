@@ -12,9 +12,9 @@ import DataStructures.ID;
 public class Key {
 	public static Random random = new Random();
 
-	//don't know where to put these
+	// don't know where to put these
 	public static int monsterMovementSpeed = 3;
-	
+
 	public static Image[] dungeonTiles = new Image[4];
 	public static Image[] items = new Image[4];
 
@@ -60,8 +60,8 @@ public class Key {
 	public static boolean lockedMovementType = false;
 
 	//
-	public static int resWidth = 800;
-	public static int resHeight = 600;
+	public static int resWidth = 1100;
+	public static int resHeight = 750;
 
 	//
 	public static boolean minimapFollowPlayer = true;
@@ -103,7 +103,6 @@ public class Key {
 	public static final String statVision = "Vision";
 	public static final String statMemory = "Memory";
 	public static final String statMovement = "Movement";
-	
 
 	// tile keys
 	public static final ID nullID = new ID();
@@ -146,13 +145,18 @@ public class Key {
 	public static boolean drawRays = false;
 
 	// map things
-	public static boolean drawRoomNumbers = false;
-	public static boolean drawRoomCenters = false;
+	// debug things
+	public static boolean drawMonsterAI = false;
+	public static boolean drawVision = false;
+	public static boolean drawDebug = false;
+	public static boolean drawRoomNumbers = true;
 	public static boolean drawTunnelingPaths = false;
 	public static boolean drawWallLines = false;
 	public static boolean drawDoorLines = false;
-	public static boolean drawPathMap = true;
-	public static boolean drawGrid = false;
+	public static boolean drawPathMap = false;
+	// just map things
+	public static boolean drawGrid = true;
+	public static boolean drawSelectSquare = true;
 	public static boolean drawMap = true;
 
 	// Vision things

@@ -8,57 +8,104 @@ import java.awt.geom.Point2D;
 import DataStructures.Location;
 import Entities.MoveableEntity;
 import Item.Item;
+import Map.Map;
 import Settings.Key;
+import Settings.Vision;
 
 public class Player extends MoveableEntity {
 	private static final long serialVersionUID = 7134283731669813902L;
 	PlayerView pv;
 	// testing purposes
 	int counter = 1;
+	float movement = 80;
 
 	// this is for the not locked moving version
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
-	//boolean accFor = false, accBac = false, accRotRig = false, accRotLef = false;
 
-	public Player(Point2D loc){//, Map map) {
-		location = new Location(loc);
+	// boolean accFor = false, accBac = false, accRotRig = false, accRotLef =
+	// false;
+
+	public Player(Point2D loc, Map mapRef) {// , Map map) {
+		super("Player 1", new Location(loc), mapRef);
 		pv = new PlayerView();
-//		vision = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, this);
 	}
 
-	public Player(Location loc){//, Map map) {
+	public Player(Location loc) {// , Map map) {
 		location = loc;
 		pv = new PlayerView();
-//		vision = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance, this);
+		// vision = new Vision(map, Key.rayCastResolution,
+		// Key.rayCastingDistance, this);
 	}
 
 	public void draw(Graphics2D g2D) {
 		g2D.setColor(Color.BLACK);
-		int offset = Key.tileSize / 2;
+		int playerSize = 8;
+		int offset = playerSize / 2;
 		// TODO this will eventually be a pixel image...
-		g2D.fillOval((int) location.getX() - (offset / 2), (int) location.getY() - (offset / 2), offset, offset);
+		g2D.fillOval((int) location.getX() - offset, (int) location.getY() - offset, playerSize, playerSize);
+		g2D.setColor(new Color(0, 0, 255, 48));
+		g2D.fillOval((int) (location.getX() - movement), (int) (location.getY() - movement), (int) movement * 2, (int) movement * 2);
 	}
 
-	public void update() {
-		//counter++;
-		if (counter == 200) {
-			addInventory();
-		}
+	public void update(Map map) {
+		// super.update();
+		// counter++;
+		vision.update(pv);
 		// location.addLinearMovement(1, 0);
 		if (Key.lockedMovementType) {
 			// TODO make the player stick to the grid system
+			// or not
 		} else {
+			//TODO make this more efficient TODO TODO TODO
+			int val = 0;// this is to see if the player is moving diagonally
 			// update location
-			if (movingRight)
-				location.addLinearMovement(1 * Key.sensitivity, 0);
-			if (movingUp)
-				location.addLinearMovement(0, -1 * Key.sensitivity);
-			if (movingLeft)
-				location.addLinearMovement(-1 * Key.sensitivity, 0);
-			if (movingDown)
-				location.addLinearMovement(0, 1 * Key.sensitivity);
+			if (movingRight) {
+				Location temp = new Location(location);
+				temp.addLinearMovement(1 * Key.sensitivity, 0);
+				if (map.canMove(temp, 8)) {
+					location.addLinearMovement(1 * Key.sensitivity, 0);
+					// movement--;
+					val++;
+				}
+			}
+			if (movingUp) {
+				Location temp = new Location(location);
+				temp.addLinearMovement(0, -1 * Key.sensitivity);
+				if (map.canMove(temp, 8)) {
+					location.addLinearMovement(0, -1 * Key.sensitivity);
+					// movement--;
+					val++;
+				}
+			}
+			if (movingLeft) {
+				Location temp = new Location(location);
+				temp.addLinearMovement(-1 * Key.sensitivity, 0);
+				if (map.canMove(temp, 8)) {
+					location.addLinearMovement(-1 * Key.sensitivity, 0);
+					// movement--;
+					val++;
+				}
+			}
+			if (movingDown) {
+				Location temp = new Location(location);
+				temp.addLinearMovement(0, 1 * Key.sensitivity);
+				if (map.canMove(temp, 8)) {
+					location.addLinearMovement(0, 1 * Key.sensitivity);
+					// movement--;
+					val++;
+				}
+			}
+			movement -= Math.sqrt(val);
 		}
-		super.update();
+
+	}
+
+	public void resetMovement() {
+		movement = 80;
+	}
+
+	public float getMovement() {
+		return movement;
 	}
 
 	public PlayerView getPlayerView() {
