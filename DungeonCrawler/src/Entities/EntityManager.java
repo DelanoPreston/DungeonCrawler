@@ -33,7 +33,7 @@ public class EntityManager implements InventoryEventClassListener {
 	}
 
 	private void addMonsters(int num) {
-		for (int i = 0; i < num; i++) {
+		for (int i = 1; i < num + 1; i++) {
 			HashMap<String, Double> stats = new HashMap<>();
 			stats.put(Key.statVision, Key.random.nextDouble() * 10.0 + 120.0);
 			stats.put(Key.statMemory, Key.random.nextInt(2) + 3.0);
@@ -110,8 +110,13 @@ public class EntityManager implements InventoryEventClassListener {
 		}
 	}
 
-	public boolean sendAttack(Entity source, Entity target) {
-		// ??
+	public void drawGui(Graphics2D g2D) {
+		player.drawGui(g2D);
+	}
+
+	public boolean sendAttack(Entity source, Entity target, int amount) {
+		System.out.println("damage sent");
+		target.damageEntity(amount);
 		return true;
 	}
 

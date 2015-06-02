@@ -29,6 +29,13 @@ public class Inventory extends JComponent {
 		items.put(0, new Item("four"));
 	}
 
+	public int getWidthInTiles(){
+		return width;
+	}
+	public int getHeightInTiles(){
+		return height;
+	}
+	
 	/**
 	 * puts an item in this inventory at the location you pass in
 	 * 

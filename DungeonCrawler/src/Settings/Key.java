@@ -123,10 +123,10 @@ public class Key {
 	public static int monsterVisionResoultion = 32;
 
 	// size of map
-	public static int width = 50;
-	public static int height = 50;
+	public static int width = 60;
+	public static int height = 60;
 	public static int tileSize = 16;
-	public static int chunkTiles = 12;
+	public static int chunkTiles = 15;
 	public static int renderChunkDist = rayCastingDistance * 5 / 2;
 
 	// inventory size stuff
@@ -147,6 +147,7 @@ public class Key {
 	// map things
 	// debug things
 	public static boolean drawMonsterAI = false;
+	public static boolean drawTargetAttack = true;
 	public static boolean drawVision = false;
 	public static boolean drawDebug = false;
 	public static boolean drawRoomNumbers = true;

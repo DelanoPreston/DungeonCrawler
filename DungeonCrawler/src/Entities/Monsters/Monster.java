@@ -59,7 +59,14 @@ public class Monster extends MoveableEntity {
 			g2D.setColor(Color.BLACK);
 			g2D.drawString("m: " + memoryCounter, (int) location.getX(), (int) location.getY());
 		}
-//		g2D.setColor(c);//don't really need to do this
+		// g2D.setColor(c);//don't really need to do this
+		if(targetLoc != null && Key.drawTargetAttack){
+			g2D.drawLine((int)targetLoc.getX(), (int)targetLoc.getY(), (int)location.getX(), (int)location.getY());
+			g2D.setColor(Color.BLACK);
+			g2D.drawString("" + location.getDistance(targetLoc), (int)location.getX() + 10, (int)location.getY() + 10);
+				
+			
+		}
 	}
 
 	public void takeTurn() {
@@ -100,19 +107,30 @@ public class Monster extends MoveableEntity {
 		// not sure if this is needed in the final game
 		vision.update(emRef.getPlayerRef().getPlayerView());
 
+		// if they have a path to follow, and still have movement left this turn
 		if (path != null && pathCounter < movement) {
+			// mve towards the current path location
 			location.addMovement(path.getStep(pathCounter).getScreenLoc(), .5);
 			float dist = path.getStep(pathCounter).getScreenLoc().getDistance(location);
 			// System.out.println("dist: " + dist);
+			// if the monster is close enough to the path location then it
+			// increments it
 			if (dist < .5) {
 				pathCounter++;
 			}
-			// not sure if I counted this up right
+			// if the monster is at the end of the path, then its done
 			if (pathCounter + 1 == path.getLength()) {
 				turnDone = true;
+
 			}
 		} else {
 			turnDone = true;
+		}
+		if (turnDone && targetLoc != null) {
+			double temp = location.getDistance(emRef.getPlayerRef().getLoc());
+			if (temp < Math.sqrt(Math.pow(Key.tileSize, 2) * 2)) {
+				emRef.sendAttack(this, emRef.getPlayerRef(), 20);
+			}
 		}
 	}
 

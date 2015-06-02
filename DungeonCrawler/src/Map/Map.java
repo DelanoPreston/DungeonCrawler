@@ -126,6 +126,7 @@ public class Map {
 		}
 	}
 
+	//i need to make this more efficient - this is brute force
 	public boolean canMove(Location loc, int size) {
 		int offset = size / 2;
 		Rectangle entity = new Rectangle((int) loc.getX() - offset, (int) loc.getY() - offset, size, size);

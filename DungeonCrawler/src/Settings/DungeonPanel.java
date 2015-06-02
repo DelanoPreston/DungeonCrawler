@@ -30,6 +30,7 @@ import DataStructures.Location;
 import DataStructures.Path;
 import Entities.EntityManager;
 import Event.CustomEventSource;
+import GameGui.InventoryGui;
 import Item.Inventory;
 import Item.Item;
 import Map.Map;
@@ -67,6 +68,7 @@ public class DungeonPanel extends JPanel {
 	// Inventory testing;
 	WindowController wc;
 	Item itemHeld;
+	InventoryGui ig = new InventoryGui(new Inventory(3, 3));
 
 	// debug variables
 	int uCounter = 0;
@@ -103,7 +105,7 @@ public class DungeonPanel extends JPanel {
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		Player player = new Player(new Point2D.Double(Key.resWidth / 2, Key.resHeight / 2), map);
+		Player player = new Player(new Point2D.Double(map.getRoom(0).getCenter().getX()* Key.tileSize, map.getRoom(0).getCenter().getY() * Key.tileSize), map);
 		wc = new WindowController(parent);
 		eM = new EntityManager(map, player, wc);
 		// vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
@@ -204,6 +206,8 @@ public class DungeonPanel extends JPanel {
 
 		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
+		eM.drawGui(g2D);
+		ig.draw(g2D);
 		// draws the minimap
 		if (Key.drawMiniMap) {
 			map.drawMiniMap(g2D, this.getSize(), getPlayer().getLoc().getTileX(), getPlayer().getLoc().getTileY());

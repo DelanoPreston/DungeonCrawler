@@ -3,6 +3,7 @@ package Stats;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class WoodGame {
 
@@ -10,42 +11,98 @@ public class WoodGame {
 
 	public static void main(String[] args) {
 		int level = 1;
+		boolean continueGame = true;
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(System.in);
+		} catch (Exception e) {
 
-		// monsters
-
-		for (int i = 0; i < 10; i++) {
-			System.out.println(newMonster(level).print());
 		}
-		System.out.println("\r");
-		// weapons
+		String input = "";
+		System.out.println("welcome to dungeon game");
+		do {
+			System.out.println("1 (chest)");
+			System.out.println("2 (monster)");
+			System.out.println("3 (weapon)");
+			System.out.println("4 (armor)");
+			System.out.println("5 (item)");
+			System.out.println("6 (damage - calculation)");
+			input = scanner.nextLine();
+			switch (input) {
+			case "1":
+				int val = random.nextInt(5) + 1;
+				for (int i = 0; i < val; i++) {
+					System.out.println(newItem(level).print());
+				}
+				if (random.nextInt(3) == 0) {
+					System.out.println(newWeapon(level).print());
+				}
+				if (random.nextInt(2) == 0) {
+					System.out.println(newArmor(level).print());
+				}
+				break;
+			case "2":
+				System.out.println(newMonster(level).print());
+				break;
+			case "3":
+				System.out.println(newWeapon(level).print());
+				break;
+			case "4":
+				System.out.println(newArmor(level).print());
+				break;
+			case "5":
+				int val2 = random.nextInt(10);
+				switch (val2) {
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+					System.out.println(newItem(level).print());
+					break;
+				case 8:
+					System.out.println(newArmor(level).print());
+					break;
+				case 9:
+					System.out.println(newWeapon(level).print());
+					break;
+				default:
+					System.out.println(newItem(level).print());
+					break;
+				}
 
-		for (int i = 0; i < 10; i++) {
-			System.out.println(newWeapon(level).print());
-		}
-		System.out.println("\r");
-		// armor
+				break;
+			case "6":
+				System.out.println("enter strength");
+				int str = scanner.nextInt();
+				System.out.println("weapon damage");
+				int weapon = scanner.nextInt() + 1;
+				System.out.println("damage: " + (random.nextInt(weapon) + (str /2)));
+				break;
+			case "7":
+				
+				break;
+			default:
+				System.out.println("dough");
+				break;
+			}
+		} while (continueGame);
 
-		for (int i = 0; i < 10; i++) {
-			System.out.println(newArmor(level).print());
-		}
-		// items
-		System.out.println("\r");
-
-		for (int i = 0; i < 10; i++) {
-			System.out.println(newItem(level).print());
-		}
 	}
 
 	public static Monster newMonster(int level) {
 		List<Monster> monsters = new ArrayList<>();
-		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(10, 2), 1));
-		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(10, 2), 1));
-		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(10, 2), 1));
+		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(12, 2), 1));
+		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(12, 2), 1));
+		monsters.add(new Monster("Rat   ", Size.tiny, 2, mod(4, 2), mod(12, 2), 1));
+		monsters.add(new Monster("Slime ", Size.normal, 1, mod(3, 2), mod(18, 4), 0));
+		monsters.add(new Monster("Slime ", Size.normal, 1, mod(3, 2), mod(16, 4), 0));
 		monsters.add(new Monster("Slime ", Size.normal, 1, mod(3, 2), mod(15, 4), 0));
-		monsters.add(new Monster("Slime ", Size.normal, 1, mod(3, 2), mod(15, 4), 0));
-		monsters.add(new Monster("Slime ", Size.normal, 1, mod(3, 2), mod(15, 4), 0));
-		monsters.add(new Monster("Goblin", Size.small, 2, mod(8, 2), mod(12, 3), 3));
-		monsters.add(new Monster("Goblin", Size.small, 2, mod(8, 2), mod(12, 3), 3));
+		monsters.add(new Monster("Goblin", Size.small, 2, mod(8, 2), mod(16, 3), 3));
+		monsters.add(new Monster("Goblin", Size.small, 2, mod(8, 2), mod(18, 3), 3));
 		monsters.add(new Monster("Troll ", Size.large, 1, mod(10, 2), mod(25, 8), 8));
 		monsters.add(new Monster("Spider", Size.large, 3, mod(7, 2), mod(15, 3), 5));
 		monsters.add(new Monster("Spider", Size.large, 3, mod(7, 2), mod(15, 3), 5));
@@ -80,9 +137,17 @@ public class WoodGame {
 		List<Item> items = new ArrayList<>();
 		items.add(new Item("Health Potion", 3));
 		items.add(new Item("Mana Potion  ", 3));
+		items.add(new Item("Health Potion", 3));
+		items.add(new Item("Mana Potion  ", 3));
 		items.add(new Item("Rat Skin     ", 1));
 		items.add(new Item("Troll Hide   ", 7));
 		items.add(new Item("Spider Venom ", 5));
+		items.add(new Item("Gold Piece x1", 5));
+		items.add(new Item("Gold Piece x3", 5));
+		items.add(new Item("Gold Piece x5", 5));
+		items.add(new Item("Gold Piece x10", 5));
+		items.add(new Item("Food         ", 5));
+		items.add(new Item("Food         ", 5));
 		return items.get(random.nextInt(items.size()));
 	}
 
@@ -162,7 +227,7 @@ class Weapon extends Entity {
 		super(n);
 		range = r + (m.getMod() / 2);
 		material = m;
-		baseDamage = bd+ (m.getMod() / 2);
+		baseDamage = bd + (m.getMod() / 2);
 		weight = w * m.getMod();
 		cost = m.getMod() * bd + w;
 	}

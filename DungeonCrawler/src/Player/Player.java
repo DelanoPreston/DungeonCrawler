@@ -7,10 +7,10 @@ import java.awt.geom.Point2D;
 
 import DataStructures.Location;
 import Entities.MoveableEntity;
+import GameGui.StatBar;
 import Item.Item;
 import Map.Map;
 import Settings.Key;
-import Settings.Vision;
 
 public class Player extends MoveableEntity {
 	private static final long serialVersionUID = 7134283731669813902L;
@@ -18,6 +18,8 @@ public class Player extends MoveableEntity {
 	// testing purposes
 	int counter = 1;
 	float movement = 80;
+	StatBar healthBar;
+	StatBar manaBar;
 
 	// this is for the not locked moving version
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
@@ -28,6 +30,8 @@ public class Player extends MoveableEntity {
 	public Player(Point2D loc, Map mapRef) {// , Map map) {
 		super("Player 1", new Location(loc), mapRef);
 		pv = new PlayerView();
+		healthBar = new StatBar(this, 100, 100, 20, Color.GREEN);
+		manaBar = new StatBar(this, 100, 100, 20, Color.RED);
 	}
 
 	public Player(Location loc) {// , Map map) {
@@ -35,6 +39,7 @@ public class Player extends MoveableEntity {
 		pv = new PlayerView();
 		// vision = new Vision(map, Key.rayCastResolution,
 		// Key.rayCastingDistance, this);
+		System.out.println("I don't think this constructor is being used (player)");
 	}
 
 	public void draw(Graphics2D g2D) {
@@ -42,12 +47,24 @@ public class Player extends MoveableEntity {
 		int playerSize = 8;
 		int offset = playerSize / 2;
 		// TODO this will eventually be a pixel image...
+		// draw the player
 		g2D.fillOval((int) location.getX() - offset, (int) location.getY() - offset, playerSize, playerSize);
+		// this is the mvement area
 		g2D.setColor(new Color(0, 0, 255, 48));
 		g2D.fillOval((int) (location.getX() - movement), (int) (location.getY() - movement), (int) movement * 2, (int) movement * 2);
+
+	}
+
+	public void drawGui(Graphics2D g2D) {
+		// this is the health bar
+		healthBar.draw(g2D, new Location(10, 10));
+		manaBar.draw(g2D, new Location(10, 35));
 	}
 
 	public void update(Map map) {
+
+		healthBar.update();
+		manaBar.update();
 		// super.update();
 		// counter++;
 		vision.update(pv);
@@ -56,7 +73,7 @@ public class Player extends MoveableEntity {
 			// TODO make the player stick to the grid system
 			// or not
 		} else {
-			//TODO make this more efficient TODO TODO TODO
+			// TODO make this more efficient TODO TODO TODO
 			int val = 0;// this is to see if the player is moving diagonally
 			// update location
 			if (movingRight) {

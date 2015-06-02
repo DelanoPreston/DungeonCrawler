@@ -11,6 +11,7 @@ public class Entity implements Serializable {
 	protected Gear gear = new Gear();
 	private String name;
 	public Location location;
+	protected int health = 100;
 
 	public Entity() {
 		name = "None";
@@ -48,5 +49,13 @@ public class Entity implements Serializable {
 
 	public void setLoc(Location loc) {
 		location = loc;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public void damageEntity(int amount) {
+		health -= amount;
 	}
 }
