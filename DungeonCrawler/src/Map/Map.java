@@ -21,6 +21,7 @@ import DataStructures.Room;
 import Pathfinding.AStarPathFinder;
 import Player.Player;
 import Settings.ChunkImage;
+import Settings.ContentBank;
 import Settings.Door;
 import Settings.Key;
 import Settings.Vision;
@@ -68,6 +69,8 @@ public class Map {
 				chunks[y][x] = new ChunkImage(new Location(x * chunkSize * Key.tileSize, y * chunkSize * Key.tileSize), (chunkSize / 2) * Key.tileSize);
 			}
 		}
+		// TODO remove this if you find a better place to initialize the
+		// dungeontiles
 		createChunkImages();
 	}
 
@@ -126,7 +129,7 @@ public class Map {
 		}
 	}
 
-	//i need to make this more efficient - this is brute force
+	// i need to make this more efficient - this is brute force
 	public boolean canMove(Location loc, int size) {
 		int offset = size / 2;
 		Rectangle entity = new Rectangle((int) loc.getX() - offset, (int) loc.getY() - offset, size, size);
@@ -764,7 +767,7 @@ public class Map {
 					// map[x][y].getID().getID());
 				}
 
-				Image image = Key.dungeonTiles[index];
+				Image image = ContentBank.dungeonTiles[index];
 
 				// This code ensures that all the pixels in the image are loaded
 				// image = new ImageIcon(image).getImage();
@@ -773,6 +776,8 @@ public class Map {
 				// method's
 				// implementation, see Determining If an Image Has Transparent
 				// Pixels
+				// TODO fix this (the problem is that in key, the dungeon tiles
+				// are null when this is called
 				boolean hasAlpha = hasAlpha(image);
 
 				if (tempBImage == null) {

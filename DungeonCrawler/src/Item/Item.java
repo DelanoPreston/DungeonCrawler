@@ -1,8 +1,10 @@
 package Item;
 
+import java.awt.Graphics2D;
 import java.io.Serializable;
 
 import Item.Interfaces.IItem;
+import Settings.ContentBank;
 
 public class Item implements Serializable, IItem {
 	private static final long serialVersionUID = -3107986612368990684L;
@@ -12,6 +14,10 @@ public class Item implements Serializable, IItem {
 	public Item(String name) {
 		this.name = name;
 	}
+	
+	public void draw(Graphics2D g2D, int x, int y){
+		g2D.drawImage(ContentBank.shield, x, y, null);
+	}
 
 	@Override
 	public String getName() {
@@ -20,7 +26,7 @@ public class Item implements Serializable, IItem {
 
 	@Override
 	public boolean hasInventory() {
-		return true;
+		return false;
 	}
 
 	@Override

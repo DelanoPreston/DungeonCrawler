@@ -14,9 +14,10 @@ public class DungeonCrawler {
 	public static void main(String[] args) {
 		try {
 			JFrame frame = new JFrame();
-			Key.setDungeonTiles();
+			ContentBank.setDungeonTiles();
 			DungeonPanel gamePanel = new DungeonPanel(frame, new BorderLayout());
 			// ButtonPanel buttonPanel = new ButtonPanel();
+			ContentBank.loadImages();
 			frame.setSize(Key.resWidth, Key.resHeight);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setResizable(true);

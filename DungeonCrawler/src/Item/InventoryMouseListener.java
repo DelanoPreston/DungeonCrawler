@@ -37,7 +37,7 @@ class InventoryMouseListener implements MouseListener, MouseMotionListener {
 		if (e.getModifiers() == 16) {//left click
 			if (heldItem == null) {
 				Location temp2 = new Location((int) GetInventoryLocation().getX(), (int) GetInventoryLocation().getY());
-				heldItem = inventory.getItemFrom((int) temp2.getX(), (int) temp2.getY());
+				heldItem = inventory.removeItemFrom((int) temp2.getX(), (int) temp2.getY());
 //				if (heldItem != null) {
 //					System.out.println("got item " + heldItem.getName() + " in hand from: " + temp2.toString());
 //				} else

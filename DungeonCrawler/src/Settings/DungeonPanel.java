@@ -68,7 +68,7 @@ public class DungeonPanel extends JPanel {
 	// Inventory testing;
 	WindowController wc;
 	Item itemHeld;
-	InventoryGui ig = new InventoryGui(new Inventory(3, 3));
+	InventoryGui ig;// = new InventoryGui(new Inventory(3, 3));
 
 	// debug variables
 	int uCounter = 0;
@@ -105,11 +105,13 @@ public class DungeonPanel extends JPanel {
 		createButtonLayout(Key.width * Key.tileSize, Key.mmHeight * Key.mmtileSize);
 
 		map = new Map(Key.width, Key.height);
-		Player player = new Player(new Point2D.Double(map.getRoom(0).getCenter().getX()* Key.tileSize, map.getRoom(0).getCenter().getY() * Key.tileSize), map);
+		Player player = new Player(new Point2D.Double(map.getRoom(0).getCenter().getX() * Key.tileSize, map.getRoom(0).getCenter().getY() * Key.tileSize), map);
 		wc = new WindowController(parent);
 		eM = new EntityManager(map, player, wc);
 		// vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
 		// player);
+		
+		ig = new InventoryGui(player.inventory);
 
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
@@ -167,6 +169,9 @@ public class DungeonPanel extends JPanel {
 				map.drawWholeMap(g2D);
 			}
 		}
+
+		// g2D.drawImage(ContentBank.sword, null, null);
+
 		eM.draw(g2D);
 		// vis.drawVisShape(g2D);
 		if (Key.drawFogOfWar) {
@@ -207,7 +212,9 @@ public class DungeonPanel extends JPanel {
 		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
 		eM.drawGui(g2D);
-		ig.draw(g2D);
+		if (ig != null) {
+			ig.draw(g2D);
+		}
 		// draws the minimap
 		if (Key.drawMiniMap) {
 			map.drawMiniMap(g2D, this.getSize(), getPlayer().getLoc().getTileX(), getPlayer().getLoc().getTileY());

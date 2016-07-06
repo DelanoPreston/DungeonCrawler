@@ -15,46 +15,6 @@ public class Key {
 	// don't know where to put these
 	public static int monsterMovementSpeed = 3;
 
-	public static Image[] dungeonTiles = new Image[4];
-	public static Image[] items = new Image[4];
-
-	public static void setDungeonTiles() {
-		dungeonTiles = new Image[4];
-
-		BufferedImage bigImg = null;
-		int index = 0;
-
-		try {
-			bigImg = ImageIO.read(new File("Images/SurvivorTileMap.png"));
-			index = 0;
-			dungeonTiles = new Image[4];
-
-			for (int y = 0; y <= 1; y++) {
-				for (int x = 0; x <= 1; x++) {
-					dungeonTiles[index] = (Image) bigImg.getSubimage(x * Key.tileSize, y * Key.tileSize, Key.tileSize, Key.tileSize);
-					index++;
-				}
-			}
-			System.out.println("got tiles done");
-
-			bigImg = ImageIO.read(new File("Images/Items.png"));
-			index = 0;
-			items = new Image[4];
-
-			for (int y = 0; y <= 1; y++) {
-				for (int x = 0; x <= 1; x++) {
-					int tileSize = 32;
-					items[index] = (Image) bigImg.getSubimage(x * tileSize, y * tileSize, tileSize, tileSize);
-					index++;
-				}
-			}
-			System.out.println("got items done");
-
-		} catch (Exception e) {
-
-		}
-	}
-
 	// input
 	public static float sensitivity = 1f;
 	public static boolean lockedMovementType = false;

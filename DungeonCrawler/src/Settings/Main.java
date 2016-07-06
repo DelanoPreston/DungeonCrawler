@@ -1,5 +1,7 @@
 package Settings;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
 
 public class Main {
@@ -8,7 +10,7 @@ public class Main {
 		try {
 			JFrame frame = new JFrame();
 //			ContentBank.ContentLoader();
-			DungeonPanel gamePanel = new DungeonPanel();
+			DungeonPanel gamePanel = new DungeonPanel(frame, new BorderLayout());
 			frame.setSize(1500, 1000);
 //			frame.setSize(300, 300);
 //			frame.setSize(200, 200);

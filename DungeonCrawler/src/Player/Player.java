@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import DataStructures.Location;
 import Entities.MoveableEntity;
 import GameGui.StatBar;
+import Item.Inventory;
 import Item.Item;
 import Map.Map;
 import Settings.Key;
@@ -20,6 +21,7 @@ public class Player extends MoveableEntity {
 	float movement = 80;
 	StatBar healthBar;
 	StatBar manaBar;
+	public Inventory inventory = new Inventory(3, 3);
 
 	// this is for the not locked moving version
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
@@ -53,6 +55,8 @@ public class Player extends MoveableEntity {
 		g2D.setColor(new Color(0, 0, 255, 48));
 		g2D.fillOval((int) (location.getX() - movement), (int) (location.getY() - movement), (int) movement * 2, (int) movement * 2);
 
+		// draw inventory
+		inventory.draw(g2D);
 	}
 
 	public void drawGui(Graphics2D g2D) {
@@ -170,8 +174,10 @@ public class Player extends MoveableEntity {
 	}
 
 	public void addInventory() {
-		gear.addGear("back", new Item("backpack"));
-		System.out.println("new inventory (Player)");
+		inventory = new Inventory(3, 3);
+		// gear.addGear("back", new Item("backpack"));
+		// System.out.println("new inventory (Player)");
+
 		// Inventory temp = new Inventory(4,4);
 		//
 		// Item tempI = new Item("belt");

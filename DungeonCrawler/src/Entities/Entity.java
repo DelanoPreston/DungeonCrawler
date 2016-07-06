@@ -54,8 +54,10 @@ public class Entity implements Serializable {
 	public int getHealth() {
 		return health;
 	}
+	
+	
 
-	public void damageEntity(int amount) {
+ 	public void damageEntity(int amount) {
 		health -= amount;
 	}
 }

@@ -9,6 +9,8 @@ import DataStructures.Location;
 import Entities.Monsters.Monster;
 import Event.InventoryEvent;
 import Event.InventoryEventClassListener;
+import Item.Item;
+import Item.ItemOnMap;
 import Map.Map;
 import Player.Player;
 import Settings.Key;
@@ -20,6 +22,7 @@ public class EntityManager implements InventoryEventClassListener {
 	Player player;
 	List<Monster> entities = new ArrayList<>();
 	public List<Monster> monstersToUpdate = new ArrayList<>();
+	List<ItemOnMap> items = new ArrayList<>();
 	private int turn = 1;
 	private boolean monsterTurn = false;
 	private boolean updatingMonsters = false;
@@ -30,6 +33,7 @@ public class EntityManager implements InventoryEventClassListener {
 								// Key.resHeight / 2));
 		this.wc = wc;
 		addMonsters(5);
+		addItems(5);
 	}
 
 	private void addMonsters(int num) {
@@ -39,6 +43,14 @@ public class EntityManager implements InventoryEventClassListener {
 			stats.put(Key.statMemory, Key.random.nextInt(2) + 3.0);
 			stats.put(Key.statMovement, Key.random.nextInt(3) + 3.0);
 			entities.add(new Monster(this, "one", new Location(mapRef.getRoom(i).getWindowLocation()), stats));
+		}
+	}
+
+	private void addItems(int num) {
+		for (int i = 1; i < num + 1; i++) {
+			Item item = new Item("");
+			items.add(new ItemOnMap(item, new Location(mapRef.getRoom(i).getWindowLocation())));
+			System.out.println(new Location(mapRef.getRoom(i).getWindowLocation()) + "is the location!!!");
 		}
 	}
 
@@ -107,6 +119,10 @@ public class EntityManager implements InventoryEventClassListener {
 		for (Entity m : entities) {
 			if (m.location.getDistance(player.getLoc()) < Key.renderChunkDist)
 				m.draw(g2D);
+		}
+		for (ItemOnMap i : items) {
+			if (i.getLoc().getDistance(player.getLoc()) < Key.renderChunkDist)
+				i.draw(g2D);
 		}
 	}
 

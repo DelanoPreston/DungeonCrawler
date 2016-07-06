@@ -25,7 +25,7 @@ public class Gear{
 	 *            - a string location of where the gear goes
 	 * @param item
 	 *            - the item to be worn
-	 * @return - null or and item
+	 * @return - null or item
 	 */
 	public IItem addGear(String location, IItem item) {
 

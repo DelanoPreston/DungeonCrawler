@@ -2,7 +2,6 @@ package Item;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 
@@ -29,13 +28,31 @@ public class Inventory extends JComponent {
 		items.put(0, new Item("four"));
 	}
 
-	public int getWidthInTiles(){
+	public int getWidthInTiles() {
 		return width;
 	}
-	public int getHeightInTiles(){
+
+	public int getHeightInTiles() {
 		return height;
 	}
-	
+
+	/**
+	 * this will add an item in the next open loction
+	 * 
+	 * @param item
+	 *            - the item to be put into the inventory
+	 * @return - true if it is added, false if it is not
+	 */
+	public boolean addItem(Item item) {
+		for (int y = 0; height - 1 > y; y++) {
+			for (int x = 0; width - 1 > x; x++) {
+				if (putItemIn(item, x, y))
+					return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * puts an item in this inventory at the location you pass in
 	 * 
@@ -67,7 +84,7 @@ public class Inventory extends JComponent {
 	 *            - y location in inventory
 	 * @return - the item at that location or null
 	 */
-	public Item getItemFrom(int x, int y) {
+	public Item removeItemFrom(int x, int y) {
 		if (inBounds(x, y)) {
 			int val = (y * width) + x;
 			if (items.containsKey(val)) {
@@ -76,24 +93,42 @@ public class Inventory extends JComponent {
 		}
 		return null;
 	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		int tsi = Key.tileSizeInventory;
-		Graphics2D g2D = (Graphics2D) g;
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				g2D.setColor(Color.LIGHT_GRAY);
-				g2D.fillRect(x * tsi, y * tsi, tsi, tsi);
-				g2D.setColor(Color.DARK_GRAY);
-				g2D.drawRect(x * tsi, y * tsi, tsi, tsi);
+	
+	/**
+	 * gets the item at the location
+	 * 
+	 * @param x
+	 *            - x location in inventory
+	 * @param y
+	 *            - y location in inventory
+	 * @return - the item at that location or null
+	 */
+	public Item hasItemAt(int x, int y) {
+		if (inBounds(x, y)) {
+			int val = (y * width) + x;
+			if (items.containsKey(val)) {
+				return items.get(val);
 			}
 		}
+		return null;
+	}
 
-		for (int key : items.keySet()) {
-			g2D.setColor(Color.BLUE);
-			g2D.fillRect((int) ((key % width) * tsi + 5), (int) (Math.floor(key / width) * tsi + 5), 54, 54);
-		}
+	public void draw(Graphics2D g) {
+//		int tsi = Key.tileSizeInventory;
+//		Graphics2D g2D = (Graphics2D) g;
+//		for (int y = 0; y < height; y++) {
+//			for (int x = 0; x < width; x++) {
+//				g2D.setColor(Color.LIGHT_GRAY);
+//				g2D.fillRect(x * tsi, y * tsi, tsi, tsi);
+//				g2D.setColor(Color.DARK_GRAY);
+//				g2D.drawRect(x * tsi, y * tsi, tsi, tsi);
+//			}
+//		}
+//
+//		for (int key : items.keySet()) {
+//			g2D.setColor(Color.BLUE);
+//			g2D.fillRect((int) ((key % width) * tsi + 5), (int) (Math.floor(key / width) * tsi + 5), 54, 54);
+//		}
 	}
 
 	private boolean inBounds(int x, int y) {
