@@ -31,7 +31,6 @@ import DataStructures.Location;
 import DataStructures.Path;
 import Entities.EntityManager;
 import Event.CustomEventSource;
-import GameGui.InventoryGui;
 import Item.Inventory;
 import Item.Item;
 import Map.Map;
@@ -69,7 +68,7 @@ public class DungeonPanel extends JPanel {
 	// Inventory testing;
 	WindowController wc;
 	Item itemHeld;
-	InventoryGui ig;// = new InventoryGui(new Inventory(3, 3));
+	// InventoryGui ig;// = new InventoryGui(new Inventory(3, 3));
 
 	// debug variables
 	int uCounter = 0;
@@ -111,8 +110,6 @@ public class DungeonPanel extends JPanel {
 		eM = new EntityManager(map, player, wc);
 		// vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
 		// player);
-
-		ig = new InventoryGui(player.inventory);
 
 		popupListener = new PopupListener(this);
 		this.addMouseMotionListener(popupListener);
@@ -188,8 +185,7 @@ public class DungeonPanel extends JPanel {
 			int ts = Key.tileSize;//
 			for (int i = 0; i < tempPaths.size(); i++) {
 				for (int j = 0; j < tempPaths.get(i).getLength() - 1; j++) {
-					g2D.drawLine(tempPaths.get(i).getX(j) * ts + (ts / 2), tempPaths.get(i).getY(j) * ts + (ts / 2), tempPaths.get(i).getX(j + 1) * ts
-							+ (ts / 2), tempPaths.get(i).getY(j + 1) * ts + (ts / 2));
+					g2D.drawLine(tempPaths.get(i).getX(j) * ts + (ts / 2), tempPaths.get(i).getY(j) * ts + (ts / 2), tempPaths.get(i).getX(j + 1) * ts + (ts / 2), tempPaths.get(i).getY(j + 1) * ts + (ts / 2));
 				}
 			}
 		}
@@ -213,9 +209,6 @@ public class DungeonPanel extends JPanel {
 		// this resets the affine transform so I can draw on the borders easier
 		g2D.setTransform(new AffineTransform());
 		eM.drawGui(g2D);
-		if (ig != null) {
-			ig.draw(g2D);
-		}
 		// draws the minimap
 		if (Key.drawMiniMap) {
 			map.drawMiniMap(g2D, this.getSize(), getPlayer().getLoc().getTileX(), getPlayer().getLoc().getTileY());
@@ -402,7 +395,7 @@ public class DungeonPanel extends JPanel {
 
 				// make it a reasonable amount of zoom
 				// .1 gives a nice slow transition
-				reference.getPlayer().getPlayerView().setScale(reference.getPlayer().getPlayerView().getScale() - (.1f * e.getWheelRotation()));
+				reference.getPlayer().getPlayerView().setScale(reference.getPlayer().getPlayerView().getScale() - (.25f * e.getWheelRotation()));
 				// don't cross negative threshold.
 				// also, setting scale to 0 has bad effects
 				reference.getPlayer().getPlayerView().setScale((float) Math.max(1, reference.getPlayer().getPlayerView().getScale()));
@@ -414,32 +407,40 @@ public class DungeonPanel extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			// left click to open doors
+			// left click
 			if (e.getModifiersEx() == 0) {
-				double tempMin = Key.tileSize * 2;
-				Door closestDoor = null;
-				for (Door d : reference.map.getDoors()) {
-					Location tempm = eM.getPlayerRef().getLoc();
-					Location tempd = d.getLocation().getScreenLoc();
-					double temp = tempm.getDistance(tempd);
-					if (temp < tempMin) {
-						tempMin = temp;
-						closestDoor = d;
-					}
-				}
+				if (eM.clickedGui(location)) {
 
-				if (closestDoor != null) {
-					// System.out.println(tempMin + " dist| door at loc: {" +
-					// closestDoor.getLocation().getX() + ", " +
-					// closestDoor.getLocation().getY() + "}");
-					//TODO fix the arbitrary number 250 - it is measuring distance in pixels from the player to the door, I want it measured in blocks/tiles
-					if (tempMin < 250){//Key.tileSize * 2) {
-						if (closestDoor.isDoorOpen())
-							closestDoor.setID(Key.doorClosed);
-						else
-							closestDoor.setID(Key.doorOpened);
+				} else {
+					Location tempMouse = getMouseScreenLocation();
+					double tempMin = 250;//Key.tileSize * 2;
+					Door closestDoor = null;
+					Location tempm = eM.getPlayerRef().getLoc();
+					for (Door d : reference.map.getDoors()) {
+						Location tempd = d.getLocation().getScreenLoc();
+						if (tempm.getDistance(tempd) < Key.distanceOpenDoors) {
+							if (tempMouse.getDistance(tempd) < tempMin) {
+								tempMin = tempMouse.getDistance(tempd);
+								closestDoor = d;
+							}
+						}
+					}
+
+					if (closestDoor != null) {
+						// System.out.println(tempMin + " dist| door at loc: {"
+						// +
+						// closestDoor.getLocation().getX() + ", " +
+						// closestDoor.getLocation().getY() + "}");
+						if (tempMin < Key.distanceOpenDoors) {
+							if (closestDoor.isDoorOpen())
+								closestDoor.setID(Key.doorClosed);
+							else
+								closestDoor.setID(Key.doorOpened);
+						}
 					}
 				}
+			} else if (e.getModifiersEx() == 256) {
+				System.out.println("button");
 			}
 		}
 

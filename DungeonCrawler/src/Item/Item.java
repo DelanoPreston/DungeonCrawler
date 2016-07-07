@@ -31,7 +31,7 @@ public class Item implements Serializable, IItem {
 
 	@Override
 	public Inventory getInventory() {
-		return new Inventory(4, 4);
+		return null;//new Inventory(4, 4);
 	}
 
 	@Override

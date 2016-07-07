@@ -9,7 +9,6 @@ import DataStructures.Location;
 import Entities.MoveableEntity;
 import GameGui.StatBar;
 import Item.Inventory;
-import Item.Item;
 import Map.Map;
 import Settings.Key;
 
@@ -21,7 +20,7 @@ public class Player extends MoveableEntity {
 	float movement = 80;
 	StatBar healthBar;
 	StatBar manaBar;
-	public Inventory inventory = new Inventory(3, 3);
+	public Inventory inventory;
 
 	// this is for the not locked moving version
 	boolean movingRight = false, movingUp = false, movingLeft = false, movingDown = false;
@@ -29,11 +28,12 @@ public class Player extends MoveableEntity {
 	// boolean accFor = false, accBac = false, accRotRig = false, accRotLef =
 	// false;
 
-	public Player(Point2D loc, Map mapRef) {// , Map map) {
+	public Player(Point2D loc, Map mapRef) {
 		super("Player 1", new Location(loc), mapRef);
 		pv = new PlayerView();
-		healthBar = new StatBar(this, 100, 100, 20, Color.GREEN);
-		manaBar = new StatBar(this, 100, 100, 20, Color.RED);
+		inventory = new Inventory(new Location(10, 65), 3, 3);
+		healthBar = new StatBar(this, new Location(10, 10), 100, 100, 20, Color.GREEN);
+		manaBar = new StatBar(this, new Location(10, 35), 100, 100, 20, Color.RED);
 	}
 
 	public Player(Location loc) {// , Map map) {
@@ -51,18 +51,34 @@ public class Player extends MoveableEntity {
 		// TODO this will eventually be a pixel image...
 		// draw the player
 		g2D.fillOval((int) location.getX() - offset, (int) location.getY() - offset, playerSize, playerSize);
-		// this is the mvement area
+		// this is the movement area
 		g2D.setColor(new Color(0, 0, 255, 48));
 		g2D.fillOval((int) (location.getX() - movement), (int) (location.getY() - movement), (int) movement * 2, (int) movement * 2);
-
-		// draw inventory
-		inventory.draw(g2D);
 	}
 
 	public void drawGui(Graphics2D g2D) {
 		// this is the health bar
-		healthBar.draw(g2D, new Location(10, 10));
-		manaBar.draw(g2D, new Location(10, 35));
+		healthBar.draw(g2D);
+		manaBar.draw(g2D);
+		if (inventory != null) {
+			inventory.draw(g2D);
+		}
+	}
+
+	public boolean clickedGui(Location p) {
+		if (healthBar.getRectangle().contains(p.getPoint())) {
+			System.out.println("clicked health bar");
+			return true;
+		} else if (manaBar.getRectangle().contains(p.getPoint())) {
+			System.out.println("clicked mana bar");
+			return true;
+			//TODO do other mana stuff??????
+		} else if (inventory.getRectangle().contains(p.getPoint())) {
+			System.out.println("clicked inventory");
+			return true;
+			//TODO do other inventory stuff
+		}
+		return false;
 	}
 
 	public void update(Map map) {
@@ -173,8 +189,8 @@ public class Player extends MoveableEntity {
 		}
 	}
 
-	public void addInventory() {
-		inventory = new Inventory(3, 3);
+	public void addInventory1234() {
+		inventory = new Inventory(new Location(10, 65), 3, 3);
 		// gear.addGear("back", new Item("backpack"));
 		// System.out.println("new inventory (Player)");
 

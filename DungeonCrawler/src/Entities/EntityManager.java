@@ -32,7 +32,7 @@ public class EntityManager implements InventoryEventClassListener {
 		this.player = player;// new Player(new Point2D.Double(Key.resWidth / 2,
 								// Key.resHeight / 2));
 		this.wc = wc;
-		addMonsters(5);
+		//addMonsters(5);
 		addItems(5);
 	}
 
@@ -128,6 +128,10 @@ public class EntityManager implements InventoryEventClassListener {
 
 	public void drawGui(Graphics2D g2D) {
 		player.drawGui(g2D);
+	}
+	
+	public boolean clickedGui(Location p){
+		return player.clickedGui(p);
 	}
 
 	public boolean sendAttack(Entity source, Entity target, int amount) {
