@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import DataStructures.Door;
 import DataStructures.Location;
 import DataStructures.Path;
 import Entities.EntityManager;
@@ -110,7 +111,7 @@ public class DungeonPanel extends JPanel {
 		eM = new EntityManager(map, player, wc);
 		// vis = new Vision(map, Key.rayCastResolution, Key.rayCastingDistance,
 		// player);
-		
+
 		ig = new InventoryGui(player.inventory);
 
 		popupListener = new PopupListener(this);
@@ -418,7 +419,7 @@ public class DungeonPanel extends JPanel {
 				double tempMin = Key.tileSize * 2;
 				Door closestDoor = null;
 				for (Door d : reference.map.getDoors()) {
-					Location tempm = getMouseScreenLocation();
+					Location tempm = eM.getPlayerRef().getLoc();
 					Location tempd = d.getLocation().getScreenLoc();
 					double temp = tempm.getDistance(tempd);
 					if (temp < tempMin) {
@@ -431,11 +432,12 @@ public class DungeonPanel extends JPanel {
 					// System.out.println(tempMin + " dist| door at loc: {" +
 					// closestDoor.getLocation().getX() + ", " +
 					// closestDoor.getLocation().getY() + "}");
-					if (tempMin < Key.tileSize * 2) {
+					//TODO fix the arbitrary number 250 - it is measuring distance in pixels from the player to the door, I want it measured in blocks/tiles
+					if (tempMin < 250){//Key.tileSize * 2) {
 						if (closestDoor.isDoorOpen())
-							closestDoor.closeDoor();
+							closestDoor.setID(Key.doorClosed);
 						else
-							closestDoor.openDoor();
+							closestDoor.setID(Key.doorOpened);
 					}
 				}
 			}
@@ -500,7 +502,7 @@ public class DungeonPanel extends JPanel {
 	private JPanel setupTestButtons() {
 		JPanel temp = new JPanel();
 
-		temp.setLayout(new RowMenuLayout(3, 128, 32, 5));// new GridLayout(3,
+		temp.setLayout(new RowMenuLayout(3, 196, 32, 5));// new GridLayout(3,
 															// 0, 5, 5));
 		temp.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		temp.setBackground(new Color(0, 0, 0, 0));// sets the portion of the

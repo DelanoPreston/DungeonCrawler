@@ -1,11 +1,6 @@
 package Settings;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import DataStructures.ID;
 
@@ -74,7 +69,7 @@ public class Key {
 	public static final ID sideWall = new ID(2, 0, 2);
 	public static final ID lockedWall = new ID(2, 1, 2);
 	// doors
-	public static final ID door = new ID(3, 0, 3);
+	public static final ID doorOpened = new ID(3, 0, 3);
 	public static final ID doorClosed = new ID(3, 1, 3);
 
 	// resolution of ray casting
@@ -99,6 +94,7 @@ public class Key {
 
 	// map settings
 	public static int numOfRooms = 320;
+	public static int distanceOpenDoors = 25;
 
 	// draw settings
 	// vision things

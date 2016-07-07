@@ -1,33 +1,26 @@
-package Settings;
+package DataStructures;
 
 import java.awt.geom.Line2D;
 
-import DataStructures.Location;
+import Settings.Key;
 
 public class Door {
+	ID id;
 	Line2D line;
 	Location location;
-	boolean open;
 
-	public Door(Line2D inLine, Location loc) {
+	public Door(ID i, Line2D inLine, Location loc) {
+		id = i;
 		line = inLine;
 		location = loc;
-		if (Key.random.nextInt(100) % 2 == 1)
-			open = false;
-		else
-			open = true;
 	}
 
 	public boolean isDoorOpen() {
-		return open;
-	}
-
-	public void openDoor() {
-		open = true;
-	}
-
-	public void closeDoor() {
-		open = false;
+		if (id == Key.doorClosed)
+			return false;
+		else if (id == Key.doorOpened)
+			return true;
+		return true;
 	}
 
 	public Location getLocation() {
@@ -40,5 +33,13 @@ public class Door {
 
 	public Line2D getLine() {
 		return line;
+	}
+	
+	public ID getID(){
+		return id;
+	}
+	
+	public void setID(ID i) {
+		id = i;
 	}
 }

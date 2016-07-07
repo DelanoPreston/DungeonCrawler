@@ -121,7 +121,7 @@ public class MapKey implements TileBasedMap {
 			map[x][y].setCost(2);
 		else if (Key.hallwayFloor.getID() == key)
 			map[x][y].setCost(1);
-		else if (Key.door.getID() == key)
+		else if (Key.doorOpened.getID() == key)
 			map[x][y].setCost(1);
 		else if (Key.sideWall.getID() == key)
 			map[x][y].setCost(10);
@@ -153,20 +153,28 @@ public class MapKey implements TileBasedMap {
 	public boolean isCell(int x, int y, int cellType) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
 			return false;
-		return map[x][y].getID().getID() == cellType;
+		if (map[x][y].getID().getID() == cellType)
+			return true;
+
+		return false;
 	}
 
 	public boolean isCell(int x, int y, ID cellType) {
 		if (x < 0 || y < 0 || x >= Key.width || y >= Key.height)
 			return false;
-		return map[x][y].getID().equals(cellType);
+		if (map[x][y].getID().equals(cellType))
+			return true;
+		return false;
 	}
 
 	@Override
 	public boolean blocked(int type, int tx, int ty) {
-		if (tx != 0 || tx != getWidthInTiles() - 1 || ty != 0 || ty != getHeightInTiles()) {
+		if (tx != 0 || tx != getWidthInTiles() - 1 || ty != 0
+				|| ty != getHeightInTiles()) {
 			if (type == Key.pathFinderRoomCheck) {
 				if (isWall(checkCell(tx, ty)) || isCell(tx, ty, Key.unused))
+					return true;
+				if (isCell(tx, ty, Key.doorClosed))
 					return true;
 			} else if (type == Key.pathFinderRoomTunneler) {
 				if (isCell(tx, ty, Key.lockedWall))

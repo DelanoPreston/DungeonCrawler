@@ -15,6 +15,7 @@ import java.awt.image.PixelGrabber;
 import java.util.ArrayList;
 import java.util.List;
 
+import DataStructures.Door;
 import DataStructures.Location;
 import DataStructures.Path;
 import DataStructures.Room;
@@ -22,7 +23,6 @@ import Pathfinding.AStarPathFinder;
 import Player.Player;
 import Settings.ChunkImage;
 import Settings.ContentBank;
-import Settings.Door;
 import Settings.Key;
 import Settings.Vision;
 
@@ -111,7 +111,7 @@ public class Map {
 				if (!map.isCell(x, y, Key.unused.getID()) && !map.getTile(x, y).getVisible()) {
 					// seems a little not optimized... because it has to check 4
 					// points to see if a wall is set to visible
-					if (map.isWall(x, y) || map.isCell(x, y, Key.door)) {
+					if (map.isWall(x, y) || map.isCell(x, y, Key.doorOpened) || map.isCell(x, y, Key.doorClosed)) {
 						Point2D p1 = new Point2D.Float(x * ts + hts - 1, y * ts + hts - 1);
 						Point2D p2 = new Point2D.Float(x * ts + hts + 1, y * ts + hts - 1);
 						Point2D p3 = new Point2D.Float(x * ts + hts - 1, y * ts + hts + 1);
@@ -136,6 +136,15 @@ public class Map {
 		for (Line2D l : visWallList) {
 			if (l.intersects(entity)) {
 				return false;
+			}
+		}
+		for (Door d : visDoorList) {
+			if (d.getLocation().getScreenLoc().getDistance(loc) < Key.tileSize * 2) {
+				if (!d.isDoorOpen()) {
+					if (d.getLine().intersects(entity)) {
+						return false;
+					}
+				}
 			}
 		}
 
@@ -186,7 +195,7 @@ public class Map {
 							g2D.setColor(Color.green);
 						} else if (map.isWall(map.checkCell(x, y))) {
 							g2D.setColor(Color.gray);
-						} else if (map.isCell(x, y, Key.door)) {
+						} else if (map.isCell(x, y, Key.doorOpened)) {
 							g2D.setColor(brown);
 						}
 					}
@@ -213,7 +222,7 @@ public class Map {
 						g2D.setColor(new Color(127, 127, 127, 255));
 					else if (key == Key.lockedWall.getID())
 						g2D.setColor(new Color(137, 137, 137, 255));
-					else if (key == Key.door.getID())
+					else if (key == Key.doorOpened.getID())
 						g2D.setColor(new Color(32, 32, 32, 255));
 					g2D.fillRect(xLoc, yLoc, Key.tileSize, Key.tileSize);
 
@@ -284,7 +293,7 @@ public class Map {
 						g2D.setColor(new Color(137, 137, 137, 255));
 						// } else if (map.isCell(x, y, Key.cornerWall)) {
 						// g2D.setColor(new Color(137, 137, 137, 255));
-					} else if (map.isCell(x, y, Key.door)) {
+					} else if (map.isCell(x, y, Key.doorOpened)) {
 						g2D.setColor(new Color(32, 32, 32, 255));
 					}
 					g2D.fillRect(x * tS, y * tS, tS, tS);
@@ -389,11 +398,24 @@ public class Map {
 								int x = p.getX(pathKey);
 								int y = p.getY(pathKey);
 								if (map.isCell(x, y, Key.sideWall)) {
-									if (!(map.isCell(x + 1, y, Key.door) || map.isCell(x - 1, y, Key.door) || map.isCell(x, y + 1, Key.door) || map.isCell(x,
-											y - 1, Key.door))) {
-										map.setCell(x, y, Key.door);// Closed);
+									// makes sure surrounding cells are not
+									// already doors (door opened refers to all
+									// doors)
+									if (!(map.isCell(x + 1, y, Key.doorOpened) || map.isCell(x - 1, y, Key.doorOpened) || map.isCell(x, y + 1, Key.doorOpened)
+											|| map.isCell(x, y - 1, Key.doorOpened) || map.isCell(x + 1, y, Key.doorClosed)
+											|| map.isCell(x - 1, y, Key.doorClosed) || map.isCell(x, y + 1, Key.doorClosed) || map.isCell(x, y - 1,
+											Key.doorClosed))) {
+
+										if (Key.random.nextInt(100) % 2 == 1)
+											map.setCell(x, y, Key.doorOpened);
+										else
+											map.setCell(x, y, Key.doorClosed);
+
 										Room tempR = getRoomAt(x, y);
 										tempR.addDoor();
+										// this locks the walls if the max
+										// number of doors is reached for a
+										// specific room
 										if (tempR.getDoors() >= tempR.getMaxDoor()) {
 											for (int roomX = tempR.getRoomX1(); roomX <= tempR.getRoomX2(); roomX++) {
 												for (int roomY = tempR.getRoomY1(); roomY <= tempR.getRoomY2(); roomY++) {
@@ -403,7 +425,7 @@ public class Map {
 											}
 										}
 									} else if (map.isCell(x, y, Key.lockedWall)) {
-										System.out.println("what????????????????????????????????????????????????????????");
+										System.out.println("what????????????????");
 									} else {
 
 										map.setCell(x, y, Key.hallwayFloor);
@@ -445,6 +467,13 @@ public class Map {
 						}
 					}
 				}
+				/*
+				 * if (map.isCell(x, y, Key.doorClosed) || map.isCell(x, y,
+				 * Key.doorOpened)){ for (int x2 = x - 1; x2 <= x + 1; x2++) {
+				 * for (int y2 = y - 1; y2 <= y + 1; y2++) { if (map.isCell(x2,
+				 * y2, Key.doorClosed) || map.isCell(x2, y2, Key.doorOpened)) {
+				 * map.setCell(x2, y2, Key.hallwayFloor); break; } } } }
+				 */
 			}
 		}
 
@@ -522,7 +551,7 @@ public class Map {
 						// if (map.isWall(x, tempY)) {
 						if (map.isCell(x, tempY, Key.lockedWall)) {
 							temp = true;
-						} else if (map.isCell(x, tempY, Key.door) || map.isCell(x, tempY, Key.floor.getID()) || map.isCell(x, tempY, Key.unused)
+						} else if (map.isCell(x, tempY, Key.doorOpened) || map.isCell(x, tempY, Key.floor.getID()) || map.isCell(x, tempY, Key.unused)
 								|| map.checkCell(x, tempY) == Key.nullID) {
 							if (!(y == tempY - 1)) {
 								map.setCell(x, tempY - 1, Key.lockedWall);
@@ -539,7 +568,7 @@ public class Map {
 						// if (map.isWall(x, tempY)) {
 						if (map.isCell(x, tempY, Key.lockedWall)) {
 							temp = true;
-						} else if (map.isCell(x, tempY, Key.door) || map.isCell(x, tempY, Key.floor.getID()) || map.isCell(x, tempY, Key.unused)
+						} else if (map.isCell(x, tempY, Key.doorOpened) || map.isCell(x, tempY, Key.floor.getID()) || map.isCell(x, tempY, Key.unused)
 								|| map.checkCell(x, tempY) == Key.nullID) {
 							if (!(y == tempY + 1)) {
 								// if ((x == 35 && tempY + 1 == 12))
@@ -568,7 +597,7 @@ public class Map {
 						// if (map.isWall(x, tempY)) {
 						if (map.isCell(tempX, y, Key.lockedWall)) {
 							temp = true;
-						} else if (map.isCell(tempX, y, Key.door) || map.isCell(tempX, y, Key.floor.getID()) || map.isCell(tempX, y, Key.unused)
+						} else if (map.isCell(tempX, y, Key.doorOpened) || map.isCell(tempX, y, Key.floor.getID()) || map.isCell(tempX, y, Key.unused)
 								|| map.checkCell(tempX, y) == Key.nullID) {
 							if (!(x == tempX - 1)) {
 								map.setCell(tempX - 1, y, Key.lockedWall);
@@ -582,7 +611,7 @@ public class Map {
 						tempX--;
 						if (map.isCell(tempX, y, Key.lockedWall)) {
 							temp = true;
-						} else if (map.isCell(tempX, y, Key.door) || map.isCell(tempX, y, Key.floor.getID()) || map.isCell(tempX, y, Key.unused)
+						} else if (map.isCell(tempX, y, Key.doorOpened) || map.isCell(tempX, y, Key.floor.getID()) || map.isCell(tempX, y, Key.unused)
 								|| map.checkCell(tempX, y) == Key.nullID) {
 							if (!(x == tempX + 1)) {
 								// if ((x == 35 && tempY + 1 == 12))
@@ -609,7 +638,7 @@ public class Map {
 		// for vertical lines
 		for (int x = 0; x < Key.width; x++) {
 			for (int y = 0; y < Key.height; y++) {
-				if (map.isWall(x, y) || map.isCell(x, y, Key.door)) {
+				if (map.isWall(x, y) || map.isCell(x, y, Key.doorOpened) || map.isCell(x, y, Key.doorClosed)) {
 					if (map.isCell(x, y, Key.lockedWall)) {
 						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
 							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS) + (tS / 2), (y * tS) + (tS / 2)));
@@ -618,7 +647,7 @@ public class Map {
 						startXLoc = (x * tS) + (tS / 2);
 						startYLoc = (y * tS) + (tS / 2);
 						wallStart = false;
-					} else if (map.isCell(x, y, Key.door)) {
+					} else if (map.isCell(x, y, Key.doorOpened) || map.isCell(x, y, Key.doorClosed)) {
 						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
 							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS) + (tS / 2), (y * tS)));
 							wallStart = true;
@@ -639,7 +668,7 @@ public class Map {
 		// for creating the horizontal lines - only horizontal lines
 		for (int y = 0; y < Key.height; y++) {
 			for (int x = 0; x < Key.width; x++) {
-				if (map.isWall(x, y) || map.isCell(x, y, Key.door)) {
+				if (map.isWall(x, y) || map.isCell(x, y, Key.doorOpened) || map.isCell(x, y, Key.doorClosed)) {
 					// for walls ending in a locked wall
 					if (map.isCell(x, y, Key.lockedWall)) {
 						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
@@ -650,7 +679,7 @@ public class Map {
 						startYLoc = (y * tS) + (tS / 2);
 						wallStart = false;
 						// for walls ending in a door
-					} else if (map.isCell(x, y, Key.door)) {
+					} else if (map.isCell(x, y, Key.doorOpened) || map.isCell(x, y, Key.doorClosed)) {
 						if (!wallStart && startXLoc != -1 && startYLoc != -1) {
 							visWallList.add(new Line2D.Double(startXLoc, startYLoc, (x * tS), (y * tS) + (tS / 2)));
 							wallStart = true;
@@ -678,11 +707,15 @@ public class Map {
 		// this adds the lines for the doors
 		for (int y = 1; y < Key.height - 1; y++) {
 			for (int x = 1; x < Key.width - 1; x++) {
-				if (map.isCell(x, y, Key.door)) {
+				if (map.isCell(x, y, Key.doorOpened) || (map.isCell(x, y, Key.doorClosed))) {
+					// this determines if the vision wall is horizontal or
+					// vertical
 					if (map.isCell(x + 1, y, Key.lockedWall) && map.isCell(x - 1, y, Key.lockedWall)) {
-						visDoorList.add(new Door(new Line2D.Double((x * tS), (y * tS) + hTS, (x + 1) * tS, (y * tS) + hTS), new Location(x, y)));
+						visDoorList.add(new Door(map.getTile(x, y).getID(), new Line2D.Double((x * tS), (y * tS) + hTS, (x + 1) * tS, (y * tS) + hTS),
+								new Location(x, y)));
 					} else if (map.isCell(x, y + 1, Key.lockedWall) && map.isCell(x, y - 1, Key.lockedWall)) {
-						visDoorList.add(new Door(new Line2D.Double((x * tS) + hTS, (y * tS), (x * tS) + hTS, (y + 1) * tS), new Location(x, y)));
+						visDoorList.add(new Door(map.getTile(x, y).getID(), new Line2D.Double((x * tS) + hTS, (y * tS), (x * tS) + hTS, (y + 1) * tS),
+								new Location(x, y)));
 					}
 				}
 			}
