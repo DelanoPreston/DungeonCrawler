@@ -75,6 +75,7 @@ public class Player extends MoveableEntity {
 			//TODO do other mana stuff??????
 		} else if (inventory.getRectangle().contains(p.getPoint())) {
 			System.out.println("clicked inventory");
+			inventory.clicked(p);
 			return true;
 			//TODO do other inventory stuff
 		}

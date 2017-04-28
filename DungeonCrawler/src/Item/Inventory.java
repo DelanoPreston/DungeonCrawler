@@ -133,4 +133,8 @@ public class Inventory extends JComponent {
 	public Rectangle getRectangle(){
 		return ig.getRectangle();
 	}
+	
+	public void clicked(Location l){
+		
+	}
 }
